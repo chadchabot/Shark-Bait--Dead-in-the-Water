@@ -2,13 +2,13 @@ import java.Point;
 
 public class Ship extends Sprite{
 
-	private int shipID;
-	private double speed;
-	private int type;
-	private Point position;
-	private int heading;
-	private double health;
-	private int status;
+	private int		shipID;
+	private double  speed;
+	private int		type;
+	private Point	position;
+	private int		heading;
+	private double	health;
+	private int		status;
 	private boolean firing;
 	
 	

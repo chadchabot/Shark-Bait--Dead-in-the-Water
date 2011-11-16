@@ -15,9 +15,9 @@ class Communication implements Runnable
 	String host = null;
 	int port = 0;
 	
-	MessageListener listener;
-	BufferedReader server_input;
-	DataOutputStream server_output;
+	MessageListener		listener;
+	BufferedReader		server_input;
+	DataOutputStream	server_output;
     
     /**
      * Class constructor sets up a MessageListener
