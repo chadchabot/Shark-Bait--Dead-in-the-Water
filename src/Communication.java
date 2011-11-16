@@ -11,20 +11,19 @@ import java.io.IOException;
 
 class Communication implements Runnable
 {
-	Socket connection;
-	String host = null;
-	int port = 0;
-	
-	MessageListener		listener;
-	BufferedReader		server_input;
-	DataOutputStream	server_output;
+	private Socket              connection;
+	public  String              host = null;
+	public  int                 port = 0;
+	private MessageListener     listener;
+	private BufferedReader      server_input;
+	private DataOutputStream    server_output;
     
     /**
      * Class constructor sets up a MessageListener
      *
      * @param listener listener that will receive all messages
      */
-	public Communication(MessageListener listener)
+	public Communication( MessageListener listener )
 	{
 		this.listener = listener;
 	}
@@ -35,10 +34,10 @@ class Communication implements Runnable
      * @param host the host to connect to
      * @param port the port to connect on
      */
-	public Communication(MessageListener listener, String host, int port)
+	public Communication( MessageListener pListener, String pHost, int pPort )
 	{
-		this.listener = listener;
-		connect(host, port);
+		this.listener = pListener;
+		connect( pHost, pPort );
 	}
     /**
      * Sets the objects host and port attributes as well as opening
@@ -51,10 +50,10 @@ class Communication implements Runnable
      * 
      * @return true if the connection is made without error, otherwise false
      */
-	public boolean connect(String host, int port){
-		this.host = host;
-		this.port = port;
-		return connect();
+	public boolean connect( String pHost, int pPort ){
+		this.host = pHost;
+		this.port = pPort;
+		return connect( );
 	}
     /**
      * Uses already specified host and port attribute to connect to 
@@ -62,20 +61,20 @@ class Communication implements Runnable
      * 
      * @return true if the connection is made without error, otherwise false
      */
-	public boolean connect(){
-		if(this.host != null && this.port != 0){
+	public boolean connect( ){
+		if( this.host != null && this.port != 0 ){
 			try{
-				this.connection = new Socket(this.host, this.port);
+				this.connection = new Socket( this.host, this.port );
 				
 				this.server_input = new BufferedReader(
-					new InputStreamReader(connection.getInputStream()));
+					new InputStreamReader( this.connection.getInputStream() ) );
 				
 				this.server_output = new DataOutputStream(
-					connection.getOutputStream());
+					this.connection.getOutputStream() );
 			}
-			catch(IOException e){
+			catch( IOException e ){
 				//HOW ARE WE HANDLING THIS
-				System.out.println("Derp");
+				System.out.println( "Derp" );
 				this.connection = null;
 				this.server_input = null;
 				this.server_output = null;
@@ -91,16 +90,16 @@ class Communication implements Runnable
      * Disconnects all objects associated with the server
      *
      */
-	public void disconnect(){
+	public void disconnect( ){
 		try
 		{
-			this.server_input.close();
-			this.server_output.close();
-			this.connection.close();
+			this.server_input.close( );
+			this.server_output.close( );
+			this.connection.close( );
 		}
-		catch(IOException e)
+		catch( IOException e )
 		{
-			System.out.println("Derp");
+			System.out.println( "Derp" );
 			//HANDLE THISSSSS
 		}
 	}
@@ -109,22 +108,34 @@ class Communication implements Runnable
      * incoming messages
      *
      */
-	public void listen(){
-		String incoming;
+	public void listen( ){
+		String  mIncomingBuff = "";
+        int     mIncomingInt;
+        char    mIncomingChar;
+        
 		try
 		{
-			while(true)
+			while( true )
 			{
-				incoming = server_input.readLine();
-				if(incoming != null)
+				mIncomingInt = this.server_input.read( );
+				if( mIncomingInt != -1 )
 				{
-					fireMessage(incoming);
+                    mIncomingChar = Character.toChars( mIncomingInt )[0];
+                    if( mIncomingChar == ';' )
+                    {
+                        fireMessage( mIncomingBuff );
+                        mIncomingBuff = "";
+                    }
+                    else
+                    {
+                        mIncomingBuff = mIncomingBuff + mIncomingChar;
+                    }
 				}
 			}
 		}
-		catch (IOException e)
+		catch ( IOException e )
 		{	
-			System.out.println("Derp");
+			System.out.println( "Derp" );
 		}
 	}
 	/**
@@ -132,23 +143,23 @@ class Communication implements Runnable
      * Uses @link{#listen()}.
      *
      */
-	public void run()
+	public void run( )
 	{
-		this.listen();
+		this.listen( );
 	}
     /**
      * Uses an open connection to send messages.
      *
      * @param message message to be sent
      */
-	public boolean sendMessage(String message)
+	public boolean sendMessage( String pMessage )
 	{
 		try
 		{
-			this.server_output.writeBytes(message);
+			this.server_output.writeBytes( pMessage );
 			return true;
 		}
-		catch(IOException e)
+		catch( IOException e )
 		{
 			return false;
 		}
@@ -158,8 +169,8 @@ class Communication implements Runnable
      *
      * @param incoming string received from the server (should have \n dropped)
      */
-	private void fireMessage(String incoming){
-		Message message = new Message(this, incoming);
-		listener.handleMessage(message);
+	private void fireMessage( String pIncoming ){
+		Message mMessage = new Message( this, pIncoming );
+		listener.handleMessage( mMessage );
 	}
 }

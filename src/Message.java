@@ -10,9 +10,9 @@ import java.util.StringTokenizer;
 public class Message extends EventObject
 {
 	
-	private String message;
-    private String message_name = null;
-	private ArrayList<String> arguments = null;
+	private String              message;
+    private String              message_name = null;
+	private ArrayList<String>   arguments = null;
 
     /**
      * Class constructor automattically parses message 
@@ -21,10 +21,10 @@ public class Message extends EventObject
      * @param source reference to the source object
      * @param message a message
      */
-    public Message( Object source, String message)
+    public Message( Object pSource, String pMessage )
 	{
-        super( source );
-        this.message = message;
+        super( pSource );
+        this.message = pMessage;
 		this.parseMessage();
     }
     /**
@@ -32,13 +32,14 @@ public class Message extends EventObject
      *
      * @return a copy of the message string
      */
-  	public String getMessage()
+  	public String getMessage( )
 	{
-		if(message != null)
+		if( this.message != null )
 		{
-			return new String(message);
+			return new String( this.message );
 		}
-		else{
+		else
+        {
 			return null;
 		}
 	}
@@ -47,11 +48,11 @@ public class Message extends EventObject
      *
      * @return a copy of the message name string
      */
-	public String getMessageName()
+	public String getMessageName( )
 	{
-		if(message_name != null)
+		if( this.message_name != null )
 		{
-			return new String(message_name);
+			return new String( this.message_name );
 		}
 		else{
 			return null;
@@ -62,11 +63,11 @@ public class Message extends EventObject
      *
      * @return the length of the arguments ArrayList object
      */
-	public int getArgumentsNum()
+	public int getArgumentsNum( )
 	{
-		if(this.arguments != null)
+		if( this.arguments != null )
 		{
-			return this.arguments.size();
+			return this.arguments.size( );
 		}
 		else{
 			return 0;
@@ -79,11 +80,11 @@ public class Message extends EventObject
      *
      * @return the element corresponding with the passed index
      */
-	public String getArgument(int i)
+	public String getArgument( int pI )
 	{
-		if(this.arguments != null)
+		if( this.arguments != null )
 		{
-			return this.arguments.get(i);
+			return this.arguments.get( pI );
 		}
 		else{
 			return null;
@@ -103,19 +104,19 @@ public class Message extends EventObject
      * Tokenizes string into message_name and arguments
      *
      */
-	private void parseMessage()
+	private void parseMessage( )
 	{
-		StringTokenizer tokenizer;
-		if(this.message != null)
-		{
-			tokenizer = new StringTokenizer(this.message,";");
-			if(tokenizer.countTokens() >= 1)
+		StringTokenizer mTokenizer;
+		if( this.message != null )
+		{ 
+			mTokenizer = new StringTokenizer( this.message, ":" );
+			if( mTokenizer.countTokens() >= 1 )
 			{
-				this.message_name = tokenizer.nextToken();
-				this.arguments = new ArrayList<String>();
-				while(tokenizer.hasMoreTokens())
+				this.message_name = mTokenizer.nextToken( );
+				this.arguments = new ArrayList<String>( );
+				while( mTokenizer.hasMoreTokens( ) )
 				{
-					this.arguments.add(tokenizer.nextToken());
+					this.arguments.add(mTokenizer.nextToken( ) );
 				}
 			}
 		}
@@ -124,13 +125,14 @@ public class Message extends EventObject
      * Prints a description of the message to System.out
      *
      */
-	public void printMessage()
+	public void printMessage( )
 	{
-		System.out.println("Name: "+this.message_name);
+		System.out.println( "Name: " + this.message_name );
 		System.out.println("Arguments:");
+        
 		for(int i = 0; i < arguments.size(); i++)
 		{
-			System.out.println(arguments.get(i));
+			System.out.println( this.arguments.get( i ) );
 		}
 	}
 }

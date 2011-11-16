@@ -12,7 +12,6 @@ public class Game implements MessageListener
 	public static void main(String[] args)
 	{
 		Game game = new Game();
-		System.out.println("sdfsf");
 		Thread theThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
 		theThread.start();
 	}

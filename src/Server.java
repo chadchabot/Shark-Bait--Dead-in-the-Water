@@ -14,8 +14,8 @@ public class Server
 		Socket connection = server.accept();
 		System.out.println("Accepted");
 		DataOutputStream client_out = new DataOutputStream(connection.getOutputStream());
-		client_out.writeBytes("fire;1;3\n");
-		client_out.writeBytes("gameover\n");
+		client_out.writeBytes("fire:1:3;");
+		client_out.writeBytes("gameover;");
 		client_out.close();
 		connection.close();
 		}
