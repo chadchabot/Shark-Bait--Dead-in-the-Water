@@ -1,13 +1,42 @@
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
+import javax.swing.JFrame;
+import javax.swing.JButton;
 
-public class Game implements MessageListener, KeyListener
+
+public class Game implements MessageListener, KeyListener, ActionListener
 {
+/*	
+	private int					playerID;
+	private Collection<Ship>	shipList;
+	private World				gameWorld;
+	private GUI					gameGUI;
+ */
+	
 	public Communication comm;
     public Thread commThread;
+	
+	
+	JFrame lobbyWindow;
+	JButton readyButton;
+	
+	public void createLobby( )
+	{
+		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
+		this.readyButton = new JButton( "Ready" );
+		this.readyButton.addActionListener( this );		
+		this.lobbyWindow.setSize( 480, 240 );
+		this.lobbyWindow.add( readyButton );
+		
+	}
+	
+	public void lobbyVisible( boolean pParam)
+	{
+		this.lobbyWindow.setVisible( pParam );
+	}
+	
 	public Game()
 	{
-		
+		createLobby();
 	}
 	public void handleMessage(Message pMessage)
 	{
@@ -55,7 +84,9 @@ public class Game implements MessageListener, KeyListener
             if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
             {
                 System.out.println("I am Lobby!");
-                
+//				lobbyVisible( true );
+				this.lobbyWindow.setVisible( true );
+				//createLobby();
                 //runLobby();
             }
             // handle shore 
@@ -78,6 +109,17 @@ public class Game implements MessageListener, KeyListener
 		Game game = new Game();
 		game.commThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
 		game.commThread.start();
+	}
+	
+	
+	
+	public void actionPerformed( ActionEvent e )
+	{
+		//		readyState = true;
+		System.out.println( "A button is clicked is performed" );
+		
+		this.readyButton.setEnabled( false );
+		this.readyButton.setText( "Waiting to start..." );
 	}
     
     public void keyTyped( KeyEvent pEvent )
