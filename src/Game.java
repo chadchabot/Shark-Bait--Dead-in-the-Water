@@ -44,15 +44,22 @@ public class Game implements MessageListener, KeyListener
          */
         else if( pMessage.getMessageName().equals( "start" ) )
         {
-            
+            //close lobby window
         }
         else if( pMessage.getMessageName().equals( "registered" ) )
         {
-            
+            // set player ship properties
         }
         else if( pMessage.getMessageName().equals( "shore" ) )
         {
-            
+            if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
+            {
+                System.out.println("I am Lobby!");
+                
+                //runLobby();
+            }
+            // handle shore 
+            // if shore x set ready button active
         }
         /*
          * Endgame Messages
