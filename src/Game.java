@@ -4,19 +4,73 @@ import java.awt.event.KeyListener;
 public class Game implements MessageListener, KeyListener
 {
 	public Communication comm;
+    public Thread commThread;
 	public Game()
 	{
 		
 	}
-	public void handleMessage(Message message)
+	public void handleMessage(Message pMessage)
 	{
-		message.printMessage();
+		pMessage.printMessage();
+        /*
+         * Gameplay Messages
+         */
+        if( pMessage.getMessageName().equals( "shipstate" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "ship" ) )
+        {
+           
+        }
+        else if( pMessage.getMessageName().equals( "wind" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "fog" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "rain" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "time" ) )
+        {
+            
+        }
+        /*
+         * Setup Messages
+         */
+        else if( pMessage.getMessageName().equals( "start" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "registered" ) )
+        {
+            
+        }
+        else if( pMessage.getMessageName().equals( "shore" ) )
+        {
+            
+        }
+        /*
+         * Endgame Messages
+         */
+        else if( pMessage.getMessageName().equals( "gameover" ) )
+        {
+            this.comm.closeThread( );
+            if( !this.commThread.isAlive( ) )
+            {
+                this.comm.disconnect( );
+            }
+        }
 	}
 	public static void main(String[] args)
 	{
 		Game game = new Game();
-		Thread theThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
-		theThread.start();
+		game.commThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
+		game.commThread.start();
 	}
     
     public void keyTyped( KeyEvent pEvent )

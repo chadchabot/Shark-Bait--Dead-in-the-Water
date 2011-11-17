@@ -17,6 +17,7 @@ class Communication implements Runnable
 	private MessageListener     listener;
 	private BufferedReader      server_input;
 	private DataOutputStream    server_output;
+    private boolean             alive = false;
     
     /**
      * Class constructor sets up a MessageListener
@@ -74,7 +75,7 @@ class Communication implements Runnable
 			}
 			catch( IOException e ){
 				//HOW ARE WE HANDLING THIS
-				System.out.println( "Derp" );
+				System.out.println( "Derp1" );
 				this.connection = null;
 				this.server_input = null;
 				this.server_output = null;
@@ -99,7 +100,7 @@ class Communication implements Runnable
 		}
 		catch( IOException e )
 		{
-			System.out.println( "Derp" );
+			System.out.println( "Derp2" );
 			//HANDLE THISSSSS
 		}
 	}
@@ -113,9 +114,11 @@ class Communication implements Runnable
         int     mIncomingInt;
         char    mIncomingChar;
         
+        this.alive = true;
+        
 		try
 		{
-			while( true )
+			while( this.alive )
 			{
 				mIncomingInt = this.server_input.read( );
 				if( mIncomingInt != -1 )
@@ -135,7 +138,8 @@ class Communication implements Runnable
 		}
 		catch ( IOException e )
 		{	
-			System.out.println( "Derp" );
+			System.out.println( "Derp3" );
+            System.out.println( e.getMessage( ) );
 		}
 	}
 	/**
@@ -146,6 +150,13 @@ class Communication implements Runnable
 	public void run( )
 	{
 		this.listen( );
+	}
+    /**
+     * Changes alive flag so a thread can finish if it is running
+     *
+     */
+	public void closeThread( ){
+		this.alive = false;
 	}
     /**
      * Uses an open connection to send messages.
