@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Polygon;
@@ -10,6 +8,8 @@ public class World {
 	private double 	windSpeed;
 	private int 	time;
 	private int 	weatherState;
+    private int     rain;
+    private int     fog;
 	private ArrayList<Polygon> shore;
 	private int 	width;
 	private int 	height;
@@ -21,6 +21,8 @@ public class World {
 		this.windSpeed = 0;
 		this.time = 1;
 		this.weatherState = 0;
+        this.rain = 0;
+        this.fog = 0;
 		this.width = 5000;
 		this.height = 4000;
 		shore = new ArrayList<Polygon>();
@@ -42,8 +44,14 @@ public class World {
 		return this.windSpeed;
 	}
 	
-	
-	public void setTime ( int pTime ) {
+	public void setRain ( int pRain ) {
+		this.rain = pRain;
+	}
+	public void setFog ( int pFog ) {
+		this.fog = pFog;
+	}
+   
+    public void setTime ( int pTime ) {
 		this.time = pTime;
 	}
 	public int getTime ( ) {

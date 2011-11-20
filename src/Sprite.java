@@ -1,6 +1,6 @@
 import java.awt.Image;
-import java.ArrayList;
-import java.Point;
+import java.util.ArrayList;
+import java.awt.Point;
 
 public class Sprite {
 	protected Point position;
@@ -9,6 +9,12 @@ public class Sprite {
 	protected int height;
 	protected ArrayList<Image> frames;
 
+    public Sprite () {
+		//	load images
+		//	get image dimensions
+		//	
+	}
+    
 	public Sprite ( String name ) {
 		//	load images
 		//	get image dimensions
@@ -25,11 +31,11 @@ public class Sprite {
 	//	change the index of the animation
 	
 	
-	public update ( ) {
+	public void update ( ) {
 		
 	}
 	
-	public draw ( ) {
+	public void draw ( ) {
 		
 	}
 }
