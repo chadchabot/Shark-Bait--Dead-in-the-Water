@@ -98,13 +98,10 @@ public class Ship extends Sprite{
         this.health = pHealth;
 	}
     
-	
-	
 	public void update ( ) 
     {
 		
 	}
-	
 	
 	public void draw ( ) 
     {

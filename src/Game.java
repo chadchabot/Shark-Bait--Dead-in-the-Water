@@ -8,9 +8,8 @@ import java.util.ArrayList;
 
 public class Game implements MessageListener, KeyListener, ActionListener
 {
-/*	
+
 	private GUI					gameGUI;
- */
     private Collection<Ship>	shipList;
     private World				gameWorld = null;
     private int					playerID;	
@@ -22,6 +21,13 @@ public class Game implements MessageListener, KeyListener, ActionListener
 	JFrame lobbyWindow;
 	JButton readyButton;
 	
+    public Game()
+	{
+		createLobby();
+        this.gameWorld = new World( );
+        this.gameGUI = new GUI( );
+	}
+    
 	public void createLobby( )
 	{
 		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
@@ -29,18 +35,7 @@ public class Game implements MessageListener, KeyListener, ActionListener
 		this.readyButton.addActionListener( this );		
 		this.lobbyWindow.setSize( 480, 240 );
 		this.lobbyWindow.add( readyButton );
-		
-	}
-	
-	public void lobbyVisible( boolean pParam)
-	{
-		this.lobbyWindow.setVisible( pParam );
-	}
-	
-	public Game()
-	{
-		createLobby();
-        this.gameWorld = new World( );
+        //this.lobbyWindow.addKeyListener(this);
 	}
 	public void handleMessage(Message pMessage)
 	{
@@ -72,7 +67,6 @@ public class Game implements MessageListener, KeyListener, ActionListener
         {
             this.shipList.add( new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ),
                                         Integer.parseInt( pMessage.getArgument( 1 ) ) ) );
-           
         }
         else if( pMessage.getMessageName().equals( "wind" ) )
         {
@@ -93,16 +87,20 @@ public class Game implements MessageListener, KeyListener, ActionListener
         }
         else if( pMessage.getMessageName().equals( "firing" ) )
         {
-            
+            //needs to be implemented
         }
         /*
          * Setup Messages
          */
         else if( pMessage.getMessageName().equals( "start" ) )
         {
+            System.out.println("Starting Game");
             //close lobby window
             this.lobbyWindow.setVisible( false );
             //show game GUI
+            this.gameGUI.setVisible( true );
+            this.gameGUI.addKeyListener( this );
+            
         }
         else if( pMessage.getMessageName().equals( "registered" ) )
         {
@@ -158,13 +156,6 @@ public class Game implements MessageListener, KeyListener, ActionListener
             }
         }
 	}
-	public static void main(String[] args)
-	{
-		Game game = new Game();
-		game.commThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
-		game.commThread.start();
-	}
-	
 	public void actionPerformed( ActionEvent e )
 	{
 		System.out.println( "A button is clicked" );
@@ -172,14 +163,14 @@ public class Game implements MessageListener, KeyListener, ActionListener
         this.readyButton.setEnabled( false );
 		this.readyButton.setText( "Waiting to start..." );
 	}
-    
     public void keyTyped( KeyEvent pEvent )
-    {}
-	
+    {
+    }
     public void keyPressed( KeyEvent pEvent )
     {
+        System.out.println("Key Pressed!!!");
 		if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
-            
+            System.out.println("Down!");
 		}
 		else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
@@ -198,7 +189,13 @@ public class Game implements MessageListener, KeyListener, ActionListener
             System.out.println("TAB!");
 		}
 	}
-	
     public void keyReleased(KeyEvent e)
-    {}
+    {
+    }
+    public static void main(String[] args)
+	{
+		Game game = new Game();
+		game.commThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
+		game.commThread.start();
+	}
 }

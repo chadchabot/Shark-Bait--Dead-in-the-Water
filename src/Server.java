@@ -18,6 +18,7 @@ public class Server
 		client_out.writeBytes("fire:1:3;");
 			
 		client_out.writeBytes("shore:x;");
+        client_out.writeBytes("start;");
 //		client_out.writeBytes("gameover;");
 		client_out.close();
 		connection.close();

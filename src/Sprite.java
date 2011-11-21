@@ -23,7 +23,7 @@ public class Sprite {
 
 	
 	//	loads a particular frame (or frames?) of the image
-	public void loadImage ( ) {
+	public void loadImage (int pIndex ) {
 		
 	}
 	
