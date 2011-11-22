@@ -13,6 +13,8 @@ public class World {
 	private ArrayList<Polygon> shore;
 	private int 	width;
 	private int 	height;
+    
+    private Sprite water;
 	
 	
 	//	default constructor
@@ -26,6 +28,7 @@ public class World {
 		this.width = 5000;
 		this.height = 4000;
 		shore = new ArrayList<Polygon>();
+        water = new Sprite("water");
 	}
 	
 	
@@ -35,8 +38,6 @@ public class World {
 	public double getWindDirection ( ) {
 		return this.windDirection;
 	}
-	
-	
 	public void setWindSpeed ( int pWindSpeed ) {
 		this.windSpeed = pWindSpeed;
 	}
@@ -57,8 +58,6 @@ public class World {
 	public int getTime ( ) {
 		return this.time;
 	}
-	
-	
 	public void setWeatherState ( int pWeatherState ) {
 		this.weatherState = pWeatherState;
 	}
@@ -81,6 +80,10 @@ public class World {
 	public int getWorldHeight ( ) {
 		return this.height;
 	}
+    public Sprite getWater()
+    {
+        return this.water;
+    }
 		
 
 	public void addShore ( int [] pX, int [] pY, int pNumPoints  ) {

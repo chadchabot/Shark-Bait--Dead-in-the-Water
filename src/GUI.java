@@ -18,10 +18,17 @@ public class GUI extends JFrame
 		main.setVisible(true);
 		main.setLayout(null);
 		this.getContentPane().add(main);
-		
+        
         setTitle("Shark Bait: Dead in the Water");
         setSize(this.xSize, this.ySize);
         setResizable(false);
 		setBackground(Color.BLACK);
+        Sprite water = new Sprite("water");
+		main.add(water, new Integer(2));
+    }
+    public void addToLayer(Sprite something, int layer)
+    {
+        main.add(something, new Integer(layer));
+        this.pack();
     }
 }

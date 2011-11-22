@@ -98,8 +98,9 @@ public class Game implements MessageListener, KeyListener, ActionListener
             //close lobby window
             this.lobbyWindow.setVisible( false );
             //show game GUI
-            this.gameGUI.setVisible( true );
             this.gameGUI.addKeyListener( this );
+            this.gameGUI.addToLayer(gameWorld.getWater(), 1);
+            this.gameGUI.setVisible( true );
             
         }
         else if( pMessage.getMessageName().equals( "registered" ) )
