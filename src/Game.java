@@ -1,19 +1,19 @@
 import java.awt.event.*;
 import javax.swing.JFrame;
 import javax.swing.JButton;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 
-public class Game extends JComponent implements MessageListener, KeyListener, ActionListener, Runnable
+public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
     public static final int		REFRESH_RATE = 60;
 	private GUI					gameGUI;
-    private Collection<Ship>	shipList;
+    private ArrayList<Ship>     shipList;
     private World				gameWorld = null;
     private int					playerID;	
     private	JFrame				frame;
@@ -39,6 +39,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public Game()
 	{
 		createLobby();
+        this.shipList = new ArrayList<Ship>();
         this.gameWorld = new World( );
         //this.gameGUI = new GUI( );
         this.frame = new JFrame ("Shark Bait");
@@ -63,14 +64,11 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
-			//if(f)
 			this.update();
 			
 		}
         
 	}
-    
 	public void createLobby( )
 	{
 		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
@@ -80,127 +78,27 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		this.lobbyWindow.add( readyButton );
         //this.lobbyWindow.addKeyListener(this);
 	}
-	
-	public void handleMessage(Message pMessage)
-	{
-		pMessage.printMessage();
-        /*
-         * Gameplay Messages
-         */
-        if( pMessage.getMessageName().equals( "shipstate" ) )
+    public void paint ( Graphics g )
+    {
+		//	draw world
+        this.gameWorld.draw(g);
+		//	draw ships
+        Iterator<Ship> mIterator = this.shipList.iterator();
+        
+        while( mIterator.hasNext() )
         {
-            Iterator<Ship> mIterator = this.shipList.iterator();
-            
-            while( mIterator.hasNext() )
-            {
-                Ship tempShip = (Ship)mIterator.next();
-                if( Integer.parseInt( pMessage.getArgument( 0 ) ) == tempShip.getShipID( ) )
-                {
-                    tempShip.updateShip( 
-                        Integer.parseInt( pMessage.getArgument( 1 ) ),		// int x
-                        Integer.parseInt( pMessage.getArgument( 2 ) ),		// int y
-                        Double.parseDouble( pMessage.getArgument( 3 ) ),	// double speed
-                        Integer.parseInt( pMessage.getArgument( 4 ) ),		// int direction
-                        Double.parseDouble( pMessage.getArgument( 5 ) )		// double damage
-                    );
-                }
-            }
-            
+            mIterator.next().draw(g);
         }
-        else if( pMessage.getMessageName().equals( "ship" ) )
-        {
-            this.shipList.add( new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ),
-                                        Integer.parseInt( pMessage.getArgument( 1 ) ) ) );
-        }
-        else if( pMessage.getMessageName().equals( "wind" ) )
-        {
-            this.gameWorld.setWindSpeed( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-            this.gameWorld.setWindDirection( Integer.parseInt( pMessage.getArgument( 1 ) ) );
-        }
-        else if( pMessage.getMessageName().equals( "fog" ) )
-        {
-            this.gameWorld.setFog( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-        }
-        else if( pMessage.getMessageName().equals( "rain" ) )
-        {
-            this.gameWorld.setRain( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-        }
-        else if( pMessage.getMessageName().equals( "time" ) )
-        {
-            this.gameWorld.setTime( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-        }
-        else if( pMessage.getMessageName().equals( "firing" ) )
-        {
-            //needs to be implemented
-        }
-        /*
-         * Setup Messages
-         */
-        else if( pMessage.getMessageName().equals( "start" ) )
-        {
-            System.out.println("Starting Game");
-            //close lobby window
-            this.lobbyWindow.setVisible( false );
-            //show game GUI
-            //this.gameGUI.addKeyListener( this );
-            //this.gameGUI.addToLayer(this, 1);
-           // this.gameGUI.setVisible( true );
-            
-        }
-        else if( pMessage.getMessageName().equals( "registered" ) )
-        {
-            this.playerID = Integer.parseInt( pMessage.getArgument( 0 ) );
-        }
-        else if( pMessage.getMessageName().equals( "shore" ) )
-        {
-            // if shore x set ready button active
-            if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
-            {
-                System.out.println("I am Lobby!");
-				this.lobbyWindow.setVisible( true );
-            }
-            // handle shore 
-            else
-            {   
-                //ArrayList mX = new ArrayList<Integer> ( );
-                //ArrayList mY = new ArrayList<Integer> ( );
-                int [] mX = new int[ Integer.parseInt( pMessage.getArgument( 0 ))];
-                int [] mY = new int[ Integer.parseInt( pMessage.getArgument( 0 ))];
-                                                    
-                        
-                for( int i = 0; i < Integer.parseInt( pMessage.getArgument( 0 ) ); i++)
-                {
-                    mX[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 1 ) ) );
-                    mY[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 2 ) ) );
-                    /*
-                     num points = 3
-                        i == 0
-                            x = 2 * i + 1 = 1
-                            y = 2 * i + 2 = 2
-                        i == 1
-                            x = 2 * i + 1 = 3
-                            y = 2 * i + 2 = 4
-                        i == 2
-                            x = 2 * i + 1 = 5
-                            y = 2 * i + 2 = 6
-                     done
-                     */
-                }
-                this.gameWorld.addShore( mX, mY, Integer.parseInt( pMessage.getArgument( 0 ) ) );
-            }
-        }
-        /*
-         * Endgame Messages
-         */
-        else if( pMessage.getMessageName().equals( "gameover" ) )
-        {
-            this.comm.closeThread( );
-            if( !this.commThread.isAlive( ) )
-            {
-                this.comm.disconnect( );
-            }
-        }
-	}
+        //  draw chrome
+       
+    }
+    public void update()
+    {
+        //update ships
+        //update world
+        //update chrome
+    	this.repaint();
+    }
 	public void actionPerformed( ActionEvent e )
 	{
 		System.out.println( "A button is clicked" );
@@ -281,22 +179,115 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		//	clear turnAmount, speedChange, and other message specific variables
 		this.turnAmount = 0;
     }
-    public void paint ( Graphics g )
-    {
-		//	draw water
-		//	draw shore
-		//	draw ships
-        this.gameWorld.draw(g);
-
-    }
-    public void update()
-    {
-
-    	this.repaint();
-    }
-    public void run (){
-
-    }
+    public void handleMessage(Message pMessage)
+	{
+		pMessage.printMessage();
+        /*
+         * Gameplay Messages
+         */
+        if( pMessage.getMessageName().equals( "shipState" ) )
+        {
+            Iterator<Ship> mIterator = this.shipList.iterator();
+            
+            while( mIterator.hasNext() )
+            {
+                Ship tempShip = (Ship)mIterator.next();
+                if( Integer.parseInt( pMessage.getArgument( 0 ) ) == tempShip.getShipID( ) )
+                {
+                    tempShip.updateShip( 
+                                        Integer.parseInt( pMessage.getArgument( 1 ) ),		// int x
+                                        Integer.parseInt( pMessage.getArgument( 2 ) ),		// int y
+                                        Double.parseDouble( pMessage.getArgument( 3 ) ),	// double speed
+                                        Integer.parseInt( pMessage.getArgument( 4 ) ),		// int direction
+                                        Double.parseDouble( pMessage.getArgument( 5 ) )		// double damage
+                                        );
+                }
+            }
+            
+        }
+        else if( pMessage.getMessageName().equals( "ship" ) )
+        {
+            this.shipList.add( new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
+                                        Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
+            System.out.println("SIZE: "+    this.shipList.size());
+        }
+        else if( pMessage.getMessageName().equals( "wind" ) )
+        {
+            this.gameWorld.setWindSpeed( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+            this.gameWorld.setWindDirection( Integer.parseInt( pMessage.getArgument( 1 ) ) );
+        }
+        else if( pMessage.getMessageName().equals( "fog" ) )
+        {
+            this.gameWorld.setFog( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+        }
+        else if( pMessage.getMessageName().equals( "rain" ) )
+        {
+            this.gameWorld.setRain( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+        }
+        else if( pMessage.getMessageName().equals( "time" ) )
+        {
+            this.gameWorld.setTime( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+        }
+        else if( pMessage.getMessageName().equals( "firing" ) )
+        {
+            //needs to be implemented
+        }
+        /*
+         * Setup Messages
+         */
+        else if( pMessage.getMessageName().equals( "start" ) )
+        {
+            System.out.println("Starting Game");
+            // close lobby window
+            this.lobbyWindow.setVisible( false );
+            // show game GUI
+            // this.gameGUI.addKeyListener( this );
+            // this.gameGUI.addToLayer(this, 1);
+            // this.gameGUI.setVisible( true );
+            
+        }
+        else if( pMessage.getMessageName().equals( "registered" ) )
+        {
+            this.playerID = Integer.parseInt( pMessage.getArgument( 0 ) );
+        }
+        else if( pMessage.getMessageName().equals( "shore" ) )
+        {
+            // if shore x set ready button active
+            if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
+            {
+                System.out.println("I am Lobby!");
+				this.lobbyWindow.setVisible( true );
+            }
+            // handle shore 
+            else
+            {   
+                //ArrayList mX = new ArrayList<Integer> ( );
+                //ArrayList mY = new ArrayList<Integer> ( );
+                int [] mX = new int[ Integer.parseInt( pMessage.getArgument( 0 ))];
+                int [] mY = new int[ Integer.parseInt( pMessage.getArgument( 0 ))];
+                
+                
+                for( int i = 0; i < Integer.parseInt( pMessage.getArgument( 0 ) ); i++)
+                {
+                    mX[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 1 ) ) );
+                    mY[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 2 ) ) );
+            
+                }
+                this.gameWorld.addShore( mX, mY, Integer.parseInt( pMessage.getArgument( 0 ) ) );
+            }
+        }
+        /*
+         * Endgame Messages
+         */
+        else if( pMessage.getMessageName().equals( "gameover" ) )
+        {
+            this.comm.closeThread( );
+            if( !this.commThread.isAlive( ) )
+            {
+                this.comm.disconnect( );
+            }
+        }
+	}
     public static void main(String[] args)
 	{
 		Game game = new Game();
