@@ -18,14 +18,14 @@ public class World extends Sprite{
 	//	default constructor
 	public World ( ) {
         super("water");
-		this.windDirection = 0;
-		this.windSpeed = 0;
-		this.time = 1;
-		this.weatherState = 0;
-        this.rain = 0;
-        this.fog = 0;
-		this.width = 5000;
-		this.height = 4000;
+		this.windDirection	= 0;
+		this.windSpeed		= 0;
+		this.time			= 1;
+		this.weatherState	= 0;
+        this.rain			= 0;
+        this.fog			= 0;
+		this.width			= 5000;
+		this.height			= 4000;
 		shore = new ArrayList<Polygon>();
 	}
 	
@@ -81,7 +81,7 @@ public class World extends Sprite{
 	
 	public void addShore ( int [] pX, int [] pY, int pNumPoints  ) {
 		Polygon mShore = null;
-		
+				
 		try {
 			mShore = new Polygon (pX, pY, pNumPoints);
 		}
@@ -101,9 +101,9 @@ public class World extends Sprite{
 	}
 	public void draw ( Graphics g )
     {
-        for(int i = 0; i < 1024; i = i + 75)
+        for(int i = 0; i < 1024; i = i + this.sWidth)
         {
-        	for(int j = 0; j < 768; j = j + 75)
+        	for(int j = 0; j < 768; j = j + this.sHeight)
             {
         		//g.drawImage(this.frames.get(this.currentState), 150, 150, 150+75, 150+75, 0, 0, 75, 75, null);
         		g.drawImage(this.frames.get(this.currentState), i, j, i+this.sHeight, j+this.sWidth, 
