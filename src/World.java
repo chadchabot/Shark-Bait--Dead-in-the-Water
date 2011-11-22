@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.awt.Graphics;
 import java.awt.Polygon;
 
-public class World {
+public class World extends Sprite{
 
 	private double 	windDirection;
 	private double 	windSpeed;
@@ -13,12 +13,11 @@ public class World {
 	private ArrayList<Polygon> shore;
 	private int 	width;
 	private int 	height;
-    
-    private Sprite water;
 	
 	
 	//	default constructor
 	public World ( ) {
+        super("water");
 		this.windDirection = 0;
 		this.windSpeed = 0;
 		this.time = 1;
@@ -28,7 +27,6 @@ public class World {
 		this.width = 5000;
 		this.height = 4000;
 		shore = new ArrayList<Polygon>();
-        water = new Sprite("water");
 	}
 	
 	
@@ -80,12 +78,7 @@ public class World {
 	public int getWorldHeight ( ) {
 		return this.height;
 	}
-    public Sprite getWater()
-    {
-        return this.water;
-    }
-		
-
+	
 	public void addShore ( int [] pX, int [] pY, int pNumPoints  ) {
 		Polygon mShore = null;
 		
@@ -106,13 +99,21 @@ public class World {
 			this.shore.add(mShore);
 		}
 	}
-		
-	public void draw (Graphics g ) {
-		
+	public void draw ( Graphics g )
+    {
+        for(int i = 0; i < 1024; i = i + 75)
+        {
+        	for(int j = 0; j < 768; j = j + 75)
+            {
+        		//g.drawImage(this.frames.get(this.currentState), 150, 150, 150+75, 150+75, 0, 0, 75, 75, null);
+        		g.drawImage(this.frames.get(this.currentState), i, j, i+this.sHeight, j+this.sWidth, 
+        				0, 0, this.sHeight,this.sWidth, null);
+            }
+        }
+        for(int i = 0; i< this.shore.size(); i++)
+        {
+        	//System.out.println("SHORES");
+        	g.drawPolygon(this.shore.get(i));
+        }
 	}
-	
-	public void update (Graphics g ) {
-		
-	}
-	
 }

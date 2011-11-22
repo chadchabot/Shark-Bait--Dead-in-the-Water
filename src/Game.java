@@ -3,16 +3,20 @@ import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.ArrayList;
+import javax.swing.JComponent;
 
+import java.awt.BorderLayout;
+import java.awt.Graphics;
 
-public class Game implements MessageListener, KeyListener, ActionListener
+public class Game extends JComponent implements MessageListener, KeyListener, ActionListener, Runnable
 {
 
 	private GUI					gameGUI;
     private Collection<Ship>	shipList;
     private World				gameWorld = null;
     private int					playerID;	
+    public static final int REFRESH_RATE = 60;
+    private JFrame frame;
 	
 	public Communication comm;
     public Thread commThread;
@@ -25,7 +29,34 @@ public class Game implements MessageListener, KeyListener, ActionListener
 	{
 		createLobby();
         this.gameWorld = new World( );
-        this.gameGUI = new GUI( );
+        //this.gameGUI = new GUI( );
+        this.frame = new JFrame ("Shark Bait");
+      
+        
+        this.frame.setResizable(true);
+        this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        this.frame.pack();
+        this.frame.setSize(1024, 768);
+        this.frame.setVisible(true);
+        this.frame.add(this, BorderLayout.CENTER);
+		
+        //Thread thread = new Thread(this);
+		//thread.start();
+		this.commThread = new Thread(this.comm = new Communication(this, "localhost", 7430));
+		this.commThread.start();
+		while(true){
+			try {
+				Thread.sleep(1000 / REFRESH_RATE);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			//if(f)
+			this.update();
+			
+		}
+        
 	}
     
 	public void createLobby( )
@@ -45,7 +76,7 @@ public class Game implements MessageListener, KeyListener, ActionListener
          */
         if( pMessage.getMessageName().equals( "shipstate" ) )
         {
-            Iterator mIterator = this.shipList.iterator();
+            Iterator<Ship> mIterator = this.shipList.iterator();
             
             while( mIterator.hasNext() )
             {
@@ -98,9 +129,9 @@ public class Game implements MessageListener, KeyListener, ActionListener
             //close lobby window
             this.lobbyWindow.setVisible( false );
             //show game GUI
-            this.gameGUI.addKeyListener( this );
-            this.gameGUI.addToLayer(gameWorld.getWater(), 1);
-            this.gameGUI.setVisible( true );
+            //this.gameGUI.addKeyListener( this );
+            //this.gameGUI.addToLayer(this, 1);
+           // this.gameGUI.setVisible( true );
             
         }
         else if( pMessage.getMessageName().equals( "registered" ) )
@@ -193,10 +224,20 @@ public class Game implements MessageListener, KeyListener, ActionListener
     public void keyReleased(KeyEvent e)
     {
     }
+    public void paint ( Graphics g )
+    {
+        this.gameWorld.draw(g);
+    }
+    public void update()
+    {
+
+    	this.repaint();
+    }
+    public void run (){
+    	
+    }
     public static void main(String[] args)
 	{
 		Game game = new Game();
-		game.commThread = new Thread(game.comm = new Communication(game, "localhost", 7430));
-		game.commThread.start();
 	}
 }

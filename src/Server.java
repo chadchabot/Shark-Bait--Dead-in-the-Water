@@ -16,7 +16,7 @@ public class Server
 		DataOutputStream client_out = new DataOutputStream(connection.getOutputStream());
 		client_out.writeBytes("fire:1:3;");
 		client_out.writeBytes("fire:1:3;");
-			
+		client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
 		client_out.writeBytes("shore:x;");
         client_out.writeBytes("start;");
 //		client_out.writeBytes("gameover;");
