@@ -11,19 +11,30 @@ import java.awt.Graphics;
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener, Runnable
 {
 
+    public static final int		REFRESH_RATE = 60;
 	private GUI					gameGUI;
     private Collection<Ship>	shipList;
     private World				gameWorld = null;
     private int					playerID;	
-    public static final int REFRESH_RATE = 60;
-    private JFrame frame;
+    private	JFrame				frame;
 	
-	public Communication comm;
-    public Thread commThread;
+	public	Communication		comm;
+    public	Thread				commThread;
 	
 	
-	JFrame lobbyWindow;
-	JButton readyButton;
+	JFrame	lobbyWindow;
+	JButton	readyButton;
+	
+	
+	//	communication / message variables
+	public	static final double	TURN_AMOUNT_MAX = 25.0;
+	public	static final double	TURN_AMOUNT_INCREMENT = 0.5;
+	public	double				turnAmount = 0.00;
+	
+	public	static final double	SPEED_AMOUNT_INCREMENT = 0.05;
+	public	double				speedAmount = 0.00;
+	
+	
 	
     public Game()
 	{
@@ -35,11 +46,12 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         
         this.frame.setResizable(true);
         this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+		this.frame.setResizable( false );
         this.frame.pack();
         this.frame.setSize(1024, 768);
         this.frame.setVisible(true);
         this.frame.add(this, BorderLayout.CENTER);
-		
+		this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
 		//thread.start();
 		this.commThread = new Thread(this.comm = new Communication(this, "localhost", 7430));
@@ -68,6 +80,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		this.lobbyWindow.add( readyButton );
         //this.lobbyWindow.addKeyListener(this);
 	}
+	
 	public void handleMessage(Message pMessage)
 	{
 		pMessage.printMessage();
@@ -84,11 +97,11 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 if( Integer.parseInt( pMessage.getArgument( 0 ) ) == tempShip.getShipID( ) )
                 {
                     tempShip.updateShip( 
-                        Integer.parseInt( pMessage.getArgument( 1 ) ),  // int x
-                        Integer.parseInt( pMessage.getArgument( 2 ) ),  // int y
-                        Double.parseDouble( pMessage.getArgument( 3 ) ),  // double speed
-                        Integer.parseInt( pMessage.getArgument( 4 ) ),  // int direction
-                        Double.parseDouble( pMessage.getArgument( 5 ) )   // double damage
+                        Integer.parseInt( pMessage.getArgument( 1 ) ),		// int x
+                        Integer.parseInt( pMessage.getArgument( 2 ) ),		// int y
+                        Double.parseDouble( pMessage.getArgument( 3 ) ),	// double speed
+                        Integer.parseInt( pMessage.getArgument( 4 ) ),		// int direction
+                        Double.parseDouble( pMessage.getArgument( 5 ) )		// double damage
                     );
                 }
             }
@@ -197,24 +210,61 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	}
     public void keyTyped( KeyEvent pEvent )
     {
+		
     }
     public void keyPressed( KeyEvent pEvent )
     {
-        System.out.println("Key Pressed!!!");
+        //	System.out.println("Key Pressed!!!");
 		if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
-            System.out.println("Down!");
+            System.out.println("Up!");
+			//	change the current speed of the player's ship
+			this.speedAmount += SPEED_AMOUNT_INCREMENT;
+
+			if ( this.speedAmount > 1.00 )
+			{
+				this.speedAmount = 1.00;
+			}
+			
 		}
 		else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
             System.out.println("Down!");
+			//	change the current speed of the player's ship
+			this.speedAmount -= SPEED_AMOUNT_INCREMENT;
+
+			if ( this.speedAmount < 0.00 )
+			{
+				this.speedAmount = 0.00;
+			}
 		}
 		else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
         { 
             System.out.println("Left!");
+			//	add to the amount of the turn, to a maximum of -25
+			//	turn amount is in degrees?
+			if ( this.turnAmount >= -TURN_AMOUNT_MAX )
+			{
+				this.turnAmount -= TURN_AMOUNT_INCREMENT;
+			}
+			else
+			{
+				this.turnAmount = - TURN_AMOUNT_MAX;
+			}
+
 		}
 		else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
         {
             System.out.println("Right!");
+			//	add to the amount of the turn, to a maximum of +25
+			//	turn amount is in degrees?
+			if ( this.turnAmount <= TURN_AMOUNT_MAX )
+			{
+				this.turnAmount += TURN_AMOUNT_INCREMENT;
+			}
+			else
+			{
+				this.turnAmount = TURN_AMOUNT_MAX;
+			}
 		}
         else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
         {
@@ -223,10 +273,21 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	}
     public void keyReleased(KeyEvent e)
     {
+		
+		//	send message
+		System.out.println( "sending message to the server" );
+		System.out.println( "Turning " + turnAmount + " degrees." );
+		System.out.println( "Speed requested " + speedAmount );
+		//	clear turnAmount, speedChange, and other message specific variables
+		this.turnAmount = 0;
     }
     public void paint ( Graphics g )
     {
+		//	draw water
+		//	draw shore
+		//	draw ships
         this.gameWorld.draw(g);
+
     }
     public void update()
     {
@@ -234,7 +295,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     	this.repaint();
     }
     public void run (){
-    	
+
     }
     public static void main(String[] args)
 	{
