@@ -6,45 +6,48 @@ import java.awt.Graphics;
 
 public class Ship extends Sprite{
 
-        private int             shipID;
-        private double  speed;
-        private int             type;
-        private Point   position;
-        private int     heading;
-        private double  health;
-        private int             status;
-        private boolean firing;
-        
+    private int     shipID;
+    private double  speed;
+    private int     type;
+    private Point   position;
+    private int     heading;
+    private double  health;
+    private int     status;
+    private boolean firing;
+    
+    private double deltaX; 
+    private double deltaY;
+    
         
         //      constructor
-        public Ship ( ) 
+    public Ship ( ) 
     {
         //super("ship");
-                this.shipID     = 69;
-                this.speed      = 15.5;
-                this.type       = 0;
-                this.position   = new Point(10,10);
-                this.heading    = 270;
-                this.health     = 125.5;
-                this.status     = 1;
-                this.firing     = false;
+        this.shipID     = 69;
+        this.speed      = 15.5;
+        this.type       = 0;
+        this.position   = new Point(10,10);
+        this.heading    = 270;
+        this.health     = 125.5;
+        this.status     = 1;
+        this.firing     = false;
         if(this.type == 0)
         {
             this.loadImage("default","sloop");
         }
-        }
+    }
     
     public Ship ( int pID, int pType ) 
     {
         super("ship");
-                this.shipID     = pID;
-                this.speed      = 2;
-                this.type       = pType;
-                this.position   = new Point(10,10);
-                this.heading    = 80;
-                this.health     = 125.5;
-                this.status     = 1;
-                this.firing     = false;
+        this.shipID     = pID;
+        this.speed      = 5 ;
+        this.type       = pType;
+        this.position   = new Point(50, 50);
+        this.heading    = 135;
+        this.health     = 125.5;
+        this.status     = 1;
+        this.firing     = false;
         if(this.type == 0)
         {
              this.loadImage("default","sloop");
@@ -57,33 +60,47 @@ public class Ship extends Sprite{
         {
             this.loadImage("default","manowar");
         }
-        }
-        public void updateShip ( int pX, int pY, double pSpeed, int pHeading, double pHealth ) {
-                this.position = new Point( pX, pY );
+    }
+    public void updateShip ( int pX, int pY, double pSpeed, int pHeading, double pHealth ) {
+        System.out.println("UPDATED");
+        this.position = new Point( pX, pY );
         this.speed = pSpeed;
         this.heading = pHeading;
         this.health = pHealth;
+    }
+    
+    public void update ( ) 
+    {
+        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed/60*10));
+        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed/60*10));
+        
+        this.position.setLocation(
+            this.position.x + this.deltaX,
+            this.position.y + this.deltaY
+        );
+        if(Math.round(deltaX) >= 1)
+        {   
+            this.deltaX = 0;
+        }
+       if(Math.round(deltaY) >= 1)
+        {   
+           this.deltaY = 0;
         }
     
-        public void update ( ) 
-    {
-        double x = this.position.x;
-        x += Math.cos(heading*Math.PI/180)*(this.speed/60);
-        double y = this.position.y; 
-        y += Math.sin(heading*Math.PI/180)*(this.speed/60);
-        this.position.setLocation(this.position.x+1, this.position.y+1);
+    }
         
-        }
-        
-        public void draw ( Graphics g )
+    public void draw ( Graphics g )
     {
         Graphics2D g2D = (Graphics2D) g;
         g2D.scale(3, 3);
-       	g2D.rotate( (heading*Math.PI/180), this.frames.get(this.currentState).getWidth()/2, this.frames.get(this.currentState).getHeight()/2 );
-        
-        g.drawImage(this.frames.get(this.currentState), this.position.x, this.position.y,
-                    (this.position.x + this.sWidth), (this.position.y +this.sHeight), null);
-        }
+        g2D.rotate( (Math.toRadians(heading)), 
+                   this.position.x + this.sWidth*3/2, 
+                   this.position.y + this.sHeight*3/2 );
+        g.drawImage(this.frames.get(this.currentState), 
+                    this.position.x, this.position.y,
+                    this.sWidth, 
+                    this.sHeight, null);
+    }
     /*
      * Mutators
      */

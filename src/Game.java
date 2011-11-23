@@ -95,6 +95,12 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public void update()
     {
         //update ships
+        Iterator<Ship> mIterator = this.shipList.iterator();
+        
+        while( mIterator.hasNext() )
+        {
+            mIterator.next().update();
+        }
         //update world
         //update chrome
     	this.repaint();
@@ -192,6 +198,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             while( mIterator.hasNext() )
             {
                 Ship tempShip = (Ship)mIterator.next();
+                System.out.println(Integer.parseInt( pMessage.getArgument( 0 )) +" : "+tempShip.getShipID()); 
                 if( Integer.parseInt( pMessage.getArgument( 0 ) ) == tempShip.getShipID( ) )
                 {
                     tempShip.updateShip( 
