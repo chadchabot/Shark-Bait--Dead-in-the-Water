@@ -56,10 +56,10 @@ public class Ship extends Sprite{
     {
         super("ship");
         this.shipID     = pID;
-        this.speed      = 5 ;
+        this.speed      = 1 ;
         this.type       = pType;
         this.position   = new Point(50, 50);
-        this.heading    = 135;
+        this.heading    = 270;
         this.health     = 125.5;
         this.status     = 1;
         this.firing     = false;
@@ -96,11 +96,11 @@ public class Ship extends Sprite{
             this.position.x + this.deltaX,
             this.position.y + this.deltaY
         );
-        if(Math.round(deltaX) >= 1)
+        if(Math.round(deltaX) >= 1 || Math.round(deltaX) <= -1)
         {   
             this.deltaX = 0;
         }
-       if(Math.round(deltaY) >= 1)
+       if(Math.round(deltaY) >= 1 || Math.round(deltaY) <= -1)
         {   
            this.deltaY = 0;
         }
@@ -110,14 +110,16 @@ public class Ship extends Sprite{
     public void draw ( Graphics g )
     {
         Graphics2D g2D = (Graphics2D) g;
-        //g2D.scale(3, 3);
         g2D.rotate( (Math.toRadians(heading)), 
-                   this.position.x + this.sWidth/2, 
-                   this.position.y + this.sHeight/2 );
-        g.drawImage(this.frames.get(this.currentState), 
+                   this.position.x + this.sWidth*3/2, 
+                   this.position.y + this.sHeight*3/2 );
+        g2D.drawImage(this.frames.get(this.currentState), 
                     this.position.x, this.position.y,
                     this.sWidth*3, 
                     this.sHeight*3, null);
+        g2D.rotate( -1*Math.toRadians(heading), 
+                this.position.x + this.sWidth*3/2, 
+                this.position.y + this.sHeight*3/2 );
     }
     /*
      * Mutators
