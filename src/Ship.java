@@ -1,3 +1,4 @@
+package SharkBait;
 
 
 import java.awt.Graphics2D;
@@ -6,8 +7,11 @@ import java.awt.Graphics;
 
 public class Ship extends Sprite{
 
+	public static final int		REFRESH_RATE = 60;
+	public static final int 	PIXELS_TO_METERS = 5;
     private int     shipID;
     private double  speed;
+    private int 	speedFactor;
     private int     type;
     private Point   position;
     private int     heading;
@@ -24,7 +28,7 @@ public class Ship extends Sprite{
     {
         //super("ship");
         this.shipID     = 69;
-        this.speed      = 15.5;
+        this.speed      = 0.9;
         this.type       = 0;
         this.position   = new Point(10,10);
         this.heading    = 270;
@@ -34,6 +38,17 @@ public class Ship extends Sprite{
         if(this.type == 0)
         {
             this.loadImage("default","sloop");
+            this.speedFactor = 5;
+        }
+        else if(this.type == 1)
+        {
+             this.loadImage("default","frigate");
+             this.speedFactor = 4;
+        }
+        else if(this.type == 2)
+        {
+            this.loadImage("default","manowar");
+            this.speedFactor = 3;
         }
     }
     
@@ -51,14 +66,17 @@ public class Ship extends Sprite{
         if(this.type == 0)
         {
              this.loadImage("default","sloop");
+             this.speedFactor = 5;
         }
         else if(this.type == 1)
         {
              this.loadImage("default","frigate");
+             this.speedFactor = 4;
         }
         else if(this.type == 2)
         {
             this.loadImage("default","manowar");
+            this.speedFactor = 3;
         }
     }
     public void updateShip ( int pX, int pY, double pSpeed, int pHeading, double pHealth ) {
@@ -71,8 +89,8 @@ public class Ship extends Sprite{
     
     public void update ( ) 
     {
-        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed/60*10));
-        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed/60*10));
+        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_TO_METERS));
+        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_TO_METERS));
         
         this.position.setLocation(
             this.position.x + this.deltaX,
@@ -92,14 +110,14 @@ public class Ship extends Sprite{
     public void draw ( Graphics g )
     {
         Graphics2D g2D = (Graphics2D) g;
-        g2D.scale(3, 3);
+        //g2D.scale(3, 3);
         g2D.rotate( (Math.toRadians(heading)), 
-                   this.position.x + this.sWidth*3/2, 
-                   this.position.y + this.sHeight*3/2 );
+                   this.position.x + this.sWidth/2, 
+                   this.position.y + this.sHeight/2 );
         g.drawImage(this.frames.get(this.currentState), 
                     this.position.x, this.position.y,
-                    this.sWidth, 
-                    this.sHeight, null);
+                    this.sWidth*3, 
+                    this.sHeight*3, null);
     }
     /*
      * Mutators
