@@ -1,7 +1,12 @@
+package SharkBait;
+
 import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
 import javax.swing.JFrame;
 import javax.swing.JButton;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JComponent;
 
@@ -13,7 +18,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 
     public static final int		REFRESH_RATE = 60;
 	private GUI					gameGUI;
-    private ArrayList<Ship>     shipList;
+	protected HashMap<String, Ship> shipList;
     private World				gameWorld = null;
     private int					playerID;	
     private	JFrame				frame;
@@ -39,7 +44,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public Game()
 	{
 		createLobby();
-        this.shipList = new ArrayList<Ship>();
+        this.shipList = new HashMap<String, Ship>();
         this.gameWorld = new World( );
         //this.gameGUI = new GUI( );
         this.frame = new JFrame ("Shark Bait");
@@ -83,23 +88,17 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		//	draw world
         this.gameWorld.draw(g);
 		//	draw ships
-        Iterator<Ship> mIterator = this.shipList.iterator();
         
-        while( mIterator.hasNext() )
-        {
-            mIterator.next().draw(g);
-        }
-        //  draw chrome
+        for (String key : shipList.keySet()) {
+            this.shipList.get(key).draw(g);
+        }//  draw chrome
        
     }
     public void update()
     {
         //update ships
-        Iterator<Ship> mIterator = this.shipList.iterator();
-        
-        while( mIterator.hasNext() )
-        {
-            mIterator.next().update();
+    	for (String key : shipList.keySet()) {
+            this.shipList.get(key).update();
         }
         //update world
         //update chrome
@@ -193,28 +192,18 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          */
         if( pMessage.getMessageName().equals( "shipState" ) )
         {
-            Iterator<Ship> mIterator = this.shipList.iterator();
-            
-            while( mIterator.hasNext() )
-            {
-                Ship tempShip = (Ship)mIterator.next();
-                System.out.println(Integer.parseInt( pMessage.getArgument( 0 )) +" : "+tempShip.getShipID()); 
-                if( Integer.parseInt( pMessage.getArgument( 0 ) ) == tempShip.getShipID( ) )
-                {
-                    tempShip.updateShip( 
+                    this.shipList.get(pMessage.getArgument( 0 )).updateShip( 
                                         Integer.parseInt( pMessage.getArgument( 1 ) ),		// int x
                                         Integer.parseInt( pMessage.getArgument( 2 ) ),		// int y
                                         Double.parseDouble( pMessage.getArgument( 3 ) ),	// double speed
                                         Integer.parseInt( pMessage.getArgument( 4 ) ),		// int direction
                                         Double.parseDouble( pMessage.getArgument( 5 ) )		// double damage
-                                        );
-                }
-            }
+                                 	  );
             
         }
         else if( pMessage.getMessageName().equals( "ship" ) )
         {
-            this.shipList.add( new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
+            this.shipList.put( pMessage.getArgument( 0 ), new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
                                         Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
             System.out.println("SIZE: "+    this.shipList.size());
         }
