@@ -77,7 +77,7 @@ public class World extends Sprite{
                     this.shore.add(mShore);
             }
     }
-    public void draw ( Graphics g )
+    public void draw ( Graphics g, Point pPosition )
     {
         for(int i = 0; i < 1024; i = i + this.sWidth)
         {
@@ -91,21 +91,22 @@ public class World extends Sprite{
         
         for(int i = 0; i< this.shore.size(); i++)
         {
-            
+	        	Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
+	            Rectangle bounds = new Rectangle(copy.getBounds());
+	            Point Polycenter = new Point((int)bounds.getWidth()/2, (int)bounds.getHeight()/2);
+	            copy.translate(pPosition.x, pPosition.y);
+        	
                 Graphics2D g2D = (Graphics2D) g;     
                 g2D.setStroke(new BasicStroke(10F));
                 
                 //System.out.println("SHORES");
                 g.setColor(Color.GREEN);
-                g.drawPolygon(this.shore.get(i));
-                g.fillPolygon(this.shore.get(i));
+                g.drawPolygon(copy);
+                g.fillPolygon(copy);
                 
                 g.setColor(Color.YELLOW);
-                g.drawPolygon(this.shore.get(i));
-                
-                //Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
-                //Rectangle bounds = new Rectangle(copy.getBounds());
-                //Point center = new Point((int)bounds.getWidth()/2, (int)bounds.getHeight()/2);
+                g.drawPolygon(copy);
+                copy.reset();
         }
     }
     /*
