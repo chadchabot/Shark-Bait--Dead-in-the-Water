@@ -81,7 +81,6 @@ public class Ship extends Sprite{
         }
     }
     public void updateShip ( int pX, int pY, double pSpeed, int pHeading, double pHealth ) {
-        System.out.println("UPDATED");
         this.position = new Point( pX, pY );
         this.speed = pSpeed;
         this.heading = pHeading;

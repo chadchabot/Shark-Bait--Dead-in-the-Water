@@ -30,7 +30,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	protected HashMap<String, Ship> shipList;
 	public HashMap<String, String> speedTable;
     private World				gameWorld = null;
-    private int					playerID;	
+    private int					playerID;
+    private boolean gameRunning = false;
+    
     private	JFrame				frame;
 	
 	public	Communication		comm;
@@ -56,6 +58,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		createLobby();
 		
 		createSpeedTable();
+        
+        System.out.println(SpeedTable.speedTable[45]);
 		
         this.shipList = new HashMap<String, Ship>();
         this.gameWorld = new World( );
@@ -68,7 +72,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		this.frame.setResizable( false );
         this.frame.pack();
         this.frame.setSize(1024, 768);
-        this.frame.setVisible(true);
         this.frame.add(this, BorderLayout.CENTER);
 		this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
@@ -82,7 +85,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			this.update();
+            if(this.gameRunning)
+            {
+                this.update();
+            }
 			
 		}
         
@@ -103,7 +109,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		BufferedReader reader = null;
 		
 		try {
-			reader = new BufferedReader(new FileReader(new File("SpeedTable.txt")));
+			reader = new BufferedReader(new FileReader(new File("./SpeedTable.txt")));
 			
 			String temp;
 			while ((temp = reader.readLine()) != null){
@@ -236,7 +242,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     }
     public void handleMessage(Message pMessage)
 	{
-		pMessage.printMessage();
         /*
          * Gameplay Messages
          */
@@ -255,7 +260,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         {
             this.shipList.put( pMessage.getArgument( 0 ), new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
                                         Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
-            System.out.println("SIZE: "+    this.shipList.size());
         }
         else if( pMessage.getMessageName().equals( "wind" ) )
         {
@@ -283,9 +287,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          */
         else if( pMessage.getMessageName().equals( "start" ) )
         {
-            System.out.println("Starting Game");
+            this.gameRunning = true;
             // close lobby window
             this.lobbyWindow.setVisible( false );
+            this.frame.setVisible(true);
             // show game GUI
             // this.gameGUI.addKeyListener( this );
             // this.gameGUI.addToLayer(this, 1);
@@ -301,7 +306,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             // if shore x set ready button active
             if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
             {
-                System.out.println("I am Lobby!");
 				this.lobbyWindow.setVisible( true );
             }
             // handle shore 
@@ -317,6 +321,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 {
                     mX[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 1 ) ) );
                     mY[i] = ( Integer.parseInt( pMessage.getArgument( 2 * i + 2 ) ) );
+                    
             
                 }
                 this.gameWorld.addShore( mX, mY, Integer.parseInt( pMessage.getArgument( 0 ) ) );

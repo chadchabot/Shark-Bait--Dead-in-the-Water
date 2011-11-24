@@ -17,9 +17,9 @@ public class Server
             client_out.writeBytes("registered:1;");
             //client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
             client_out.writeBytes("shore:3:360:430:380:410:380:430;");
-            client_out.writeBytes("shore:5:420:410:430:390:440:410:420:430:440:430;");
+            client_out.writeBytes("shore:5:420:410:430:390:440:410:440:430:420:430;");
             client_out.writeBytes("shore:x;");
-            client_out.writeBytes("start;");
+           /* client_out.writeBytes("start;");
             client_out.writeBytes("ship:1:0;");
             client_out.writeBytes("ship:2:0;");
             client_out.writeBytes("ship:3:0;");
@@ -42,7 +42,7 @@ public class Server
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    //		client_out.writeBytes("gameover;");
+    //		client_out.writeBytes("gameover;");*/
             client_out.close();
             connection.close();
 		}
