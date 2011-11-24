@@ -15,7 +15,9 @@ public class Server
             System.out.println("Accepted");
             DataOutputStream client_out = new DataOutputStream(connection.getOutputStream());
             client_out.writeBytes("registered:1;");
-            client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
+            //client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
+            client_out.writeBytes("shore:3:360:430:380:410:380:430;");
+            client_out.writeBytes("shore:4:420:410:440:410:420:430:440:430;");
             client_out.writeBytes("shore:x;");
             client_out.writeBytes("start;");
             client_out.writeBytes("ship:1:0;");

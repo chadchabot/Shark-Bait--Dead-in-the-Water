@@ -16,6 +16,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 {
 
     public static final int		REFRESH_RATE = 60;
+	public static final int 	PIXELS_PER_METER = 2;
+    public static final int     PLAYER_X_CENTER = 500;
+    public static final int     PLAYER_Y_CENTER = 300;
 	private GUI					gameGUI;
 	protected HashMap<String, Ship> shipList;
     private World				gameWorld = null;
@@ -86,7 +89,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {
         Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
 		//	draw world
-        this.gameWorld.draw(g);
+        this.gameWorld.draw(g, playerPos);
 		//	draw ships
         
         for (String key : shipList.keySet()) {

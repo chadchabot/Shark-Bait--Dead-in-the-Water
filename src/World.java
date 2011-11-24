@@ -1,4 +1,3 @@
-package SharkBait;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -18,6 +17,11 @@ import java.awt.Graphics2D;
 import java.awt.Polygon;
 
 public class World extends Sprite{
+    
+    public static final int		REFRESH_RATE = 60;
+	public static final int 	PIXELS_PER_METER = 2;
+    public static final int     PLAYER_X_CENTER = 500;
+    public static final int     PLAYER_Y_CENTER = 300;
 
     private double  windDirection;
     private double  windSpeed;
@@ -77,8 +81,13 @@ public class World extends Sprite{
                     this.shore.add(mShore);
             }
     }
-    public void draw ( Graphics g, Point pPosition )
+    public void draw ( Graphics g, Point playerPos )
     {
+        int drawX;// = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+        int drawY;// = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+        int origX;
+        int origY;
+        //System.println(drawX +", "+drawY);
         for(int i = 0; i < 1024; i = i + this.sWidth)
         {
                 for(int j = 0; j < 768; j = j + this.sHeight)
@@ -93,9 +102,15 @@ public class World extends Sprite{
         {
 	        	Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
 	            Rectangle bounds = new Rectangle(copy.getBounds());
-	            Point Polycenter = new Point((int)bounds.getWidth()/2, (int)bounds.getHeight()/2);
-	            copy.translate(pPosition.x, pPosition.y);
-        	
+               
+        
+	            Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
+                    
+                drawX = (polycenter.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+                drawY = (polycenter.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+            
+                copy.translate(drawX - polycenter.x, drawY - polycenter.y);
+                
                 Graphics2D g2D = (Graphics2D) g;     
                 g2D.setStroke(new BasicStroke(10F));
                 
