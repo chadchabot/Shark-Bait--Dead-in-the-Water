@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -89,10 +87,30 @@ public class Ship extends Sprite{
         this.health = pHealth;
     }
     
-    public void update ( ) 
+    public void update ( int pWindDir ) 
     {
-        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER));
-        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER));
+
+        int angleDiff = 0;
+        pWindDir = pWindDir - 180;
+        if(pWindDir < 0)
+        {
+            pWindDir = pWindDir + 360;
+        }
+        if(Math.abs(pWindDir-this.heading) <= 180)
+        {
+            angleDiff = Math.abs(pWindDir-this.heading);
+        }
+        else if(Math.abs(pWindDir-this.heading) > 180)
+        {
+            angleDiff = 360 - Math.abs(pWindDir-this.heading);
+        }
+        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))
+                                     *(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER))
+        *SpeedTable.table[angleDiff];
+        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))
+                                     *(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER))
+        *SpeedTable.table[angleDiff];
+
         
         this.position.setLocation(
             this.position.x + this.deltaX,

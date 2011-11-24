@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.awt.BasicStroke;
@@ -23,8 +22,8 @@ public class World extends Sprite{
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
 
-    private double  windDirection;
-    private double  windSpeed;
+    private int  windDirection;
+    private int  windSpeed;
     private int     time;
     private int     weatherState;
     private int     rain;
@@ -163,11 +162,11 @@ public class World extends Sprite{
      * Accessors
      *
      */
-    public double getWindDirection ( ) 
+    public int getWindDirection ( ) 
     {
         return this.windDirection;
     }
-    public double getWindSpeed ( ) 
+    public int getWindSpeed ( ) 
     {
         return this.windSpeed;
     }

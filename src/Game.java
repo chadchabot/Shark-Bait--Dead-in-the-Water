@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -168,7 +166,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		BufferedReader reader = null;
 		
 		try {
-			reader = new BufferedReader(new FileReader(new File("c://SpeedTable.txt")));
+			reader = new BufferedReader(new FileReader(new File("./SpeedTable.txt")));
 			
 			String temp;
 			while ((temp = reader.readLine()) != null){
@@ -214,7 +212,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {
         //update ships
     	for (String key : shipList.keySet()) {
-            this.shipList.get(key).update();
+            this.shipList.get(key).update(this.gameWorld.getWindDirection());
         }
         //update world
         //update chrome
