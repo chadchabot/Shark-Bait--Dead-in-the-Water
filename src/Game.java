@@ -38,7 +38,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public	static final int     FRIGATE_TURN_MAX = 2;
     public	static final int     MAN_OF_WAR_TURN_MAX = 1;
     public  static final double     TURN_AMOUNT_INCREMENT = 0.5;
-    public  static final double     SPEED_AMOUNT_INCREMENT = 0.05;
+    public  static final double     SPEED_AMOUNT_INCREMENT = 0.10;
     
     private GUI                                     gameGUI;
     protected HashMap<String, Ship> shipList;
@@ -103,7 +103,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
                 //thread.start();
-                this.commThread = new Thread(this.comm = new Communication(this, "localhost", 7430));
+                this.commThread = new Thread(this.comm = new Communication(this, "localhost", 5283));
                 this.commThread.start();
                 while(true){
                         try {
@@ -302,7 +302,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     System.out.println(System.currentTimeMillis() - this.lastTurn);
                     if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
                     {
-                        System.out.println("ADSDA");    
                         this.pMessage = "setHeading:" + turn + ";";
                         comm.sendMessage(pMessage);
                         this.lastTurn = System.currentTimeMillis();
@@ -311,37 +310,40 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          		}
                 else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
                 {
-                    System.out.println("Right!");
-                    
-                    double maxIncrement = 0;
+                    int  turn = 0;
                     
                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 0)
                     {
-                    	maxIncrement = SLOOP_TURN_MAX;
+                     	turn = SLOOP_TURN_MAX;
                     }
                     
                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 1)
                     {
-                    	maxIncrement = FRIGATE_TURN_MAX;
+                     	turn = FRIGATE_TURN_MAX;
                     }
                     
                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 2)
                     {
-                    	maxIncrement = MAN_OF_WAR_TURN_MAX;
+                     	turn = MAN_OF_WAR_TURN_MAX;
                     }
-        			//	add to the amount of the turn, to a maximum of -25
-        			//	turn amount is in degrees?
-        			if ( this.turnAmount <= maxIncrement)
-        			{
-        				this.turnAmount += TURN_AMOUNT_INCREMENT;
-        			}
-        			else
-        			{
-        				this.turnAmount = maxIncrement;
-        			}
-        			
-        			this.pMessage = "setHeading:" + this.turnAmount + ";";
-        			comm.sendMessage(pMessage);
+         			//	add to the amount of the turn, to a maximum of -25
+         			//	turn amount is in degrees?
+         			/*if ( this.turnAmount >= -maxIncrement)
+                     {
+                     this.turnAmount -= TURN_AMOUNT_INCREMENT;
+                     }
+                     else
+                     {
+                     this.turnAmount = - maxIncrement;
+                     }
+                     */
+                    System.out.println(System.currentTimeMillis() - this.lastTurn);
+                    if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
+                    {
+                        this.pMessage = "setHeading:" + turn + ";";
+                        comm.sendMessage(pMessage);
+                        this.lastTurn = System.currentTimeMillis();
+                    }
         		}
                 else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
         {

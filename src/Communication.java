@@ -123,6 +123,7 @@ class Communication implements Runnable
                 
 				mIncoming = this.server_input.readLine( );
                 //mIncoming = server_input.readLine();
+                System.out.println(mIncoming);
 				if(mIncoming != null)
 				{
 					fireMessage(mIncoming);
@@ -160,7 +161,7 @@ class Communication implements Runnable
 	{
 		try
 		{
-			this.server_output.writeBytes( pMessage );
+			this.server_output.writeBytes( pMessage +"\n" );
 			System.out.println( "SENT: " + pMessage );
 			return true;
 		}
