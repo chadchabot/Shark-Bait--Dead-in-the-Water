@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -12,6 +10,7 @@ import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.Point;
 
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
@@ -85,12 +84,13 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	}
     public void paint ( Graphics g )
     {
+        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
 		//	draw world
         this.gameWorld.draw(g);
 		//	draw ships
         
         for (String key : shipList.keySet()) {
-            this.shipList.get(key).draw(g);
+            this.shipList.get(key).draw(g, playerPos);
         }//  draw chrome
        
     }

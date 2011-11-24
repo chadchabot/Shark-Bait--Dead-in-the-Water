@@ -1,6 +1,3 @@
-package SharkBait;
-
-
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -8,7 +5,11 @@ import java.awt.Graphics;
 public class Ship extends Sprite{
 
 	public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_TO_METERS = 5;
+	public static final int 	PIXELS_PER_METER = 2;
+    public static final int     PLAYER_X_CENTER = 500;
+    public static final int     PLAYER_Y_CENTER = 300;
+    public static final int     IMAGE_SCALING = 3;
+
     private int     shipID;
     private double  speed;
     private int 	speedFactor;
@@ -89,8 +90,8 @@ public class Ship extends Sprite{
     
     public void update ( ) 
     {
-        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_TO_METERS));
-        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_TO_METERS));
+        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER));
+        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))*(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER));
         
         this.position.setLocation(
             this.position.x + this.deltaX,
@@ -107,19 +108,21 @@ public class Ship extends Sprite{
     
     }
         
-    public void draw ( Graphics g )
+    public void draw ( Graphics g , Point playerPos)
     {
+        int drawX = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+        int drawY = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
         Graphics2D g2D = (Graphics2D) g;
         g2D.rotate( (Math.toRadians(heading)), 
-                   this.position.x + this.sWidth*3/2, 
-                   this.position.y + this.sHeight*3/2 );
+                   drawX + this.sWidth*IMAGE_SCALING/2, 
+                   drawY + this.sHeight*IMAGE_SCALING/2 );
         g2D.drawImage(this.frames.get(this.currentState), 
-                    this.position.x, this.position.y,
-                    this.sWidth*3, 
-                    this.sHeight*3, null);
+                    drawX, drawY,
+                    this.sWidth*IMAGE_SCALING, 
+                    this.sHeight*IMAGE_SCALING, null);
         g2D.rotate( -1*Math.toRadians(heading), 
-                this.position.x + this.sWidth*3/2, 
-                this.position.y + this.sHeight*3/2 );
+                drawX + this.sWidth*IMAGE_SCALING/2, 
+                drawY + this.sHeight*IMAGE_SCALING/2 );
     }
     /*
      * Mutators

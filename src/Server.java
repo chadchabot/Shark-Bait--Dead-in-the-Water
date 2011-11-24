@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.DataOutputStream;
@@ -24,6 +22,8 @@ public class Server
             client_out.writeBytes("ship:2:0;");
             client_out.writeBytes("ship:3:0;");
             client_out.writeBytes("ship:4:0;");
+            client_out.writeBytes("ship:5:0;");
+            client_out.writeBytes("shipState:5:600:250:0:0:0;");
             try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {

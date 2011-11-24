@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.util.HashMap;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -45,7 +43,7 @@ public class Sprite {
     {
         try
         {
-            frames.put( pName, ImageIO.read( new File("c://"+ pFileName + ".png") ) );
+            frames.put( pName, ImageIO.read( new File("../images/"+ pFileName + ".png") ) );
             if( pName.equals("default") )
             {
                 this.sWidth = frames.get("default").getWidth();
