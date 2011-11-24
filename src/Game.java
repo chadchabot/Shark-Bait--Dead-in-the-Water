@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -6,11 +8,17 @@ import javax.swing.JButton;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.StringTokenizer;
+
 import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
-import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
@@ -21,6 +29,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public static final int     PLAYER_Y_CENTER = 300;
 	private GUI					gameGUI;
 	protected HashMap<String, Ship> shipList;
+	public HashMap<String, String> speedTable;
     private World				gameWorld = null;
     private int					playerID;	
     private	JFrame				frame;
@@ -46,6 +55,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public Game()
 	{
 		createLobby();
+		
+		createSpeedTable();
+		
         this.shipList = new HashMap<String, Ship>();
         this.gameWorld = new World( );
         //this.gameGUI = new GUI( );
@@ -85,15 +97,50 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		this.lobbyWindow.add( readyButton );
         //this.lobbyWindow.addKeyListener(this);
 	}
+	public void createSpeedTable()
+	{
+		this.speedTable = new HashMap<String, String>();
+		
+		BufferedReader reader = null;
+		
+		try {
+			reader = new BufferedReader(new FileReader(new File("c://SpeedTable.txt")));
+			
+			String temp;
+			while ((temp = reader.readLine()) != null){
+				StringTokenizer mTokenizer;
+				if( temp != null )
+				{ 
+					mTokenizer = new StringTokenizer( temp, "," );
+					if( mTokenizer.countTokens() == 2 )
+					{
+						this.speedTable.put(mTokenizer.nextToken(), mTokenizer.nextToken());
+					}
+				}
+			}
+			
+		} catch (FileNotFoundException e) {
+			System.out.print("The file isn't found");
+		} catch(IOException e1){
+			System.out.print("file input exception");
+		}
+		
+		try {
+			if (reader != null) {
+				reader.close();
+			} 
+		}catch (IOException e2) {
+			System.out.print("Error closing the file: Memory Leak!");
+		}
+	}
     public void paint ( Graphics g )
     {
-        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
 		//	draw world
         this.gameWorld.draw(g, playerPos);
 		//	draw ships
         
-        for (String key : shipList.keySet()) {
-            this.shipList.get(key).draw(g, playerPos);
+        for (String key : this.shipList.keySet()) {
+            this.shipList.get(key).draw(g);
         }//  draw chrome
        
     }
