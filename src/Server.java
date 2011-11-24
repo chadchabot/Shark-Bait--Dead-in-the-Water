@@ -14,11 +14,28 @@ public class Server
             Socket connection = server.accept();
             System.out.println("Accepted");
             DataOutputStream client_out = new DataOutputStream(connection.getOutputStream());
+            try {
+				Thread.sleep(6000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
             client_out.writeBytes("registered:1;");
+			System.out.println( "registered:1;");
             //client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
             client_out.writeBytes("shore:3:360:430:380:410:380:430;");
             client_out.writeBytes("shore:5:420:410:430:390:440:410:440:430:420:430;");
+            try {
+				Thread.sleep(6000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
             client_out.writeBytes("shore:x;");
+			System.out.println( "shore:x;" );
            /* client_out.writeBytes("start;");
             client_out.writeBytes("ship:1:0;");
             client_out.writeBytes("ship:2:0;");

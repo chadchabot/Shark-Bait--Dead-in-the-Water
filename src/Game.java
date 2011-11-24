@@ -19,6 +19,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+
+//	for radio buttons
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.ButtonGroup;
+import java.awt.GridLayout;
+import java.awt.Dimension;
+
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
@@ -31,16 +39,27 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	public HashMap<String, String> speedTable;
     private World				gameWorld = null;
     private int					playerID;
-    private boolean gameRunning = false;
-    
+    private boolean				gameRunning = false;
+    private int					shipSelection = 0;
+	
     private	JFrame				frame;
 	
 	public	Communication		comm;
     public	Thread				commThread;
 	
 	
-	JFrame	lobbyWindow;
-	JButton	readyButton;
+	
+	//	wait lobby gui components
+	JFrame			lobbyWindow;
+//	JPanel	lobbyWindow;
+	JButton			registerButton;
+	JButton			readyButton;
+
+	JPanel			bottomButtonPanel;
+	JRadioButton	sloopButton;
+	JRadioButton	frigateButton;
+	JRadioButton	manOwarButton;
+	ButtonGroup		lobbyButtonGroup;
 	
 	
 	//	communication / message variables
@@ -56,10 +75,11 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public Game()
 	{
 		createLobby();
+		this.lobbyWindow.setVisible( true );
 		
 		createSpeedTable();
         
-        System.out.println(SpeedTable.speedTable[45]);
+//        System.out.println(SpeedTable.speedTable[45]);
 		
         this.shipList = new HashMap<String, Ship>();
         this.gameWorld = new World( );
@@ -95,12 +115,44 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	}
 	public void createLobby( )
 	{
+		this.bottomButtonPanel = new JPanel( new GridLayout( 1,1 ) );
 		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
-		this.readyButton = new JButton( "Ready" );
-		this.readyButton.addActionListener( this );		
-		this.lobbyWindow.setSize( 480, 240 );
-		this.lobbyWindow.add( readyButton );
-        //this.lobbyWindow.addKeyListener(this);
+
+		this.readyButton = new JButton( "Register first!" );
+		this.readyButton.setEnabled( false );
+		this.registerButton = new JButton( "Register" );
+		this.bottomButtonPanel.add( registerButton );
+		this.bottomButtonPanel.add( readyButton );
+
+		this.registerButton.setActionCommand( "register" );
+		this.registerButton.addActionListener( this );
+		this.readyButton.setActionCommand( "ready" );
+		this.readyButton.addActionListener( this );
+		this.lobbyWindow.setSize( 800, 640 );
+
+		//	radio button selections
+		this.lobbyButtonGroup	= new ButtonGroup();
+		this.sloopButton		= new JRadioButton( "Sloop" );
+		this.sloopButton.setActionCommand( "sloop_selected" );
+		this.sloopButton.addActionListener( this );
+		this.lobbyButtonGroup.add( sloopButton );
+		
+		this.frigateButton		= new JRadioButton( "Frigate" );
+		this.frigateButton.setActionCommand( "frigate_selected" );
+		this.frigateButton.addActionListener( this );
+		this.lobbyButtonGroup.add( frigateButton );
+		this.frigateButton.setSelected( true );
+
+		this.manOwarButton		= new JRadioButton( "Man-o-war" );
+		this.manOwarButton.setActionCommand( "man-o-war_selected" );
+		this.manOwarButton.addActionListener( this );
+		this.lobbyButtonGroup.add( manOwarButton );
+
+		this.lobbyWindow.add( this.sloopButton, BorderLayout.LINE_START );
+		this.lobbyWindow.add( this.frigateButton, BorderLayout.CENTER );
+		this.lobbyWindow.add( this.manOwarButton, BorderLayout.LINE_END  );
+		this.lobbyWindow.add( this.bottomButtonPanel, BorderLayout.PAGE_END );
+
 	}
 	public void createSpeedTable()
 	{
@@ -163,9 +215,49 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	public void actionPerformed( ActionEvent e )
 	{
 		System.out.println( "A button is clicked" );
+
+		if ( e.getActionCommand().equals( "sloop_selected" ) )
+		{
+			System.out.println( "SLOOP class ship selected" );
+			//	set the variable for the user's ship preference
+			this.shipSelection = 0;
+		}
+		if ( e.getActionCommand().equals( "frigate_selected" ) )
+		{
+			System.out.println( "FRIGATE class ship selected" );
+			//	set the variable for the user's ship preference
+			this.shipSelection = 1;
+		}
+		if ( e.getActionCommand().equals( "man-o-war_selected" ) )
+		{
+			System.out.println( "MAN-O-WAR class ship selected" );
+			//	set the variable for the user's ship preference
+			this.shipSelection = 2;
+		}	
+			
+		if ( e.getActionCommand().equals( "register" ) )
+		{
+			System.out.println( "REGISTER button clicked" ) ;
+			this.sloopButton.setEnabled( false );
+			this.frigateButton.setEnabled( false );
+			this.manOwarButton.setEnabled( false );
+			this.registerButton.setEnabled( false );
+			this.registerButton.setText( "Waiting for registration..." );
+			//	send REGISTER message to server
+			this.comm.sendMessage( "register:"+shipSelection+";" );
+			
+		}
+		if ( e.getActionCommand().equals( "ready" ) )
+		{
+			System.out.println( "READY button clicked" ) ;
+			this.readyButton.setEnabled( false );
+			this.readyButton.setText( "Waiting to start..." );
+			//	send READY message to server
+			this.comm.sendMessage( "ready;" );
+			
+		}
 		
-        this.readyButton.setEnabled( false );
-		this.readyButton.setText( "Waiting to start..." );
+
 	}
     public void keyTyped( KeyEvent pEvent )
     {
@@ -300,13 +392,19 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         else if( pMessage.getMessageName().equals( "registered" ) )
         {
             this.playerID = Integer.parseInt( pMessage.getArgument( 0 ) );
+			//	set register button to "registered"
+			this.registerButton.setText( "Registered!" );
+			this.readyButton.setText( "Waiting for map" );
         }
         else if( pMessage.getMessageName().equals( "shore" ) )
         {
             // if shore x set ready button active
             if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
             {
-				this.lobbyWindow.setVisible( true );
+//				this.lobbyWindow.setVisible( true );
+				this.readyButton.setEnabled( true );
+				this.readyButton.setText( "Ready to start?" );
+
             }
             // handle shore 
             else

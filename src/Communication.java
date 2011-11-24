@@ -168,6 +168,7 @@ class Communication implements Runnable
 		try
 		{
 			this.server_output.writeBytes( pMessage );
+			System.out.println( "SENT: " + pMessage );
 			return true;
 		}
 		catch( IOException e )
