@@ -110,7 +110,7 @@ class Communication implements Runnable
      *
      */
 	public void listen( ){
-		String  mIncomingBuff = "";
+		String  mIncoming = "";
         int     mIncomingInt;
         char    mIncomingChar;
         
@@ -120,19 +120,12 @@ class Communication implements Runnable
 		{
 			while( this.alive )
 			{
-				mIncomingInt = this.server_input.read( );
-				if( mIncomingInt != -1 )
+                
+				mIncoming = this.server_input.readLine( );
+                //mIncoming = server_input.readLine();
+				if(mIncoming != null)
 				{
-                    mIncomingChar = Character.toChars( mIncomingInt )[0];
-                    if( mIncomingChar == ';' )
-                    {
-                        fireMessage( mIncomingBuff );
-                        mIncomingBuff = "";
-                    }
-                    else
-                    {
-                        mIncomingBuff = mIncomingBuff + mIncomingChar;
-                    }
+					fireMessage(mIncoming);
 				}
 			}
 		}

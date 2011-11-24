@@ -106,10 +106,24 @@ public class Message extends EventObject
      */
 	private void parseMessage( )
 	{
+        String sansSemi = this.message.substring(0, this.message.length() - 1); 
+        /*String[] splitsVille = sansSemi.split(":");
+        this.arguments = new ArrayList<String>( );
+        for( int i = 0; i < splitsVille.length; i++)
+        {
+            if(i == 0)
+            {
+                this.message_name = splitsVille[i];
+            }
+            else
+            {
+                this.arguments.add(splitsVille[i];
+            }
+        }*/
 		StringTokenizer mTokenizer;
 		if( this.message != null )
 		{ 
-			mTokenizer = new StringTokenizer( this.message, ":" );
+			mTokenizer = new StringTokenizer( sansSemi, ":" );
 			if( mTokenizer.countTokens() >= 1 )
 			{
 				this.message_name = mTokenizer.nextToken( );

@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -32,20 +30,27 @@ import java.awt.Dimension;
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
-    public static final int             REFRESH_RATE = 60;
-        public static final int         PIXELS_PER_METER = 2;
-    public static final int     PLAYER_X_CENTER = 500;
-    public static final int     PLAYER_Y_CENTER = 300;
-        private GUI                                     gameGUI;
-        protected HashMap<String, Ship> shipList;
-        private ArrayList<Integer>      shipID;
-        public HashMap<String, String> speedTable;
+    public static final int         REFRESH_RATE = 60;
+    public static final int         PIXELS_PER_METER = 1;
+    public static final int         PLAYER_X_CENTER = 500;
+    public static final int         PLAYER_Y_CENTER = 300;
+    public	static final int     SLOOP_TURN_MAX = 3;
+    public	static final int     FRIGATE_TURN_MAX = 2;
+    public	static final int     MAN_OF_WAR_TURN_MAX = 1;
+    public  static final double     TURN_AMOUNT_INCREMENT = 0.5;
+    public  static final double     SPEED_AMOUNT_INCREMENT = 0.05;
+    
+    private GUI                                     gameGUI;
+    protected HashMap<String, Ship> shipList;
+    private ArrayList<Integer>      shipID;
+    public HashMap<String, String> speedTable;
     private World                               gameWorld = null;
     private int                                 playerID;
     private boolean                             gameRunning = false;
     private int                                 shipSelection = 0;
     private String                              pMessage;
     private int                                 targetID = -1;
+    private long lastTurn = 0;
         
     private     JFrame                          frame;
         
@@ -68,13 +73,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         
         
         //      communication / message variables
-        public	static final double	SLOOP_TURN_MAX = 3.0;
-    	public	static final double	FRIGATE_TURN_MAX = 2.0;
-    	public	static final double	MAN_OF_WAR_TURN_MAX = 1.0;
-        public  static final double     TURN_AMOUNT_INCREMENT = 0.5;
-        public  double                          turnAmount = 0.00;
         
-        public  static final double     SPEED_AMOUNT_INCREMENT = 0.05;
+        public  double                          turnAmount = 0.00;
         public  double                          speedAmount = 0.00;
         
         
@@ -272,25 +272,25 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 { 
                 	 System.out.println("Left!");
                      
-                     double maxIncrement = 0;
+                     int  turn = 0;
                      
                      if (this.shipList.get(Integer.toString(this.playerID)).getType() == 0)
                      {
-                     	maxIncrement = SLOOP_TURN_MAX;
+                     	turn = -1*SLOOP_TURN_MAX;
                      }
                      
                      if (this.shipList.get(Integer.toString(this.playerID)).getType() == 1)
                      {
-                     	maxIncrement = FRIGATE_TURN_MAX;
+                     	turn = -1*FRIGATE_TURN_MAX;
                      }
                      
                      if (this.shipList.get(Integer.toString(this.playerID)).getType() == 2)
                      {
-                     	maxIncrement = MAN_OF_WAR_TURN_MAX;
+                     	turn = -1*MAN_OF_WAR_TURN_MAX;
                      }
          			//	add to the amount of the turn, to a maximum of -25
          			//	turn amount is in degrees?
-         			if ( this.turnAmount >= -maxIncrement)
+         			/*if ( this.turnAmount >= -maxIncrement)
          			{
          				this.turnAmount -= TURN_AMOUNT_INCREMENT;
          			}
@@ -298,9 +298,15 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          			{
          				this.turnAmount = - maxIncrement;
          			}
-         			
-         			this.pMessage = "setHeading:" + this.turnAmount + ";";
-         			comm.sendMessage(pMessage);
+         			*/
+                    System.out.println(System.currentTimeMillis() - this.lastTurn);
+                    if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
+                    {
+                        System.out.println("ADSDA");    
+                        this.pMessage = "setHeading:" + turn + ";";
+                        comm.sendMessage(pMessage);
+                        this.lastTurn = System.currentTimeMillis();
+                    }
 
          		}
                 else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
@@ -361,11 +367,11 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {
                 
                 //      send message
-                System.out.println( "sending message to the server" );
+                /*System.out.println( "sending message to the server" );
                 System.out.println( "Turning " + turnAmount + " degrees." );
                 System.out.println( "Speed requested " + speedAmount );
                 //      clear turnAmount, speedChange, and other message specific variables
-                this.turnAmount = 0;
+                this.turnAmount = 0;*/
     }
     public void handleMessage(Message pMessage)
         {

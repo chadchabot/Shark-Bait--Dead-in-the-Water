@@ -18,7 +18,7 @@ import java.awt.Polygon;
 public class World extends Sprite{
     
     public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_PER_METER = 2;
+	public static final int 	PIXELS_PER_METER = 1;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
 
@@ -89,38 +89,43 @@ public class World extends Sprite{
         //System.println(drawX +", "+drawY);
         for(int i = 0; i < 1024; i = i + this.sWidth)
         {
-                for(int j = 0; j < 768; j = j + this.sHeight)
+            for(int j = 0; j < 768; j = j + this.sHeight)
             {
-                        //g.drawImage(this.frames.get(this.currentState), 150, 150, 150+75, 150+75, 0, 0, 75, 75, null);
-                        g.drawImage(this.frames.get(this.currentState), i, j, i+this.sHeight, j+this.sWidth, 
-                                        0, 0, this.sHeight,this.sWidth, null);
+                //g.drawImage(this.frames.get(this.currentState), 150, 150, 150+75, 150+75, 0, 0, 75, 75, null);
+                g.drawImage(this.frames.get(this.currentState), i, j, i+this.sHeight, j+this.sWidth, 
+                            0, 0, this.sHeight,this.sWidth, null);
             }
         }
         
         for(int i = 0; i< this.shore.size(); i++)
         {
-	        	Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
-	            Rectangle bounds = new Rectangle(copy.getBounds());
-               
-        
-	            Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
-                    
-                drawX = (polycenter.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
-                drawY = (polycenter.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+            Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
+            Rectangle bounds = new Rectangle(copy.getBounds());
             
-                copy.translate(drawX - polycenter.x, drawY - polycenter.y);
-                
-                Graphics2D g2D = (Graphics2D) g;     
-                g2D.setStroke(new BasicStroke(10F));
-                
-                //System.out.println("SHORES");
-                g.setColor(Color.GREEN);
-                g.drawPolygon(copy);
-                g.fillPolygon(copy);
-                
-                g.setColor(Color.YELLOW);
-                g.drawPolygon(copy);
-                copy.reset();
+            
+            Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
+            
+            drawX = PLAYER_X_CENTER - (playerPos.x - polycenter.x)*PIXELS_PER_METER;
+            drawY = PLAYER_Y_CENTER - (playerPos.y - polycenter.y)*PIXELS_PER_METER;
+            //(polycenter.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+            //drawY = (polycenter.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+            
+            copy.translate(drawX - polycenter.x, drawY - polycenter.y);
+            
+            Graphics2D g2D = (Graphics2D) g;
+            g2D.setStroke(new BasicStroke(10F));
+            g2D.scale( (double)PIXELS_PER_METER, (double)PIXELS_PER_METER );
+
+            
+            //System.out.println("SHORES");
+            g.setColor(Color.GREEN);
+            g.drawPolygon(copy);
+            g.fillPolygon(copy);
+            
+            g.setColor(Color.YELLOW);
+            g2D.drawPolygon(copy);
+            g2D.scale( 1.0, 1.0 );
+            copy.reset();
         }
     }
     /*
