@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.DataOutputStream;
@@ -24,7 +26,7 @@ public class Server
 			
             client_out.writeBytes("registered:1;");
 			System.out.println( "registered:1;");
-            //client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
+            client_out.writeBytes("shore:3:100:200:300:200:200:300;");	
             client_out.writeBytes("shore:3:360:430:380:410:380:430;");
             client_out.writeBytes("shore:5:420:410:430:390:440:410:440:430:420:430;");
             try {
@@ -36,12 +38,15 @@ public class Server
 			
             client_out.writeBytes("shore:x;");
 			System.out.println( "shore:x;" );
-           /* client_out.writeBytes("start;");
+			client_out.writeBytes("start;");
             client_out.writeBytes("ship:1:0;");
             client_out.writeBytes("ship:2:0;");
             client_out.writeBytes("ship:3:0;");
             client_out.writeBytes("ship:4:0;");
             client_out.writeBytes("ship:5:0;");
+            client_out.writeBytes("shore:3:360:430:380:410:380:430;");
+            client_out.writeBytes("shore:5:420:410:430:390:440:410:440:430:420:430;");
+            
             client_out.writeBytes("shipState:5:600:250:0:0:0;");
             try {
 				Thread.sleep(1000);

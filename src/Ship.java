@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -107,7 +109,7 @@ public class Ship extends Sprite{
     
     }
         
-    public void draw ( Graphics g , Point playerPos)
+    public void draw ( Graphics g , Point playerPos, int targetID)
     {
         int drawX = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
         int drawY = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
@@ -119,6 +121,9 @@ public class Ship extends Sprite{
                     drawX, drawY,
                     this.sWidth*IMAGE_SCALING, 
                     this.sHeight*IMAGE_SCALING, null);
+        if(this.shipID == targetID){
+        	g.drawOval(drawX, drawY, this.sWidth*IMAGE_SCALING, this.sHeight*IMAGE_SCALING);
+        }
         g2D.rotate( -1*Math.toRadians(heading), 
                 drawX + this.sWidth*IMAGE_SCALING/2, 
                 drawY + this.sHeight*IMAGE_SCALING/2 );

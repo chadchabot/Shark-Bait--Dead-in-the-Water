@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -36,11 +38,14 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     public static final int     PLAYER_Y_CENTER = 300;
 	private GUI					gameGUI;
 	protected HashMap<String, Ship> shipList;
+	private ArrayList<Integer>	shipID;
 	public HashMap<String, String> speedTable;
     private World				gameWorld = null;
     private int					playerID;
     private boolean				gameRunning = false;
     private int					shipSelection = 0;
+    private String				pMessage;
+    private int					targetID = -1;
 	
     private	JFrame				frame;
 	
@@ -82,6 +87,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 //        System.out.println(SpeedTable.speedTable[45]);
 		
         this.shipList = new HashMap<String, Ship>();
+        this.shipID = new ArrayList<Integer>();
         this.gameWorld = new World( );
         //this.gameGUI = new GUI( );
         this.frame = new JFrame ("Shark Bait");
@@ -93,6 +99,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         this.frame.pack();
         this.frame.setSize(1024, 768);
         this.frame.add(this, BorderLayout.CENTER);
+        this.frame.setFocusTraversalKeysEnabled(false);
 		this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
 		//thread.start();
@@ -161,7 +168,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		BufferedReader reader = null;
 		
 		try {
-			reader = new BufferedReader(new FileReader(new File("./SpeedTable.txt")));
+			reader = new BufferedReader(new FileReader(new File("c://SpeedTable.txt")));
 			
 			String temp;
 			while ((temp = reader.readLine()) != null){
@@ -190,15 +197,16 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			System.out.print("Error closing the file: Memory Leak!");
 		}
 	}
-    public void paint ( Graphics g )
+	public void paint ( Graphics g )
     {
-        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
+		
+		Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
 		//	draw world
         this.gameWorld.draw(g, playerPos);
 		//	draw ships
         
         for (String key : this.shipList.keySet()) {
-            this.shipList.get(key).draw(g, playerPos);
+            this.shipList.get(key).draw(g, playerPos, targetID);
         }//  draw chrome
        
     }
@@ -276,6 +284,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 				this.speedAmount = 1.00;
 			}
 			
+			this.pMessage = "speed:" +  this.speedAmount + ";";			
+			comm.sendMessage(this.pMessage);
+			
 		}
 		else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
@@ -287,6 +298,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			{
 				this.speedAmount = 0.00;
 			}
+			
+			this.pMessage = "speed:" +  this.speedAmount + ";";			
+			comm.sendMessage(this.pMessage);
 		}
 		else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
         { 
@@ -317,10 +331,25 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 				this.turnAmount = TURN_AMOUNT_MAX;
 			}
 		}
-        else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
+		else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
         {
+        	if (this.targetID == -1){
+        		this.targetID = shipID.get(0);
+        	}
+        	
+        	for(int i = 0; i < shipID.size(); i++){
+        		if (shipID.get(i).intValue() == targetID){
+        			this.targetID = shipID.get((i+1) % shipID.size()).intValue();
+        			break;
+        		}
+        	}
+        	System.out.println(this.targetID);
             System.out.println("TAB!");
 		}
+        else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
+        {
+        	System.out.println("Space!");
+        }
 	}
     public void keyReleased(KeyEvent e)
     {
@@ -352,6 +381,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         {
             this.shipList.put( pMessage.getArgument( 0 ), new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
                                         Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
+            if (Integer.parseInt( pMessage.getArgument( 0 )) != playerID){
+            	shipID.add(new Integer( pMessage.getArgument( 0 )));
+            }
         }
         else if( pMessage.getMessageName().equals( "wind" ) )
         {
