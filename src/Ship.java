@@ -1,18 +1,20 @@
+package SharkBait;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
 
 public class Ship extends Sprite{
 
-	public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_PER_METER = 2;
+    public static final int         REFRESH_RATE = 60;
+    public static final int         PIXELS_PER_METER = 2;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
     public static final int     IMAGE_SCALING = 3;
 
     private int     shipID;
     private double  speed;
-    private int 	speedFactor;
+    private int         speedFactor;
     private int     type;
     private Point   position;
     private int     heading;
@@ -140,7 +142,7 @@ public class Ship extends Sprite{
                     this.sWidth*IMAGE_SCALING, 
                     this.sHeight*IMAGE_SCALING, null);
         if(this.shipID == targetID){
-        	g.drawOval(drawX, drawY, this.sWidth*IMAGE_SCALING, this.sHeight*IMAGE_SCALING);
+                g.drawOval(drawX, drawY, this.sWidth*IMAGE_SCALING, this.sHeight*IMAGE_SCALING);
         }
         g2D.rotate( -1*Math.toRadians(heading), 
                 drawX + this.sWidth*IMAGE_SCALING/2, 
@@ -194,5 +196,9 @@ public class Ship extends Sprite{
     public int getShipID ( )
     {
         return this.shipID;
+    }
+    public int getType()
+    {
+    	return this.type;
     }
 }

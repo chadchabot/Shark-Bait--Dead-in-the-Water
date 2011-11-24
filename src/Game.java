@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -20,7 +22,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 
-//	for radio buttons
+//      for radio buttons
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
@@ -30,60 +32,60 @@ import java.awt.Dimension;
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
-    public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_PER_METER = 2;
+    public static final int             REFRESH_RATE = 60;
+        public static final int         PIXELS_PER_METER = 2;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
-	private GUI					gameGUI;
-	protected HashMap<String, Ship> shipList;
-	private ArrayList<Integer>	shipID;
-	public HashMap<String, String> speedTable;
-    private World				gameWorld = null;
-    private int					playerID;
-    private boolean				gameRunning = false;
-    private int					shipSelection = 0;
-    private String				pMessage;
-    private int					targetID = -1;
-	
-    private	JFrame				frame;
-	
-	public	Communication		comm;
-    public	Thread				commThread;
-	
-	
-	
-	//	wait lobby gui components
-	JFrame			lobbyWindow;
-//	JPanel	lobbyWindow;
-	JButton			registerButton;
-	JButton			readyButton;
+        private GUI                                     gameGUI;
+        protected HashMap<String, Ship> shipList;
+        private ArrayList<Integer>      shipID;
+        public HashMap<String, String> speedTable;
+    private World                               gameWorld = null;
+    private int                                 playerID;
+    private boolean                             gameRunning = false;
+    private int                                 shipSelection = 0;
+    private String                              pMessage;
+    private int                                 targetID = -1;
+        
+    private     JFrame                          frame;
+        
+        public  Communication           comm;
+    public      Thread                          commThread;
+        
+        
+        
+        //      wait lobby gui components
+        JFrame                  lobbyWindow;
+//      JPanel  lobbyWindow;
+        JButton                 registerButton;
+        JButton                 readyButton;
 
-	JPanel			bottomButtonPanel;
-	JRadioButton	sloopButton;
-	JRadioButton	frigateButton;
-	JRadioButton	manOwarButton;
-	ButtonGroup		lobbyButtonGroup;
-	
-	
-	//	communication / message variables
-	public	static final double	TURN_AMOUNT_MAX = 25.0;
-	public	static final double	TURN_AMOUNT_INCREMENT = 0.5;
-	public	double				turnAmount = 0.00;
-	
-	public	static final double	SPEED_AMOUNT_INCREMENT = 0.05;
-	public	double				speedAmount = 0.00;
-	
-	
-	
+        JPanel                  bottomButtonPanel;
+        JRadioButton    sloopButton;
+        JRadioButton    frigateButton;
+        JRadioButton    manOwarButton;
+        ButtonGroup             lobbyButtonGroup;
+        
+        
+        //      communication / message variables
+        public	static final double	SLOOP_TURN_MAX = 3.0;
+    	public	static final double	FRIGATE_TURN_MAX = 2.0;
+    	public	static final double	MAN_OF_WAR_TURN_MAX = 1.0;
+        public  static final double     TURN_AMOUNT_INCREMENT = 0.5;
+        public  double                          turnAmount = 0.00;
+        
+        public  static final double     SPEED_AMOUNT_INCREMENT = 0.05;
+        public  double                          speedAmount = 0.00;
+        
+        
+        
     public Game()
-	{
-		createLobby();
-		this.lobbyWindow.setVisible( true );
-		
-		createSpeedTable();
+        {
+                createLobby();
+                this.lobbyWindow.setVisible( true );
         
 //        System.out.println(SpeedTable.speedTable[45]);
-		
+                
         this.shipList = new HashMap<String, Ship>();
         this.shipID = new ArrayList<Integer>();
         this.gameWorld = new World( );
@@ -93,286 +95,292 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         
         this.frame.setResizable(true);
         this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-		this.frame.setResizable( false );
+                this.frame.setResizable( false );
         this.frame.pack();
         this.frame.setSize(1024, 768);
         this.frame.add(this, BorderLayout.CENTER);
         this.frame.setFocusTraversalKeysEnabled(false);
-		this.frame.addKeyListener( this );
+                this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
-		//thread.start();
-		this.commThread = new Thread(this.comm = new Communication(this, "localhost", 7430));
-		this.commThread.start();
-		while(true){
-			try {
-				Thread.sleep(1000 / REFRESH_RATE);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+                //thread.start();
+                this.commThread = new Thread(this.comm = new Communication(this, "localhost", 7430));
+                this.commThread.start();
+                while(true){
+                        try {
+                                Thread.sleep(1000 / REFRESH_RATE);
+                        } catch (InterruptedException e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                        }
             if(this.gameRunning)
             {
                 this.update();
             }
-			
-		}
+                        
+                }
         
-	}
-	public void createLobby( )
-	{
-		this.bottomButtonPanel = new JPanel( new GridLayout( 1,1 ) );
-		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
+        }
+        public void createLobby( )
+        {
+                this.bottomButtonPanel = new JPanel( new GridLayout( 1,1 ) );
+                this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
 
-		this.readyButton = new JButton( "Register first!" );
-		this.readyButton.setEnabled( false );
-		this.registerButton = new JButton( "Register" );
-		this.bottomButtonPanel.add( registerButton );
-		this.bottomButtonPanel.add( readyButton );
+                this.readyButton = new JButton( "Register first!" );
+                this.readyButton.setEnabled( false );
+                this.registerButton = new JButton( "Register" );
+                this.bottomButtonPanel.add( registerButton );
+                this.bottomButtonPanel.add( readyButton );
 
-		this.registerButton.setActionCommand( "register" );
-		this.registerButton.addActionListener( this );
-		this.readyButton.setActionCommand( "ready" );
-		this.readyButton.addActionListener( this );
-		this.lobbyWindow.setSize( 800, 640 );
+                this.registerButton.setActionCommand( "register" );
+                this.registerButton.addActionListener( this );
+                this.readyButton.setActionCommand( "ready" );
+                this.readyButton.addActionListener( this );
+                this.lobbyWindow.setSize( 800, 640 );
 
-		//	radio button selections
-		this.lobbyButtonGroup	= new ButtonGroup();
-		this.sloopButton		= new JRadioButton( "Sloop" );
-		this.sloopButton.setActionCommand( "sloop_selected" );
-		this.sloopButton.addActionListener( this );
-		this.lobbyButtonGroup.add( sloopButton );
-		
-		this.frigateButton		= new JRadioButton( "Frigate" );
-		this.frigateButton.setActionCommand( "frigate_selected" );
-		this.frigateButton.addActionListener( this );
-		this.lobbyButtonGroup.add( frigateButton );
-		this.frigateButton.setSelected( true );
+                //      radio button selections
+                this.lobbyButtonGroup   = new ButtonGroup();
+                this.sloopButton                = new JRadioButton( "Sloop" );
+                this.sloopButton.setActionCommand( "sloop_selected" );
+                this.sloopButton.addActionListener( this );
+                this.lobbyButtonGroup.add( sloopButton );
+                
+                this.frigateButton              = new JRadioButton( "Frigate" );
+                this.frigateButton.setActionCommand( "frigate_selected" );
+                this.frigateButton.addActionListener( this );
+                this.lobbyButtonGroup.add( frigateButton );
+                this.frigateButton.setSelected( true );
 
-		this.manOwarButton		= new JRadioButton( "Man-o-war" );
-		this.manOwarButton.setActionCommand( "man-o-war_selected" );
-		this.manOwarButton.addActionListener( this );
-		this.lobbyButtonGroup.add( manOwarButton );
+                this.manOwarButton              = new JRadioButton( "Man-o-war" );
+                this.manOwarButton.setActionCommand( "man-o-war_selected" );
+                this.manOwarButton.addActionListener( this );
+                this.lobbyButtonGroup.add( manOwarButton );
 
-		this.lobbyWindow.add( this.sloopButton, BorderLayout.LINE_START );
-		this.lobbyWindow.add( this.frigateButton, BorderLayout.CENTER );
-		this.lobbyWindow.add( this.manOwarButton, BorderLayout.LINE_END  );
-		this.lobbyWindow.add( this.bottomButtonPanel, BorderLayout.PAGE_END );
+                this.lobbyWindow.add( this.sloopButton, BorderLayout.LINE_START );
+                this.lobbyWindow.add( this.frigateButton, BorderLayout.CENTER );
+                this.lobbyWindow.add( this.manOwarButton, BorderLayout.LINE_END  );
+                this.lobbyWindow.add( this.bottomButtonPanel, BorderLayout.PAGE_END );
 
-	}
-	public void createSpeedTable()
-	{
-		this.speedTable = new HashMap<String, String>();
-		
-		BufferedReader reader = null;
-		
-		try {
-			reader = new BufferedReader(new FileReader(new File("./SpeedTable.txt")));
-			
-			String temp;
-			while ((temp = reader.readLine()) != null){
-				StringTokenizer mTokenizer;
-				if( temp != null )
-				{ 
-					mTokenizer = new StringTokenizer( temp, "," );
-					if( mTokenizer.countTokens() == 2 )
-					{
-						this.speedTable.put(mTokenizer.nextToken(), mTokenizer.nextToken());
-					}
-				}
-			}
-			
-		} catch (FileNotFoundException e) {
-			System.out.print("The file isn't found");
-		} catch(IOException e1){
-			System.out.print("file input exception");
-		}
-		
-		try {
-			if (reader != null) {
-				reader.close();
-			} 
-		}catch (IOException e2) {
-			System.out.print("Error closing the file: Memory Leak!");
-		}
-	}
-	public void paint ( Graphics g )
-    {
-		
-		Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
-		//	draw world
-        this.gameWorld.draw(g, playerPos);
-		//	draw ships
+        }
+        public void paint ( Graphics g )
+    {        
+        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
         
-        for (String key : this.shipList.keySet()) {
-            this.shipList.get(key).draw(g, playerPos, targetID);
-        }//  draw chrome
-       
+        if (playerPos != null) 
+        {
+            //      draw world
+        	this.gameWorld.draw(g, playerPos);
+            //      draw ships
+        
+        	for (String key : this.shipList.keySet()) {
+        		this.shipList.get(key).draw(g, playerPos, targetID);
+        	}//  draw chrome
+        }
     }
     public void update()
     {
         //update ships
-    	for (String key : shipList.keySet()) {
+        for (String key : shipList.keySet()) {
             this.shipList.get(key).update(this.gameWorld.getWindDirection());
         }
         //update world
         //update chrome
-    	this.repaint();
+        this.repaint();
     }
-	public void actionPerformed( ActionEvent e )
-	{
-		System.out.println( "A button is clicked" );
+        public void actionPerformed( ActionEvent e )
+        {
+                System.out.println( "A button is clicked" );
 
-		if ( e.getActionCommand().equals( "sloop_selected" ) )
-		{
-			System.out.println( "SLOOP class ship selected" );
-			//	set the variable for the user's ship preference
-			this.shipSelection = 0;
-		}
-		if ( e.getActionCommand().equals( "frigate_selected" ) )
-		{
-			System.out.println( "FRIGATE class ship selected" );
-			//	set the variable for the user's ship preference
-			this.shipSelection = 1;
-		}
-		if ( e.getActionCommand().equals( "man-o-war_selected" ) )
-		{
-			System.out.println( "MAN-O-WAR class ship selected" );
-			//	set the variable for the user's ship preference
-			this.shipSelection = 2;
-		}	
-			
-		if ( e.getActionCommand().equals( "register" ) )
-		{
-			System.out.println( "REGISTER button clicked" ) ;
-			this.sloopButton.setEnabled( false );
-			this.frigateButton.setEnabled( false );
-			this.manOwarButton.setEnabled( false );
-			this.registerButton.setEnabled( false );
-			this.registerButton.setText( "Waiting for registration..." );
-			//	send REGISTER message to server
-			this.comm.sendMessage( "register:"+shipSelection+";" );
-			
-		}
-		if ( e.getActionCommand().equals( "ready" ) )
-		{
-			System.out.println( "READY button clicked" ) ;
-			this.readyButton.setEnabled( false );
-			this.readyButton.setText( "Waiting to start..." );
-			//	send READY message to server
-			this.comm.sendMessage( "ready;" );
-			
-		}
-		
+                if ( e.getActionCommand().equals( "sloop_selected" ) )
+                {
+                        System.out.println( "SLOOP class ship selected" );
+                        //      set the variable for the user's ship preference
+                        this.shipSelection = 0;
+                }
+                if ( e.getActionCommand().equals( "frigate_selected" ) )
+                {
+                        System.out.println( "FRIGATE class ship selected" );
+                        //      set the variable for the user's ship preference
+                        this.shipSelection = 1;
+                }
+                if ( e.getActionCommand().equals( "man-o-war_selected" ) )
+                {
+                        System.out.println( "MAN-O-WAR class ship selected" );
+                        //      set the variable for the user's ship preference
+                        this.shipSelection = 2;
+                }       
+                        
+                if ( e.getActionCommand().equals( "register" ) )
+                {
+                        System.out.println( "REGISTER button clicked" ) ;
+                        this.sloopButton.setEnabled( false );
+                        this.frigateButton.setEnabled( false );
+                        this.manOwarButton.setEnabled( false );
+                        this.registerButton.setEnabled( false );
+                        this.registerButton.setText( "Waiting for registration..." );
+                        //      send REGISTER message to server
+                        this.comm.sendMessage( "register:"+shipSelection+";" );
+                        
+                }
+                if ( e.getActionCommand().equals( "ready" ) )
+                {
+                        System.out.println( "READY button clicked" ) ;
+                        this.readyButton.setEnabled( false );
+                        this.readyButton.setText( "Waiting to start..." );
+                        //      send READY message to server
+                        this.comm.sendMessage( "ready;" );
+                        
+                }
+                
 
-	}
+        }
     public void keyTyped( KeyEvent pEvent )
     {
-		
+                
     }
     public void keyPressed( KeyEvent pEvent )
     {
-        //	System.out.println("Key Pressed!!!");
-		if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
+        //      System.out.println("Key Pressed!!!");
+                if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
             System.out.println("Up!");
-			//	change the current speed of the player's ship
-			this.speedAmount += SPEED_AMOUNT_INCREMENT;
+                        //      change the current speed of the player's ship
+                        this.speedAmount += SPEED_AMOUNT_INCREMENT;
 
-			if ( this.speedAmount > 1.00 )
-			{
-				this.speedAmount = 1.00;
-			}
-			
-			this.pMessage = "speed:" +  this.speedAmount + ";";			
-			comm.sendMessage(this.pMessage);
-			
-		}
-		else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
+                        if ( this.speedAmount > 1.00 )
+                        {
+                                this.speedAmount = 1.00;
+                        }
+                        
+                        this.pMessage = "speed:" +  this.speedAmount + ";";                     
+                        comm.sendMessage(this.pMessage);
+                        
+                }
+                else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
             System.out.println("Down!");
-			//	change the current speed of the player's ship
-			this.speedAmount -= SPEED_AMOUNT_INCREMENT;
+                        //      change the current speed of the player's ship
+                        this.speedAmount -= SPEED_AMOUNT_INCREMENT;
 
-			if ( this.speedAmount < 0.00 )
-			{
-				this.speedAmount = 0.00;
-			}
-			
-			this.pMessage = "speed:" +  this.speedAmount + ";";			
-			comm.sendMessage(this.pMessage);
-		}
-		else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
-        { 
-            System.out.println("Left!");
-			//	add to the amount of the turn, to a maximum of -25
-			//	turn amount is in degrees?
-			if ( this.turnAmount >= -TURN_AMOUNT_MAX )
-			{
-				this.turnAmount -= TURN_AMOUNT_INCREMENT;
-			}
-			else
-			{
-				this.turnAmount = - TURN_AMOUNT_MAX;
-			}
+                        if ( this.speedAmount < 0.00 )
+                        {
+                                this.speedAmount = 0.00;
+                        }
+                        
+                        this.pMessage = "speed:" +  this.speedAmount + ";";                     
+                        comm.sendMessage(this.pMessage);
+                }
+                else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
+                { 
+                	 System.out.println("Left!");
+                     
+                     double maxIncrement = 0;
+                     
+                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 0)
+                     {
+                     	maxIncrement = SLOOP_TURN_MAX;
+                     }
+                     
+                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 1)
+                     {
+                     	maxIncrement = FRIGATE_TURN_MAX;
+                     }
+                     
+                     if (this.shipList.get(Integer.toString(this.playerID)).getType() == 2)
+                     {
+                     	maxIncrement = MAN_OF_WAR_TURN_MAX;
+                     }
+         			//	add to the amount of the turn, to a maximum of -25
+         			//	turn amount is in degrees?
+         			if ( this.turnAmount >= -maxIncrement)
+         			{
+         				this.turnAmount -= TURN_AMOUNT_INCREMENT;
+         			}
+         			else
+         			{
+         				this.turnAmount = - maxIncrement;
+         			}
+         			
+         			this.pMessage = "setHeading:" + this.turnAmount + ";";
+         			comm.sendMessage(pMessage);
 
-		}
-		else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
-        {
-            System.out.println("Right!");
-			//	add to the amount of the turn, to a maximum of +25
-			//	turn amount is in degrees?
-			if ( this.turnAmount <= TURN_AMOUNT_MAX )
-			{
-				this.turnAmount += TURN_AMOUNT_INCREMENT;
-			}
-			else
-			{
-				this.turnAmount = TURN_AMOUNT_MAX;
-			}
-		}
-		else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
-        {
-        	if (this.targetID == -1){
-        		this.targetID = shipID.get(0);
-        	}
-        	
-        	for(int i = 0; i < shipID.size(); i++){
-        		if (shipID.get(i).intValue() == targetID){
-        			this.targetID = shipID.get((i+1) % shipID.size()).intValue();
-        			break;
+         		}
+                else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
+                {
+                    System.out.println("Right!");
+                    
+                    double maxIncrement = 0;
+                    
+                    if (this.shipList.get(Integer.toString(this.playerID)).getType() == 0)
+                    {
+                    	maxIncrement = SLOOP_TURN_MAX;
+                    }
+                    
+                    if (this.shipList.get(Integer.toString(this.playerID)).getType() == 1)
+                    {
+                    	maxIncrement = FRIGATE_TURN_MAX;
+                    }
+                    
+                    if (this.shipList.get(Integer.toString(this.playerID)).getType() == 2)
+                    {
+                    	maxIncrement = MAN_OF_WAR_TURN_MAX;
+                    }
+        			//	add to the amount of the turn, to a maximum of -25
+        			//	turn amount is in degrees?
+        			if ( this.turnAmount <= maxIncrement)
+        			{
+        				this.turnAmount += TURN_AMOUNT_INCREMENT;
+        			}
+        			else
+        			{
+        				this.turnAmount = maxIncrement;
+        			}
+        			
+        			this.pMessage = "setHeading:" + this.turnAmount + ";";
+        			comm.sendMessage(pMessage);
         		}
-        	}
-        	System.out.println(this.targetID);
+                else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
+        {
+                if (this.targetID == -1){
+                        this.targetID = shipID.get(0);
+                }
+                
+                for(int i = 0; i < shipID.size(); i++){
+                        if (shipID.get(i).intValue() == targetID){
+                                this.targetID = shipID.get((i+1) % shipID.size()).intValue();
+                                break;
+                        }
+                }
+                System.out.println(this.targetID);
             System.out.println("TAB!");
-		}
+                }
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
-        	System.out.println("Space!");
+                System.out.println("Space!");
         }
-	}
+        }
     public void keyReleased(KeyEvent e)
     {
-		
-		//	send message
-		System.out.println( "sending message to the server" );
-		System.out.println( "Turning " + turnAmount + " degrees." );
-		System.out.println( "Speed requested " + speedAmount );
-		//	clear turnAmount, speedChange, and other message specific variables
-		this.turnAmount = 0;
+                
+                //      send message
+                System.out.println( "sending message to the server" );
+                System.out.println( "Turning " + turnAmount + " degrees." );
+                System.out.println( "Speed requested " + speedAmount );
+                //      clear turnAmount, speedChange, and other message specific variables
+                this.turnAmount = 0;
     }
     public void handleMessage(Message pMessage)
-	{
+        {
         /*
          * Gameplay Messages
          */
         if( pMessage.getMessageName().equals( "shipState" ) )
         {
                     this.shipList.get(pMessage.getArgument( 0 )).updateShip( 
-                                        Integer.parseInt( pMessage.getArgument( 1 ) ),		// int x
-                                        Integer.parseInt( pMessage.getArgument( 2 ) ),		// int y
-                                        Double.parseDouble( pMessage.getArgument( 3 ) ),	// double speed
-                                        Integer.parseInt( pMessage.getArgument( 4 ) ),		// int direction
-                                        Double.parseDouble( pMessage.getArgument( 5 ) )		// double damage
-                                 	  );
+                                        Integer.parseInt( pMessage.getArgument( 1 ) ),          // int x
+                                        Integer.parseInt( pMessage.getArgument( 2 ) ),          // int y
+                                        Double.parseDouble( pMessage.getArgument( 3 ) ),        // double speed
+                                        Integer.parseInt( pMessage.getArgument( 4 ) ),          // int direction
+                                        Double.parseDouble( pMessage.getArgument( 5 ) )         // double damage
+                                          );
             
         }
         else if( pMessage.getMessageName().equals( "ship" ) )
@@ -380,7 +388,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             this.shipList.put( pMessage.getArgument( 0 ), new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
                                         Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
             if (Integer.parseInt( pMessage.getArgument( 0 )) != playerID){
-            	shipID.add(new Integer( pMessage.getArgument( 0 )));
+                shipID.add(new Integer( pMessage.getArgument( 0 )));
             }
         }
         else if( pMessage.getMessageName().equals( "wind" ) )
@@ -422,18 +430,18 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         else if( pMessage.getMessageName().equals( "registered" ) )
         {
             this.playerID = Integer.parseInt( pMessage.getArgument( 0 ) );
-			//	set register button to "registered"
-			this.registerButton.setText( "Registered!" );
-			this.readyButton.setText( "Waiting for map" );
+                        //      set register button to "registered"
+                        this.registerButton.setText( "Registered!" );
+                        this.readyButton.setText( "Waiting for map" );
         }
         else if( pMessage.getMessageName().equals( "shore" ) )
         {
             // if shore x set ready button active
             if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
             {
-//				this.lobbyWindow.setVisible( true );
-				this.readyButton.setEnabled( true );
-				this.readyButton.setText( "Ready to start?" );
+//                              this.lobbyWindow.setVisible( true );
+                                this.readyButton.setEnabled( true );
+                                this.readyButton.setText( "Ready to start?" );
 
             }
             // handle shore 
@@ -466,9 +474,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 this.comm.disconnect( );
             }
         }
-	}
+        }
     public static void main(String[] args)
-	{
-		Game game = new Game();
-	}
+        {
+                Game game = new Game();
+        }
 }
