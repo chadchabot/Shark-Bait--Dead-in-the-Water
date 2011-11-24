@@ -36,7 +36,7 @@ public class World extends Sprite{
     //      default constructor
     public World ( ) {
         super("worlds","water");
-        this.windDirection  = 0;
+        this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
         this.weatherState   = 0;
@@ -48,7 +48,7 @@ public class World extends Sprite{
     }
     public World (int pWidth, int pHeight, String pBack) {
         super("world",pBack);
-        this.windDirection  = 0;
+        this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
         this.weatherState   = 0;

@@ -87,10 +87,12 @@ public class Ship extends Sprite{
             
         }
     }
-    public void updateShip ( int pX, int pY, double pSpeed, int pHeading, double pHealth ) {
+    public void updateShip ( int pX, int pY, double pSpeed, double pHeading, double pHealth ) {
+        
+        System.out.println("UPDATESHIP:"+pX+":"+pY+":"+pSpeed+":"+new Double(pHeading).intValue()+":"+pHealth);
         this.position = new Point( pX, pY );
         this.speed = pSpeed;
-        this.heading = pHeading;
+        this.heading = new Double(pHeading).intValue();
         this.health = pHealth;
     }
     

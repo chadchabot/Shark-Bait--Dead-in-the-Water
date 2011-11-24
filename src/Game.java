@@ -170,10 +170,12 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             //      draw world
         	this.gameWorld.draw(g, playerPos);
             //      draw ships
-        
-        	for (String key : this.shipList.keySet()) {
-        		this.shipList.get(key).draw(g, playerPos, targetID);
-        	}//  draw chrome
+            if(shipList.size() > 0)
+            {
+                for (String key : this.shipList.keySet()) {
+                    this.shipList.get(key).draw(g, playerPos, targetID);
+                }//  draw chrome
+            }
         }
     }
     public void update()
@@ -386,7 +388,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                                         Integer.parseInt( pMessage.getArgument( 1 ) ),          // int x
                                         Integer.parseInt( pMessage.getArgument( 2 ) ),          // int y
                                         Double.parseDouble( pMessage.getArgument( 3 ) ),        // double speed
-                                        Integer.parseInt( pMessage.getArgument( 4 ) ),          // int direction
+                                        Double.parseDouble( pMessage.getArgument( 4 ) ),          // int direction
                                         Double.parseDouble( pMessage.getArgument( 5 ) )         // double damage
                                           );
             
