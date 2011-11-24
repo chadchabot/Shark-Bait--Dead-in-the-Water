@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -14,6 +12,7 @@ import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -104,7 +103,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		BufferedReader reader = null;
 		
 		try {
-			reader = new BufferedReader(new FileReader(new File("c://SpeedTable.txt")));
+			reader = new BufferedReader(new FileReader(new File("SpeedTable.txt")));
 			
 			String temp;
 			while ((temp = reader.readLine()) != null){
@@ -135,12 +134,13 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	}
     public void paint ( Graphics g )
     {
+        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
 		//	draw world
         this.gameWorld.draw(g, playerPos);
 		//	draw ships
         
         for (String key : this.shipList.keySet()) {
-            this.shipList.get(key).draw(g);
+            this.shipList.get(key).draw(g, playerPos);
         }//  draw chrome
        
     }
