@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.DataOutputStream;
@@ -19,20 +21,25 @@ public class Server
             client_out.writeBytes("shore:x;");
             client_out.writeBytes("start;");
             client_out.writeBytes("ship:1:0;");
+            client_out.writeBytes("ship:2:0;");
+            client_out.writeBytes("ship:3:0;");
+            client_out.writeBytes("ship:4:0;");
+            try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            client_out.writeBytes("shipState:1:400:450:1:45:0;");
+            client_out.writeBytes("shipState:2:400:450:2:33:0;");
+            client_out.writeBytes("shipState:3:400:450:3:206:0;");
+            client_out.writeBytes("shipState:4:400:450:4:349:0;");
             try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-            client_out.writeBytes("shipState:1:300:0:5:180:0;");
-            try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            client_out.writeBytes("shipState:1:0:300:0:0:0;");
     //		client_out.writeBytes("gameover;");
             client_out.close();
             connection.close();

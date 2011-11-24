@@ -1,3 +1,15 @@
+package SharkBait;
+
+import java.util.ArrayList;
+import java.util.ListIterator;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Rectangle;
+
 import java.util.ArrayList;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -76,6 +88,7 @@ public class World extends Sprite{
                                         0, 0, this.sHeight,this.sWidth, null);
             }
         }
+        
         for(int i = 0; i< this.shore.size(); i++)
         {
             
@@ -89,6 +102,10 @@ public class World extends Sprite{
                 
                 g.setColor(Color.YELLOW);
                 g.drawPolygon(this.shore.get(i));
+                
+                //Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
+                //Rectangle bounds = new Rectangle(copy.getBounds());
+                //Point center = new Point((int)bounds.getWidth()/2, (int)bounds.getHeight()/2);
         }
     }
     /*
