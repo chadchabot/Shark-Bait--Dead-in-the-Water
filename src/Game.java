@@ -188,14 +188,12 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 
 			//  draw chrome
 			this.gameGUI.draw( g, this.shipList, this.playerID, this.targetID );
-=======
             if(shipList.size() > 0)
             {
                 for (String key : this.shipList.keySet()) {
                     this.shipList.get(key).draw(g, playerPos, targetID);
                 }//  draw chrome
             }
->>>>>>> .r53
         }
     }
     public void update()
