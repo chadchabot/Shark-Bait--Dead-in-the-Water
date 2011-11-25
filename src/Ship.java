@@ -8,23 +8,30 @@ public class Ship extends Sprite{
 	public static final int 	PIXELS_PER_METER = 1;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
-    public static final int     SLOOP_W_M = 20;
+    
+	public static final int     SLOOP_W_M = 20;
     public static final int     SLOOP_H_M = 20;
     public static final int     SLOOP_SPEED = 50;
-    public static final int     FRIGATE_W_M = 20;
+    public static final double	SLOOP_HP = 3.0;
+	
+	public static final int     FRIGATE_W_M = 20;
     public static final int     FRIGATE_H_M = 60;
     public static final int     FRIGATE_SPEED = 70;
+    public static final double	FRIGATE_HP = 4.0;
+	
     public static final int     MOW_W_M = 20;
     public static final int     MOW_H_M = 80;
     public static final int     MOW_SPEED = 90;
+    public static final double	MOW_HP = 5.0;
 
     private int     shipID;
     private double  speed;
-    private int         speedFactor;
+    private int     speedFactor;
     private int     type;
     private Point   position;
     private int     heading;
     private double  health;
+	private double	healthMAX;
     private int     status;
     private boolean firing;
     private int     shipWidthM;
@@ -43,10 +50,10 @@ public class Ship extends Sprite{
         this.type       = 0;
         this.position   = new Point(10,10);
         this.heading    = 270;
-        this.health     = 125.5;
+//        this.health     = 125.5;
         this.status     = 1;
         this.firing     = false;
-         this.setupShipStats();
+		this.setupShipStats();
     }
     
     public Ship ( int pID, int pType ) 
@@ -57,10 +64,10 @@ public class Ship extends Sprite{
         this.type       = pType;
         this.position   = new Point(50, 50);
         this.heading    = 270;
-        this.health     = 125.5;
+//        this.health     = 125.5;
         this.status     = 1;
         this.firing     = false;
-         this.setupShipStats();
+		this.setupShipStats();
     }
     public void setupShipStats()
     {
@@ -70,21 +77,26 @@ public class Ship extends Sprite{
             this.speedFactor = SLOOP_SPEED;
             this.shipWidthM = SLOOP_W_M;
             this.shipHeightM = SLOOP_H_M;
+			this.health = SLOOP_HP;
+			this.healthMAX = SLOOP_HP;
         }
         else if(this.type == 1)
         {
             this.loadImage("default","frigate");
-            this.speedFactor = FRIGATE_SPEED;
-            this.shipWidthM = FRIGATE_W_M;
-            this.shipHeightM = FRIGATE_H_M;
+            this.speedFactor	= FRIGATE_SPEED;
+            this.shipWidthM		= FRIGATE_W_M;
+            this.shipHeightM	= FRIGATE_H_M;
+			this.health			= FRIGATE_HP;
+			this.healthMAX		= FRIGATE_HP;
         }
         else if(this.type == 2)
         {
             this.loadImage("default","mow");
-            this.speedFactor = SLOOP_SPEED;
-            this.shipWidthM = MOW_W_M;
-            this.shipHeightM = MOW_H_M;
-            
+            this.speedFactor	= SLOOP_SPEED;
+            this.shipWidthM		= MOW_W_M;
+            this.shipHeightM	= MOW_H_M;
+   			this.health			= MOW_HP;
+			this.healthMAX		= MOW_HP;
         }
     }
     public void updateShip ( int pX, int pY, double pSpeed, double pHeading, double pHealth ) {
@@ -193,7 +205,12 @@ public class Ship extends Sprite{
     {
                 return this.health;
         }
-        public double getSpeed ( ) 
+	public double getHealthMAX ( ) 
+    {
+		return this.healthMAX;
+	}
+	
+	public double getSpeed ( ) 
     {
                 return this.speed;
         }

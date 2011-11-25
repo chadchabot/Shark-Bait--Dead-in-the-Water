@@ -22,12 +22,12 @@ public class Sprite {
         }
     public Sprite (String pName ) {
         this.name = pName;
-                frames = new HashMap<String, BufferedImage>( );
-                this.position = new Point(0,0);
-        }
+        frames = new HashMap<String, BufferedImage>( );
+        this.position = new Point(0,0);
+    }
     
-        public Sprite ( String pName, String pFileName )
-    {
+    public Sprite ( String pName, String pFileName )
+	{
         frames = new HashMap<String, BufferedImage>( );
         this.position = new Point(0,0);
         this.name = pName;
@@ -52,7 +52,7 @@ public class Sprite {
         }
         catch ( IOException e )
         {
-            System.out.println("Can't load image: loadImage() ARGGGG");
+            System.out.println("Can't load image: loadImage("+ pFileName +") ARGGGG");
         }
         }
         

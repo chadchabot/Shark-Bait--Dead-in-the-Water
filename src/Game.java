@@ -30,20 +30,27 @@ import java.awt.Dimension;
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
-    public static final int         REFRESH_RATE = 60;
-    public static final int         PIXELS_PER_METER = 1;
-    public static final int         PLAYER_X_CENTER = 500;
-    public static final int         PLAYER_Y_CENTER = 300;
-    public	static final int     SLOOP_TURN_MAX = 3;
-    public	static final int     FRIGATE_TURN_MAX = 2;
-    public	static final int     MAN_OF_WAR_TURN_MAX = 1;
-    public  static final double     TURN_AMOUNT_INCREMENT = 0.5;
-    public  static final double     SPEED_AMOUNT_INCREMENT = 0.10;
+    public static final int						REFRESH_RATE = 60;
+    public static final int						PIXELS_PER_METER = 1;
+    public static final int						PLAYER_X_CENTER = 500;
+    public static final int						PLAYER_Y_CENTER = 300;
+    public static final int						SLOOP_TURN_MAX = 3;
+    public static final int						FRIGATE_TURN_MAX = 2;
+    public static final int						MAN_OF_WAR_TURN_MAX = 1;
+    public static final double					TURN_AMOUNT_INCREMENT = 0.5;
+    public static final double					SPEED_AMOUNT_INCREMENT = 0.10;
     
-    private GUI                                     gameGUI;
-    protected HashMap<String, Ship> shipList;
-    private ArrayList<Integer>      shipID;
-    public HashMap<String, String> speedTable;
+	private static final int					windowWidth  = 1024;
+	private static final int					windowHeight = 768;
+	
+	
+    private GUI                                 gameGUI;
+	private	boolean								windUpdateFLAG = false;
+	
+	
+    protected HashMap<String, Ship>				shipList;
+    private ArrayList<Integer>					shipID;
+    public	HashMap<String, String>				speedTable;
     private World                               gameWorld = null;
     private int                                 playerID;
     private boolean                             gameRunning = false;
@@ -54,9 +61,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         
     private     JFrame                          frame;
         
-        public  Communication           comm;
-    public      Thread                          commThread;
-        
+    public  Communication						comm;
+    public  Thread								commThread;
+	public	String								serverIP;
         
         
         //      wait lobby gui components
@@ -79,31 +86,34 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         
         
         
-    public Game()
-        {
-                createLobby();
-                this.lobbyWindow.setVisible( true );
+    public Game( String pServerIP )
+	{
+		this.serverIP = pServerIP;
+		createLobby();
+        this.lobbyWindow.setVisible( true );
         
 //        System.out.println(SpeedTable.speedTable[45]);
                 
         this.shipList = new HashMap<String, Ship>();
         this.shipID = new ArrayList<Integer>();
         this.gameWorld = new World( );
-        //this.gameGUI = new GUI( );
+
         this.frame = new JFrame ("Shark Bait");
-      
+        this.gameGUI = new GUI( );
+
         
         this.frame.setResizable(true);
         this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-                this.frame.setResizable( false );
+        this.frame.setResizable( false );
         this.frame.pack();
-        this.frame.setSize(1024, 768);
-        this.frame.add(this, BorderLayout.CENTER);
-        this.frame.setFocusTraversalKeysEnabled(false);
-                this.frame.addKeyListener( this );
+        this.frame.setSize(this.windowWidth, this.windowHeight);
+        this.frame.add( this, BorderLayout.CENTER );
+	
+		this.frame.setFocusTraversalKeysEnabled(false);
+        this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
                 //thread.start();
-                this.commThread = new Thread(this.comm = new Communication(this, "localhost", 5283));
+                this.commThread = new Thread(this.comm = new Communication(this, pServerIP, 5283));
                 this.commThread.start();
                 while(true){
                         try {
@@ -135,7 +145,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 this.registerButton.addActionListener( this );
                 this.readyButton.setActionCommand( "ready" );
                 this.readyButton.addActionListener( this );
-                this.lobbyWindow.setSize( 800, 640 );
+                this.lobbyWindow.setSize( 300, 250 );
 
                 //      radio button selections
                 this.lobbyButtonGroup   = new ButtonGroup();
@@ -161,21 +171,31 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 this.lobbyWindow.add( this.bottomButtonPanel, BorderLayout.PAGE_END );
 
         }
-        public void paint ( Graphics g )
+	public void paint ( Graphics g )
     {        
         Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
         
-        if (playerPos != null) 
+        if ( playerPos != null )
         {
             //      draw world
         	this.gameWorld.draw(g, playerPos);
+
             //      draw ships
+        
+        	for (String key : this.shipList.keySet()) {
+        		this.shipList.get(key).draw(g, playerPos, targetID);
+        	}
+
+			//  draw chrome
+			this.gameGUI.draw( g, this.shipList, this.playerID, this.targetID );
+=======
             if(shipList.size() > 0)
             {
                 for (String key : this.shipList.keySet()) {
                     this.shipList.get(key).draw(g, playerPos, targetID);
                 }//  draw chrome
             }
+>>>>>>> .r53
         }
     }
     public void update()
@@ -185,6 +205,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             this.shipList.get(key).update(this.gameWorld.getWindDirection());
         }
         //update world
+		if (this.windUpdateFLAG == true) {
+			this.gameGUI.update( this.gameWorld.getWindDirection(), this.gameWorld.getWindSpeed() );
+			this.windUpdateFLAG = false;
+		}
         //update chrome
         this.repaint();
     }
@@ -403,9 +427,16 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         }
         else if( pMessage.getMessageName().equals( "wind" ) )
         {
-            this.gameWorld.setWindSpeed( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-            this.gameWorld.setWindDirection( Integer.parseInt( pMessage.getArgument( 1 ) ) );
-        }
+			this.windUpdateFLAG = true;
+            this.gameWorld.setWindDirection( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+			this.gameGUI.setWindDirection( Integer.parseInt( pMessage.getArgument( 0 ) ) );
+			
+/*
+			//	is windSpeed part of the message?
+            this.gameWorld.setWindSpeed( Integer.parseInt( pMessage.getArgument( 1 ) ) );
+            this.gameGUI.setWindSpeed( Integer.parseInt( pMessage.getArgument( 1 ) ) );
+*/
+		}
         else if( pMessage.getMessageName().equals( "fog" ) )
         {
             this.gameWorld.setFog( Integer.parseInt( pMessage.getArgument( 0 ) ) );
@@ -487,6 +518,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         }
     public static void main(String[] args)
         {
-                Game game = new Game();
+                Game game = new Game( args[0] );
         }
 }
