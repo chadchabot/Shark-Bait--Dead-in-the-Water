@@ -15,7 +15,7 @@ public class Server
             System.out.println("Accepted");
             DataOutputStream client_out = new DataOutputStream(connection.getOutputStream());
 			try {
-				Thread.sleep(3000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -47,20 +47,6 @@ public class Server
             client_out.writeBytes("ship:4:2;\n");
             client_out.writeBytes("ship:5:2;\n");
             client_out.writeBytes("shipState:5:600:250:0:0:4.0;\n");
-            try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			client_out.writeBytes("wind:270;\n");
-            client_out.writeBytes("shipState:1:400:450:1:45:3.0;\n");
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
             client_out.writeBytes("shipState:1:400:450:1:45:1.5;\n");
             client_out.writeBytes("shipState:2:400:450:2:33:2.0;\n");
 			try {
@@ -79,14 +65,18 @@ public class Server
 				e.printStackTrace();
 			}
 			client_out.writeBytes("shipState:1:400:450:1:45:0.5;\n");
-            client_out.writeBytes("wind:0;\n");
-			System.out.println( "wind:0;" ); 
+			client_out.writeBytes("firing:1:4;\n");
             try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			client_out.writeBytes("shipState:4:440:450:1:45:0.0;\n");
+
+            client_out.writeBytes("wind:0;\n");
+			System.out.println( "wind:0;" ); 
 			
             client_out.writeBytes("wind:270;\n");
 			System.out.println( "wind:270;" ); 

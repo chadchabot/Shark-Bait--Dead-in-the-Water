@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -35,9 +33,11 @@ public class Ship extends Sprite{
     private double  health;
 	private double	healthMAX;
     private int     status;
-    private boolean firing;
+	
+    private boolean firing = false;
     private boolean enemy = false;
-    private int     shipWidthM;
+    
+	private int     shipWidthM;
     private int     shipHeightM;
     private int		frame = 0;
     
@@ -76,8 +76,8 @@ public class Ship extends Sprite{
         {
         	if ( this.shipID != playerID )
         	{
-        		this.loadImage("default","sloop2");
-        		this.loadImage("firing", "sloop_f2");
+        		this.loadImage("default","sloop_enemy");
+        		this.loadImage("firing", "sloop_enemy_f");
         		this.loadImage("dead", "dead");
         	} 
         	else 
@@ -96,8 +96,8 @@ public class Ship extends Sprite{
         {
         	if ( this.shipID != playerID )
         	{
-        		this.loadImage("default","frigate2");
-        		this.loadImage("firing", "frigate_f2");
+        		this.loadImage("default","frigate_enemy");
+        		this.loadImage("firing", "frigate_enemy_f");
         		this.loadImage("dead", "dead");
         	} 
         	else 
@@ -116,8 +116,8 @@ public class Ship extends Sprite{
         {
         	if ( this.shipID != playerID )
         	{
-        		this.loadImage("default","mow2");
-        		this.loadImage("firing", "mow_f2");
+        		this.loadImage("default","mow_enemy");
+        		this.loadImage("firing", "mow_enemy_f");
         		this.loadImage("dead", "dead");
         	} 
         	else 
@@ -146,11 +146,11 @@ public class Ship extends Sprite{
     {
 
         int angleDiff = 0;
-        pWindDir = pWindDir - 180;
+       /* pWindDir = pWindDir - 180;
         if(pWindDir < 0)
         {
             pWindDir = pWindDir + 360;
-        }
+        }*/
         if(Math.abs(pWindDir-this.heading) <= 180)
         {
             angleDiff = Math.abs(pWindDir-this.heading);
@@ -180,30 +180,35 @@ public class Ship extends Sprite{
            this.deltaY = 0;
         }
        
-        if (this.health == 0)
+        if ( this.health == 0 )
       	{
       		this.currentState = "dead";
       	}
-        else if ( firing )
+		else 
+        {
+        	this.currentState = "default";
+        }
+		
+        if ( firing )
        	{
-        	this.frame++; 
-        	if (frame == 6) {
-        		this.currentState = "default";
-        		this.firing = false;
-        		this.frame = 0;
-        	}
-        	else if ( this.currentState == "default" ) {
+			System.out.println( "holy nuckits! I'm FIRING!\t frame:" + this.frame );
+			this.frame++; 
+			if ( this.currentState == "default" ) {
        			this.currentState = "firing";
        		}
        		else
        		{
        			this.currentState = "default";
        		}
+
+			if (frame == 6) {
+        		this.currentState = "default";
+        		this.firing = false;
+        		this.frame = 0;
+        	}
+			
        	}
-        else 
-        {
-        	currentState = "default";
-        }
+
        	
     
     }
@@ -255,9 +260,10 @@ public class Ship extends Sprite{
     {
                 this.status = pStatus;
         }
-        public void setFiring( boolean bool )
+        public void setFiring( boolean pBool )
     {
-        		this.firing = bool;
+		System.out.println( "setFiring() called" );
+        		this.firing = pBool;
         }
         /*
      * Accessors

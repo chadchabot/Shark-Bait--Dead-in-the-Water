@@ -393,7 +393,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         else if( pMessage.getMessageName().equals( "ship" ) )
         {
             this.shipList.put( pMessage.getArgument( 0 ), new Ship( Integer.parseInt( pMessage.getArgument( 0 ) ), 
-                                        Integer.parseInt(pMessage.getArgument( 1 ) ) ) );
+                                        Integer.parseInt(pMessage.getArgument( 1 ) ), this.playerID ) );
             if (Integer.parseInt( pMessage.getArgument( 0 )) != playerID){
                 shipID.add(new Integer( pMessage.getArgument( 0 )));
             }
@@ -425,6 +425,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         else if( pMessage.getMessageName().equals( "firing" ) )
         {
             //needs to be implemented
+//			this.shipList.get( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
+			this.shipList.get( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
+
         }
         /*
          * Setup Messages

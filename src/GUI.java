@@ -25,7 +25,7 @@ public class GUI extends Sprite
     public GUI( )
     {
 		this.windSockPosition = new Point( 923, 61 );
-        this.windDirection = 180;
+        this.windDirection = 45;
 		this.windSpeed = 0;
 		this.loadImage("default","compass_arrow");
         
@@ -36,7 +36,7 @@ public class GUI extends Sprite
     public void update ( int pWindDir, int pWindSpeed  ) 
     {
 		System.out.println( "updating the wind in GUI" );
-//		pWindDir = pWindDir - 90;
+//		pWindDir = pWindDir + 180;
 		
         this.windDirection = pWindDir;
         this.windSpeed   = pWindSpeed;
@@ -83,7 +83,7 @@ public class GUI extends Sprite
 				g2D.fillRect( 150, 63 + counter * rectOffset, hpBarFill, 20 );
 				g2D.setColor( Color.white );
 				g2D.drawRect( 150, 63 + counter * rectOffset, 100, 20 );
-				System.out.println( shipHealth + " " + shipHealthMAX + " " + hpBarFill );			
+//				System.out.println( shipHealth + " " + shipHealthMAX + " " + hpBarFill );			
 				counter++;
 			}
 			else
@@ -91,18 +91,19 @@ public class GUI extends Sprite
 				g2D.drawString( "SHIP HP" , 700, 675 );
 				g2D.fillRect( 825, 655, (int)(hpBarFill*1.5), 30 );
 				g2D.drawRect( 825, 655, 150, 30 );
+				g2D.drawString( "(X, Y): (" + pShipList.get(key).getPosition().x + ","+pShipList.get(key).getPosition().y +")", 700, 725 );
 			}
 
 		}
 		
-        g2D.rotate( (Math.toRadians(this.windDirection)),
+        g2D.rotate( (Math.toRadians(this.windDirection + 180)),
 				    this.windSockPosition.x + this.imgWidth/2,
 				    this.windSockPosition.y + this.imgWidth/2 );
         g2D.drawImage(this.frames.get(this.currentState), 
                       this.windSockPosition.x, this.windSockPosition.y,
 					  this.imgWidth, this.imgWidth,
                       null);
-        g2D.rotate( -1*(Math.toRadians(this.windDirection)),
+        g2D.rotate( -1*(Math.toRadians(this.windDirection + 180)),
 				   this.windSockPosition.x + this.imgWidth/2,
 				   this.windSockPosition.y + this.imgWidth/2 );		
     }
