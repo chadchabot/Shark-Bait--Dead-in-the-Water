@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -34,8 +36,10 @@ public class Ship extends Sprite{
 	private double	healthMAX;
     private int     status;
     private boolean firing;
+    private boolean enemy = false;
     private int     shipWidthM;
     private int     shipHeightM;
+    private int		frame = 0;
     
     private double deltaX; 
     private double deltaY;
@@ -50,13 +54,11 @@ public class Ship extends Sprite{
         this.type       = 0;
         this.position   = new Point(10,10);
         this.heading    = 270;
-//        this.health     = 125.5;
         this.status     = 1;
         this.firing     = false;
-		this.setupShipStats();
     }
     
-    public Ship ( int pID, int pType ) 
+    public Ship ( int pID, int pType, int playerID) 
     {
         super("ship");
         this.shipID     = pID;
@@ -64,16 +66,26 @@ public class Ship extends Sprite{
         this.type       = pType;
         this.position   = new Point(50, 50);
         this.heading    = 270;
-//        this.health     = 125.5;
         this.status     = 1;
         this.firing     = false;
-		this.setupShipStats();
+		this.setupShipStats(playerID);
     }
-    public void setupShipStats()
+    public void setupShipStats(int playerID)
     {
         if(this.type == 0)
         {
-            this.loadImage("default","sloop");
+        	if ( this.shipID != playerID )
+        	{
+        		this.loadImage("default","sloop2");
+        		this.loadImage("firing", "sloop_f2");
+        		this.loadImage("dead", "dead");
+        	} 
+        	else 
+        	{ 
+        		this.loadImage("default","sloop");
+        		this.loadImage("firing", "sloop_f");
+        		this.loadImage("dead", "dead"); 
+        	}
             this.speedFactor = SLOOP_SPEED;
             this.shipWidthM = SLOOP_W_M;
             this.shipHeightM = SLOOP_H_M;
@@ -82,8 +94,19 @@ public class Ship extends Sprite{
         }
         else if(this.type == 1)
         {
-            this.loadImage("default","frigate");
-            this.speedFactor	= FRIGATE_SPEED;
+        	if ( this.shipID != playerID )
+        	{
+        		this.loadImage("default","frigate2");
+        		this.loadImage("firing", "frigate_f2");
+        		this.loadImage("dead", "dead");
+        	} 
+        	else 
+        	{ 
+        		this.loadImage("default","frigate");
+        		this.loadImage("firing", "frigate_f");
+        		this.loadImage("dead", "dead"); 
+    		}        	
+        	this.speedFactor	= FRIGATE_SPEED;
             this.shipWidthM		= FRIGATE_W_M;
             this.shipHeightM	= FRIGATE_H_M;
 			this.health			= FRIGATE_HP;
@@ -91,7 +114,18 @@ public class Ship extends Sprite{
         }
         else if(this.type == 2)
         {
-            this.loadImage("default","mow");
+        	if ( this.shipID != playerID )
+        	{
+        		this.loadImage("default","mow2");
+        		this.loadImage("firing", "mow_f2");
+        		this.loadImage("dead", "dead");
+        	} 
+        	else 
+        	{ 
+        		this.loadImage("default","mow");
+        		this.loadImage("firing", "mow_f");
+        		this.loadImage("dead", "dead");
+        	}
             this.speedFactor	= SLOOP_SPEED;
             this.shipWidthM		= MOW_W_M;
             this.shipHeightM	= MOW_H_M;
@@ -145,6 +179,32 @@ public class Ship extends Sprite{
         {   
            this.deltaY = 0;
         }
+       
+        if (this.health == 0)
+      	{
+      		this.currentState = "dead";
+      	}
+        else if ( firing )
+       	{
+        	this.frame++; 
+        	if (frame == 6) {
+        		this.currentState = "default";
+        		this.firing = false;
+        		this.frame = 0;
+        	}
+        	else if ( this.currentState == "default" ) {
+       			this.currentState = "firing";
+       		}
+       		else
+       		{
+       			this.currentState = "default";
+       		}
+       	}
+        else 
+        {
+        	currentState = "default";
+        }
+       	
     
     }
         
@@ -158,6 +218,7 @@ public class Ship extends Sprite{
         g2D.rotate( (Math.toRadians(heading)), 
                    drawX + this.shipWidthM*PIXELS_PER_METER/2, 
                    drawY + this.shipHeightM*PIXELS_PER_METER/2 );
+        
         g2D.drawImage(this.frames.get(this.currentState), 
                       drawX, drawY,
                       this.shipWidthM*PIXELS_PER_METER,
@@ -193,6 +254,10 @@ public class Ship extends Sprite{
         public void setStatus (int pStatus ) 
     {
                 this.status = pStatus;
+        }
+        public void setFiring( boolean bool )
+    {
+        		this.firing = bool;
         }
         /*
      * Accessors
