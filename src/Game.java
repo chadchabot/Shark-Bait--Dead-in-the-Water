@@ -1,5 +1,3 @@
-package SharkBait;
-
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -48,7 +46,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	
     private GUI                                 gameGUI;
 	private	boolean								windUpdateFLAG = false;
-	
+	private boolean								shiftPressed = false;
 	
     protected HashMap<String, Ship>				shipList;
     private ArrayList<Integer>					shipID;
@@ -84,11 +82,14 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         this.lobbyWindow.lobbyWindow.setVisible(true );
         
 //        System.out.println(SpeedTable.speedTable[45]);
-                
+			
         this.shipList = new HashMap<String, Ship>();
         this.shipID = new ArrayList<Integer>();
         this.gameWorld = new World( );
 
+		//	pause the system HERE
+
+		//	until communication is established?
         this.frame = new JFrame ("Shark Bait");
         this.gameGUI = new GUI( );
 
@@ -103,29 +104,31 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		this.frame.setFocusTraversalKeysEnabled(false);
         this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
-                //thread.start();
-                this.commThread = new Thread(this.comm = new Communication(this, pServerIP, 5283));
-                this.commThread.start();
-                while(true){
-                        try {
-                                Thread.sleep(1000 / REFRESH_RATE);
-                        } catch (InterruptedException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                        }
+        //thread.start();
+        this.commThread = new Thread(this.comm = new Communication(this, pServerIP, 5283));
+        this.commThread.start();
+        while(true){
+			try {
+				Thread.sleep(1000 / REFRESH_RATE);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+                e.printStackTrace();
+			}
             if(this.gameRunning)
             {
                 this.update();
             }
-                        
-                }
+		}
         
-        }
+	}
        
 	public void paint ( Graphics g )
     {        
-        Point playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
-        
+		Point playerPos = null;
+		
+		if ( this.shipList.size() != 0 ) {
+			playerPos = this.shipList.get(Integer.toString(this.playerID)).getPosition();
+        }
         if ( playerPos != null )
         {
             //      draw world
@@ -146,6 +149,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 }//  draw chrome
             }
         }
+
     }
     public void update()
     {
@@ -214,6 +218,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     }
     public void keyPressed( KeyEvent pEvent )
     {
+		
         //      System.out.println("Key Pressed!!!");
                 if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
             System.out.println("Up!");
@@ -321,23 +326,42 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
         		}
                 else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
-        {
-                if (this.targetID == -1){
-                        this.targetID = shipID.get(0);
+				{
+					if (this.targetID == -1 && this.shipID.size() != 0 ){
+                    this.targetID = shipID.get(0);
                 }
                 
                 for(int i = 0; i < shipID.size(); i++){
-                        if (shipID.get(i).intValue() == targetID){
-                                this.targetID = shipID.get((i+1) % shipID.size()).intValue();
-                                break;
-                        }
-                }
+					if (shipID.get(i).intValue() == targetID){
+						
+/*						if ( pEvent.isShiftDown() )
+						{
+							if ( i > 0 )
+							{
+								this.targetID = shipID.get((i-1) % shipID.size()).intValue();
+							}
+							else
+							{
+								this.targetID = shipID.get((shipID.size()-1) % shipID.size()).intValue();
+							}
+
+							System.out.println( "\tShift is pressed." );
+						}
+						else {
+*/							this.targetID = shipID.get((i+1) % shipID.size()).intValue();
+//						}
+
+                        break;
+					}
+				}
                 System.out.println(this.targetID);
-            System.out.println("TAB!");
-                }
+				System.out.println("TAB!");
+			}
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
-                System.out.println("Space!");
+			System.out.println("Space!");
+			this.pMessage = "fire:" + this.targetID + ";";
+			comm.sendMessage(pMessage);
         }
         }
     public void keyReleased(KeyEvent e)

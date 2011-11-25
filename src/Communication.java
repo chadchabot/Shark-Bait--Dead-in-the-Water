@@ -74,11 +74,12 @@ class Communication implements Runnable
 					this.connection.getOutputStream() );
 			}
 			catch( IOException e ){
-				//HOW ARE WE HANDLING THIS
-				System.out.println( "Derp1" );
+				//HOW ARE WE HANDLING THIS???
+				System.out.println( "Derp1 - no server connection" );
 				this.connection = null;
 				this.server_input = null;
 				this.server_output = null;
+				System.exit( 1 );
 				return false;
 			}
 			return true;

@@ -15,7 +15,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
-public class Lobby implements ActionListener {
+public class Lobby {
 	
 	public JFrame lobbyWindow;
 	private JMenuBar 				menu;
@@ -29,8 +29,10 @@ public class Lobby implements ActionListener {
     public JRadioButton    			frigateButton;
     public JRadioButton    			manOwarButton;
     private ButtonGroup            	lobbyButtonGroup;
+	private ActionListener			listener;
 	
-	public Lobby(ActionListener Game){
+	public Lobby( ActionListener Game ){
+		this.listener = Game;
 		createLobby();	
 	}
 	
@@ -59,14 +61,14 @@ public class Lobby implements ActionListener {
     		JPanel SloopPanel = new JPanel();
     		this.sloopButton = new JRadioButton( "Sloop" );
             this.sloopButton.setActionCommand( "sloop_selected" );
-            this.sloopButton.addActionListener( this );
+			this.sloopButton.addActionListener( this.listener );
             this.lobbyButtonGroup.add( sloopButton );
             SloopPanel.add( this.sloopButton);
     		
     		JPanel FrigatePanel = new JPanel();
     		this.frigateButton = new JRadioButton( "Frigate" );
             this.frigateButton.setActionCommand( "frigate_selected" );
-            this.frigateButton.addActionListener( this );
+            this.frigateButton.addActionListener( this.listener );
             this.lobbyButtonGroup.add( frigateButton );
             this.frigateButton.setSelected( true );
             FrigatePanel.add( this.frigateButton);
@@ -76,7 +78,7 @@ public class Lobby implements ActionListener {
     		JPanel ManOfWarPanel = new JPanel();
     		this.manOwarButton = new JRadioButton( "Man-o-war" );
             this.manOwarButton.setActionCommand( "man-o-war_selected" );
-            this.manOwarButton.addActionListener( this );
+            this.manOwarButton.addActionListener( this.listener );
             this.lobbyButtonGroup.add( manOwarButton );
             ManOfWarPanel.add( this.manOwarButton);
     		
@@ -88,9 +90,9 @@ public class Lobby implements ActionListener {
             bottomButtonPanel.add( readyButton );
 
             this.registerButton.setActionCommand( "register" );
-            this.registerButton.addActionListener( this );
+            this.registerButton.addActionListener( this.listener );
             this.readyButton.setActionCommand( "ready" );
-            this.readyButton.addActionListener( this );
+            this.readyButton.addActionListener( this.listener );
             this.lobbyWindow.setSize( 300, 180 );
             
             this.lobbyWindow.add( topPanel, BorderLayout.PAGE_START);
@@ -100,18 +102,5 @@ public class Lobby implements ActionListener {
             this.lobbyWindow.add( bottomButtonPanel, BorderLayout.PAGE_END );
 
     }
-	
-	public void draw(Graphics g){
-		
-	}
-	
-	public void update (){
-		
-	}
-
-	public void actionPerformed(ActionEvent e) 
-	{
-	
-	}
 
 }
