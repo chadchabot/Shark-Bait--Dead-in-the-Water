@@ -1,3 +1,4 @@
+package SharkBait;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -35,7 +36,6 @@ public class Ship extends Sprite{
     private int     status;
 	
     private boolean firing = false;
-    private boolean enemy = false;
     
 	private int     shipWidthM;
     private int     shipHeightM;
@@ -191,7 +191,6 @@ public class Ship extends Sprite{
 		
         if ( firing )
        	{
-			System.out.println( "holy nuckits! I'm FIRING!\t frame:" + this.frame );
 			this.frame++; 
 			if ( this.currentState == "default" ) {
        			this.currentState = "firing";
@@ -201,7 +200,7 @@ public class Ship extends Sprite{
        			this.currentState = "default";
        		}
 
-			if (frame == 6) {
+			if (frame == 100) {
         		this.currentState = "default";
         		this.firing = false;
         		this.frame = 0;

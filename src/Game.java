@@ -1,3 +1,4 @@
+package SharkBait;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -424,9 +425,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         }
         else if( pMessage.getMessageName().equals( "firing" ) )
         {
-            //needs to be implemented
+        	System.out.println(Integer.parseInt( pMessage.getArgument( 0 )));
 //			this.shipList.get( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
-			this.shipList.get( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
+			this.shipList.get( pMessage.getArgument( 0 ) ).setFiring( true );
 
         }
         /*
