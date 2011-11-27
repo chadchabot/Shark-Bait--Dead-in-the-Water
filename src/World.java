@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.util.ArrayList;
 import java.util.ListIterator;
 import java.awt.BasicStroke;
@@ -14,6 +16,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
+import java.awt.geom.AffineTransform;
 
 public class World extends Sprite{
     
@@ -114,17 +117,20 @@ public class World extends Sprite{
             
             Graphics2D g2D = (Graphics2D) g;
             g2D.setStroke(new BasicStroke(10F));
-            g2D.scale( (double)PIXELS_PER_METER, (double)PIXELS_PER_METER );
+            
+            AffineTransform at = new AffineTransform();
+            at.scale(2, 2);
+            copy.getPathIterator(at);
+            
 
             
             //System.out.println("SHORES");
-            g.setColor(Color.GREEN);
-            g.drawPolygon(copy);
-            g.fillPolygon(copy);
+            g2D.setColor(Color.GREEN);
+            g2D.draw(at.createTransformedShape(copy));
+            g2D.fill(at.createTransformedShape(copy));
             
-            g.setColor(Color.YELLOW);
-            g2D.drawPolygon(copy);
-            g2D.scale( 1.0, 1.0 );
+            g2D.setColor(Color.YELLOW);
+            g2D.draw(at.createTransformedShape(copy));
             copy.reset();
         }
     }

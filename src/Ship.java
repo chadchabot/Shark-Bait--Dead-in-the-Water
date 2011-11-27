@@ -222,11 +222,10 @@ public class Ship extends Sprite{
         g2D.rotate( (Math.toRadians(heading)), 
                    drawX + this.shipWidthM*PIXELS_PER_METER/2, 
                    drawY + this.shipHeightM*PIXELS_PER_METER/2 );
-        
         g2D.drawImage(this.frames.get(this.currentState), 
                       drawX, drawY,
-                      this.shipWidthM*PIXELS_PER_METER,
-                      this.shipHeightM*PIXELS_PER_METER,
+                      this.shipWidthM*PIXELS_PER_METER*2,
+                      this.shipHeightM*PIXELS_PER_METER*2,
                       null);
         if(this.shipID == targetID){
         	g.drawOval(drawX, drawY, 
