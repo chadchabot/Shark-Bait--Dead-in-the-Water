@@ -1,6 +1,9 @@
+package SharkBait;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 
 public class Ship extends Sprite{
 
@@ -35,6 +38,7 @@ public class Ship extends Sprite{
     private int     status;
 	
     private boolean firing = false;
+    private boolean hit = false;
     
 	private int     shipWidthM;
     private int     shipHeightM;
@@ -77,14 +81,16 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","sloop_enemy");
         		this.loadImage("firing", "sloop_enemy_f");
-        		this.loadImage("dead", "dead");
+        		//this.loadImage("hit", "sloop_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","sloop");
         		this.loadImage("firing", "sloop_f");
-        		this.loadImage("dead", "dead"); 
+        		//this.loadImage("hit", "sloop_h"); 
         	}
+        	this.loadImage("dead", "dead");
+        	this.loadImage("target", "targeted_circle");
             this.speedFactor = SLOOP_SPEED;
             this.shipWidthM = SLOOP_W_M;
             this.shipHeightM = SLOOP_H_M;
@@ -97,14 +103,16 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","frigate_enemy");
         		this.loadImage("firing", "frigate_enemy_f");
-        		this.loadImage("dead", "dead");
+        		//this.loadImage("hit", "frigate_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","frigate");
         		this.loadImage("firing", "frigate_f");
-        		this.loadImage("dead", "dead"); 
-    		}        	
+        		//this.loadImage("hit", "frigate_h");
+    		}      
+        	this.loadImage("dead", "dead");
+        	this.loadImage("target", "targeted_circle");
         	this.speedFactor	= FRIGATE_SPEED;
             this.shipWidthM		= FRIGATE_W_M;
             this.shipHeightM	= FRIGATE_H_M;
@@ -117,34 +125,31 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","mow_enemy");
         		this.loadImage("firing", "mow_enemy_f");
-        		this.loadImage("dead", "dead");
+        		//this.loadImage("hit", "mow_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","mow");
         		this.loadImage("firing", "mow_f");
-        		this.loadImage("dead", "dead");
+        		//this.loadImage("hit", "mow_h");
         	}
-            this.speedFactor	= SLOOP_SPEED;
+        	this.loadImage("dead", "dead");
+        	this.loadImage("target", "targeted_circle");
+        	this.speedFactor	= SLOOP_SPEED;
             this.shipWidthM		= MOW_W_M;
             this.shipHeightM	= MOW_H_M;
    			this.health			= MOW_HP;
 			this.healthMAX		= MOW_HP;
         }
     }
-    public void updateShip ( double pX, double pY, double pSpeed, double pHeading, double pHealth ) {
+    public void updateShip ( int pX, int pY, double pSpeed, double pHeading, double pHealth ) {
         
-        this.position.setLocation( pX, pY );
+        System.out.println("UPDATESHIP:"+pX+":"+pY+":"+pSpeed+":"+new Double(pHeading).intValue()+":"+pHealth);
+        this.position = new Point( pX, pY );
         this.speed = pSpeed;
-        if(pHeading >= 0)
-        {
-            this.heading = new Double(pHeading).intValue();
-        }
-        else if(pHeading < 0)
-        {
-            this.heading = 360 + new Double(pHeading).intValue();
-        }
+        this.heading = new Double(pHeading).intValue();
         this.health = pHealth;
+        this.hit = true;
     }
     
     public void update ( int pWindDir ) 
@@ -193,28 +198,30 @@ public class Ship extends Sprite{
         {
         	this.currentState = "default";
         }
+        
+        if (hit)
+        {
+        	this.frame++;
+        	this.currentState = "hit";
+
+			if (frame == 50) {
+        		this.currentState = "default";
+        		this.hit = false;
+        		this.frame = 0;
+        	}
+        }
 		
-        if ( firing )
+        else if ( firing )
        	{
 			this.frame++; 
-			if ( this.currentState == "default" ) {
-       			this.currentState = "firing";
-       		}
-       		else
-       		{
-       			this.currentState = "default";
-       		}
+			this.currentState = "firing";
 
 			if (frame == 100) {
         		this.currentState = "default";
         		this.firing = false;
         		this.frame = 0;
         	}
-			
        	}
-
-       	
-    
     }
         
     public void draw ( Graphics g , Point playerPos, int targetID)
@@ -227,14 +234,16 @@ public class Ship extends Sprite{
         g2D.rotate( (Math.toRadians(heading)), 
                    drawX + this.shipWidthM*PIXELS_PER_METER/2, 
                    drawY + this.shipHeightM*PIXELS_PER_METER/2 );
-        g2D.drawImage(this.frames.get(this.currentState), 
-                      drawX, drawY,
+        AffineTransform at = new AffineTransform();
+        at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
+        g2D.drawImage(this.frames.get(this.currentState), drawX, drawY,
                       this.shipWidthM*PIXELS_PER_METER,
                       this.shipHeightM*PIXELS_PER_METER,
                       null);
         if(this.shipID == targetID){
-        	g.drawOval(drawX, drawY, 
-                       this.shipWidthM*PIXELS_PER_METER, this.shipHeightM*PIXELS_PER_METER );
+        	g.drawImage(this.frames.get("target"), drawX - this.shipHeightM*PIXELS_PER_METER, 
+        			drawY - this.shipHeightM*PIXELS_PER_METER, this.shipHeightM*PIXELS_PER_METER,
+                      this.shipHeightM*PIXELS_PER_METER, null);
         }
         g2D.rotate( -1*Math.toRadians(heading), 
                    drawX + this.shipWidthM*PIXELS_PER_METER/2, 
