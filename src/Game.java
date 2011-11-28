@@ -1,3 +1,5 @@
+package Sharkbait;
+
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -59,25 +61,40 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     private int                                 targetID = -1;
     private long 								lastTurn = 0;
     private Lobby								lobbyWindow;
-        
-    private     JFrame                          frame;
+	private SplashWindow						splashWindow;
+	private boolean								showLobby = false;
+	private	boolean								showSplash = true;
+    private	JFrame								frame;
         
     public  Communication						comm;
     public  Thread								commThread;
+	public	boolean								commConnection = false;
 	public	String								serverIP;
+	public	int									serverPort;
         
-        //      communication / message variables
-        
-        public  double                          turnAmount = 0.00;
-        public  double                          speedAmount = 0.00;
-        
+    //      communication / message variables
+    public  double                          turnAmount = 0.00;
+    public  double                          speedAmount = 0.00;
         
         
-    public Game( String pServerIP )
+        
+    public Game( )
 	{
-		this.serverIP = pServerIP;
-		lobbyWindow = new Lobby(this);
-    	
+		splashWindow = new SplashWindow( this );
+		
+		while ( !this.showLobby ) {
+//			System.out.println( this.showLobby );
+			try {
+				Thread.sleep( 1000 / REFRESH_RATE );
+			}
+			catch ( InterruptedException e ) {
+                e.printStackTrace();
+			}
+
+		}
+//		this.serverIP = pServerIP;
+		System.out.println( "chad is not retarded." );
+		this.lobbyWindow = new Lobby(this);
     	this.lobbyWindow.createLobby();
         this.lobbyWindow.lobbyWindow.setVisible(true );
         
@@ -105,9 +122,9 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         this.frame.addKeyListener( this );
         //Thread thread = new Thread(this);
         //thread.start();
-        this.commThread = new Thread(this.comm = new Communication(this, pServerIP, 5283));
+/*        this.commThread = new Thread(this.comm = new Communication(this, this.serverIP, this.serverPort));
         this.commThread.start();
-        while(true){
+*/        while(true){
 			try {
 				Thread.sleep(1000 / REFRESH_RATE);
 			} catch (InterruptedException e) {
@@ -169,6 +186,23 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {
             System.out.println( "A button is clicked" );
 
+			if ( e.getActionCommand().equals( "connect_to_server" ) ) {
+				System.out.println( "connecting to server" );
+				
+				this.serverIP = this.splashWindow.serverAddressField.getText();
+				this.serverPort = Integer.parseInt( this.splashWindow.serverPortField.getText() );
+				System.out.println( this.serverIP + ", " + this.serverPort );
+
+				this.commThread = new Thread(this.comm = new Communication( this, this.serverIP, this.serverPort) );
+				this.commThread.start();
+
+				this.splashWindow.frame.setVisible( false );
+
+				this.showLobby = true;
+
+				System.out.println( "showSplash is false" );
+			}
+
             if ( e.getActionCommand().equals( "sloop_selected" ) )
             {
                     System.out.println( "SLOOP class ship selected" );
@@ -209,7 +243,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     this.comm.sendMessage( "ready;" );
                     
             }
-            
+		System.out.println( "end of ActionPerformed method" );
 
     }
     public void keyTyped( KeyEvent pEvent )
@@ -593,6 +627,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     }
     public static void main(String[] args)
         {
-                Game game = new Game( args[0] );
-        }
+//                Game game = new Game( args[0] );
+                Game game = new Game( );
+		}
+
 }
