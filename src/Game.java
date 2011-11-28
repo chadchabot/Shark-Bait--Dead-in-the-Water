@@ -1,4 +1,3 @@
-package SharkBait;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -370,27 +369,27 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 int angleDiff = 0;
                 boolean firable = false;
                 //straight up
-                if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y && shipHeading == 0)
+                if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 80 && shipHeading < 100)
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 80 && shipHeading < 100)
                        ||shipHeading > 350 || shipHeading < 10 )
                     {
                         firable = true;
                     }
                 }
                 //straight right
-                else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y && shipHeading == 90)
+                else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 80 && shipHeading < 100) || (shipheading > 170 && shipHeading < 190)
+                    if(  (shipHeading > 80 && shipHeading < 100) || (shipHeading > 170 && shipHeading < 190)
                        ||shipHeading > 350 || shipHeading < 10 )
                     {
                         firable = true;
                     }
                 }
                 //straight down
-                else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y && shipHeading == 180)
+                else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 170 && shipHeading < 190)
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 170 && shipHeading < 190)
                        || (shipHeading > 80 && shipHeading < 100) )
                     {
                         firable = true;
@@ -399,7 +398,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //straight left
                 else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 170 && shipHeading < 190)
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 170 && shipHeading < 190)
                        ||shipHeading > 350 || shipHeading < 10 )
                     {
                         firable = true;
@@ -409,8 +408,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
                 {   
                     angleDiff = Math.abs(shipHeading - (int)Math.round(Math.abs(
-                    Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) ))
-                    ))); 
+                        Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) ))
+                        ))); 
                     if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
                        angleDiff < 10 || angleDiff > 350 )
                     {
@@ -421,8 +420,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
                 {
                     angleDiff = Math.abs(shipHeading - (180 - (int)Math.round(Math.abs(
-                               Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)))
-                               )))); 
+                       Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)))
+                       )))); 
                     
                     if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
                        angleDiff < 10 || angleDiff > 350 )
@@ -434,8 +433,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
                 {
                     angleDiff = Math.abs(shipHeading - (180 + (int)Math.round(  Math.abs(
-                            Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
-                    )))); 
+                         Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
+                         )))); 
                     if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) ||
                        angleDiff < 10 || angleDiff > 350 )
                     {
@@ -479,8 +478,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         if( pMessage.getMessageName().equals( "shipState" ) )
         {
                     this.shipList.get(pMessage.getArgument( 0 )).updateShip( 
-                                        Integer.parseInt( pMessage.getArgument( 1 ) ),          // int x
-                                        Integer.parseInt( pMessage.getArgument( 2 ) ),          // int y
+                                        Double.parseDouble( pMessage.getArgument( 1 ) ),          // int x
+                                        Double.parseDouble( pMessage.getArgument( 2 ) ),          // int y
                                         Double.parseDouble( pMessage.getArgument( 3 ) ),        // double speed
                                         Double.parseDouble( pMessage.getArgument( 4 ) ),          // int direction
                                         Double.parseDouble( pMessage.getArgument( 5 ) )         // double damage

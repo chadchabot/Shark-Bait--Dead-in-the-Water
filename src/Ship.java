@@ -1,4 +1,3 @@
-package SharkBait;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -133,12 +132,18 @@ public class Ship extends Sprite{
 			this.healthMAX		= MOW_HP;
         }
     }
-    public void updateShip ( int pX, int pY, double pSpeed, double pHeading, double pHealth ) {
+    public void updateShip ( double pX, double pY, double pSpeed, double pHeading, double pHealth ) {
         
-        System.out.println("UPDATESHIP:"+pX+":"+pY+":"+pSpeed+":"+new Double(pHeading).intValue()+":"+pHealth);
-        this.position = new Point( pX, pY );
+        this.position.setLocation( pX, pY );
         this.speed = pSpeed;
-        this.heading = new Double(pHeading).intValue();
+        if(pHeading >= 0)
+        {
+            this.heading = new Double(pHeading).intValue();
+        }
+        else if(pHeading < 0)
+        {
+            this.heading = 360 + new Double(pHeading).intValue();
+        }
         this.health = pHealth;
     }
     
@@ -224,8 +229,8 @@ public class Ship extends Sprite{
                    drawY + this.shipHeightM*PIXELS_PER_METER/2 );
         g2D.drawImage(this.frames.get(this.currentState), 
                       drawX, drawY,
-                      this.shipWidthM*PIXELS_PER_METER*2,
-                      this.shipHeightM*PIXELS_PER_METER*2,
+                      this.shipWidthM*PIXELS_PER_METER,
+                      this.shipHeightM*PIXELS_PER_METER,
                       null);
         if(this.shipID == targetID){
         	g.drawOval(drawX, drawY, 

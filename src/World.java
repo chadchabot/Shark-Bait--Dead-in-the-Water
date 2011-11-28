@@ -1,4 +1,3 @@
-package SharkBait;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -126,7 +125,6 @@ public class World extends Sprite{
             {
                 scaledx[j] = this.shore.get(i).xpoints[j]*PIXELS_PER_METER;
                 scaledy[j] = this.shore.get(i).ypoints[j]*PIXELS_PER_METER;
-                System.out.println("("+scaledx[j]+","+scaledy[j]+")");
             }
             
             Polygon copy = new Polygon(scaledx, scaledy, this.shore.get(i).npoints);
