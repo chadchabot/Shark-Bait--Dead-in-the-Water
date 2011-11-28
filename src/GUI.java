@@ -8,6 +8,10 @@ import java.util.HashMap;
 
 public class GUI extends Sprite
 {
+    public static final int		REFRESH_RATE = 60;
+	public static final int 	PIXELS_PER_METER = 1;
+    public static final int     PLAYER_X_CENTER = 500;
+    public static final int     PLAYER_Y_CENTER = 300;
 	
 	private int		windDirection;
 	private int		windSpeed;
@@ -28,7 +32,7 @@ public class GUI extends Sprite
         this.windDirection = 45;
 		this.windSpeed = 0;
 		this.loadImage("default","compass_arrow");
-        
+        this.loadImage("target_arrow","target_arrow");        
     }
 
 	//	?	we need to have a list of ships -> to get the health of each 
@@ -52,6 +56,7 @@ public class GUI extends Sprite
 		int rectOffset		= 30;
 		int counter			= 0;
 		int hpBarFill		= 0;
+        int target_rot      = 0;
 		g2D.drawString( "Enemy ships:", 40, 45 );
 
 		g2D.setFont( healthDisplayFont );
@@ -85,6 +90,22 @@ public class GUI extends Sprite
 				g2D.drawRect( 150, 63 + counter * rectOffset, 100, 20 );
 //				System.out.println( shipHealth + " " + shipHealthMAX + " " + hpBarFill );			
 				counter++;
+                
+                target_rot = getShipArrow(pShipList.get(key), pShipList.get(pPlayerID));
+                
+                if(target_rot > 0)
+                {
+                    g2D.rotate( (Math.toRadians(target_rot)),
+                               PLAYER_X_CENTER ,
+                               PLAYER_Y_CENTER );
+                    g2D.drawImage(this.frames.get("target_arrow"), 
+                                  PLAYER_X_CENTER-(100*PIXELS_PER_METER/2), PLAYER_Y_CENTER-(100*PIXELS_PER_METER/2),
+                                  100*PIXELS_PER_METER, 100*PIXELS_PER_METER,
+                                  null);
+                    g2D.rotate( -1*(Math.toRadians(target_rot)),
+                               PLAYER_X_CENTER ,
+                               PLAYER_Y_CENTER );
+                }
 			}
 			else
 			{
@@ -119,5 +140,61 @@ public class GUI extends Sprite
     {
 		this.windSpeed = pWindSpeed;
 	}
+    private int getShipArrow(Ship enemy, Ship player)
+    {
+        int enemyHeading = enemy.getHeading();
+        Point shipPos = player.getPosition();
+        /*Point enemyPos = enemy.getPosition();*/
+        int angle = -1;
+        //straight up
+        /*if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
+        {
+            angle = 0;
+        }
+        //straight right
+        else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
+        {
+            angle = 90;
+        }
+        //straight down
+        else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
+        {
+            angle = 180;    
+        }
+        //straight left
+        else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
+        {
+            angle = 270;
+        }
+        //top right
+        else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
+        {   
+            angle = (int)Math.round(Math.abs(Math.toDegrees( 
+                    Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                    ))); 
+        }
+        //bottom right
+        else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
+        {
+            angle = 180 - (int)Math.round(Math.abs(Math.toDegrees( 
+                    Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                    ))); 
+        }
+        //bottom left
+        else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
+        {
+            angle = 180 + (int)Math.round(Math.abs(Math.toDegrees( 
+                      Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                      )));
+        }
+        //top left
+        else if(enemyPos.x < shipPos.x && enemyPos.y < shipPos.y)
+        {
+            angle = 360 - (int)Math.round(Math.abs(Math.toDegrees( 
+                      Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                      )));
+        }*/
+        return angle;
+    }
 	
 }
