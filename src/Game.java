@@ -1,4 +1,4 @@
-package SharkBait;
+package Sharkbait;
 
 import java.awt.event.*;
 
@@ -29,7 +29,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 {
 
     public static final int						REFRESH_RATE = 60;
-    public static final int						PIXELS_PER_METER = 1;
+    public static final int						PIXELS_PER_METER = 3;
     public static final int						PLAYER_X_CENTER = 500;
     public static final int						PLAYER_Y_CENTER = 300;
     public static final int						SLOOP_TURN_MAX = 3;
