@@ -119,29 +119,39 @@ public class World extends Sprite{
         
         for(int i = 0; i< this.shore.size(); i++)
         {
-            Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
+            int scaledx[] = new int[this.shore.get(i).npoints];
+            int scaledy[] = new int[this.shore.get(i).npoints];
+            
+            for(int j = 0; j < this.shore.get(i).npoints; j++)
+            {
+                scaledx[j] = this.shore.get(i).xpoints[j]*PIXELS_PER_METER;
+                scaledy[j] = this.shore.get(i).ypoints[j]*PIXELS_PER_METER;
+                System.out.println("("+scaledx[j]+","+scaledy[j]+")");
+            }
+            
+            Polygon copy = new Polygon(scaledx, scaledy, this.shore.get(i).npoints);
             Rectangle bounds = new Rectangle(copy.getBounds());
             
             Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
             
-            drawX = PLAYER_X_CENTER - (playerPos.x - polycenter.x)*PIXELS_PER_METER;
-            drawY = PLAYER_Y_CENTER - (playerPos.y - polycenter.y)*PIXELS_PER_METER;
+            drawX = PLAYER_X_CENTER - (playerPos.x*PIXELS_PER_METER - polycenter.x);
+            drawY = PLAYER_Y_CENTER - (playerPos.y*PIXELS_PER_METER - polycenter.y);
             
-            copy.translate(drawX - polycenter.x, drawY - polycenter.y);
+            /* AffineTransform at = new AffineTransform();
+             at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
+             copy.getPathIterator(at);*/
             
-            Graphics2D g2D = (Graphics2D) g;
+            copy.translate((drawX - polycenter.x),( drawY - polycenter.y));
+            
+            Graphics2D g2D = (Graphics2D) g;     
             g2D.setStroke(new BasicStroke(10F));
             
-            AffineTransform at = new AffineTransform();
-            at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
-            copy.getPathIterator(at);
+            g.setColor(Color.GREEN);
+            g.drawPolygon(copy);
+            g.fillPolygon(copy);
             
-            g2D.setColor(Color.GREEN);
-            g2D.draw(at.createTransformedShape(copy));
-            g2D.fill(at.createTransformedShape(copy));
-            
-            g2D.setColor(Color.YELLOW);
-            g2D.draw(at.createTransformedShape(copy));
+            g.setColor(Color.YELLOW);
+            g.drawPolygon(copy);
             copy.reset();
         }
     }
