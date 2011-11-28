@@ -1,3 +1,5 @@
+package SharkBait;
+
 /**
  * @author      Bonne Justin jbonne@uoguelph.ca
  * @version     0.1                 
@@ -8,6 +10,8 @@ import java.io.DataOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
+
+import javax.swing.JOptionPane;
 
 class Communication implements Runnable
 {
@@ -130,25 +134,8 @@ class Communication implements Runnable
 					fireMessage(mIncoming);
 				}else
                 {
-                    /*
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *PUT POPUP HERE!!!
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     *
-                     */
+					JOptionPane.showMessageDialog(null, "Server is Disconnected, Now Exiting", "Server Disconnected",
+						    JOptionPane.ERROR_MESSAGE);
                     System.exit(0);
                 }
 			}
