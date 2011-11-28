@@ -522,7 +522,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         {
         	System.out.println(Integer.parseInt( pMessage.getArgument( 0 )));
 //			this.getShip( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
-			thiss.getShip( pMessage.getArgument( 0 ) ).setFiring( true );
+			this.getShip( pMessage.getArgument( 0 ) ).setFiring( true );
 
         }
         /*
