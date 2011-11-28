@@ -1,32 +1,28 @@
-package Sharkbait;
+package SharkBait;
 
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
 
+import javax.imageio.ImageIO;
 import javax.swing.JFrame;
-import javax.swing.JButton;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.StringTokenizer;
 
 import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.io.BufferedReader;
+import java.awt.Toolkit;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 
 //      for radio buttons
-import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.ButtonGroup;
-import java.awt.GridLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import java.awt.Dimension;
 
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
@@ -65,6 +61,15 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	private boolean								showLobby = false;
 	private	boolean								showSplash = true;
     private	JFrame								frame;
+    private Dimension 							Dim;
+    
+    private JFrame								helpWindow;
+    
+    private JMenuBar 							Menu;
+	private JMenu 								fileMenu;
+	private JMenu								helpMenu;
+	private JMenuItem							close;
+	private JMenuItem							help;
         
     public  Communication						comm;
     public  Thread								commThread;
@@ -92,6 +97,26 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			}
 
 		}
+	
+		this.helpWindow = new JFrame("Help Menu");
+        try {
+			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("c://help_menu.png")))));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+        this.helpWindow.setSize(748,308);
+        this.helpWindow.setLocation(200,200);
+        this.helpWindow.setResizable(false);
+        
+        Dim = Toolkit.getDefaultToolkit().getScreenSize();
+        
+        int w = this.helpWindow.getSize().width;
+		int h = this.helpWindow.getSize().height;
+		int x = (this.Dim.width-w)/2;
+		int y = (this.Dim.height-h)/2;
+		 
+		this.helpWindow.setLocation(x, y);
+		
 //		this.serverIP = pServerIP;
 		System.out.println( "chad is not retarded." );
 		this.lobbyWindow = new Lobby(this);
@@ -110,12 +135,27 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         this.frame = new JFrame ("Shark Bait");
         this.gameGUI = new GUI( );
 
+        Menu = new JMenuBar();
+        this.frame.setJMenuBar(Menu);
+        
+        fileMenu = new JMenu("File");
+        close = new JMenuItem("Close");
+		fileMenu.add(close);
+		close.addActionListener(this);
+		
+		helpMenu = new JMenu("Help");
+		help = new JMenuItem("Help");
+		helpMenu.add(help);
+		help.addActionListener(this);
+		
+		Menu.add(fileMenu);
+		Menu.add(helpMenu);
         
         this.frame.setResizable(true);
         this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         this.frame.setResizable( false );
         this.frame.pack();
-        this.frame.setSize(this.windowWidth, this.windowHeight);
+        this.frame.setSize(Game.windowWidth, Game.windowHeight);
         this.frame.add( this, BorderLayout.CENTER );
 	
 		this.frame.setFocusTraversalKeysEnabled(false);
@@ -243,8 +283,15 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     this.comm.sendMessage( "ready;" );
                     
             }
-		System.out.println( "end of ActionPerformed method" );
-
+            if (e.getActionCommand().equals("Help"))
+            {
+            	helpWindow.setVisible(true);
+            }
+            if (e.getActionCommand().equals( "Close") )
+            {
+            	this.comm.sendMessage ( "disconnect;");
+            	System.exit(0);
+            }
     }
     public void keyTyped( KeyEvent pEvent )
     {
