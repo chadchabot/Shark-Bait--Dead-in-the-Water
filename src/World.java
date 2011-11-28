@@ -34,11 +34,12 @@ public class World extends Sprite{
     private ArrayList<Polygon> shore;
     private int     width;
     private int     height;
-    
+    private int		frame;
+    private String 	temp;
+    private int		index = 0;
     
     //      default constructor
     public World ( ) {
-        super("worlds","water");
         this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
@@ -48,9 +49,14 @@ public class World extends Sprite{
         this.width          = 5000;
         this.height         = 4000;
         shore = new ArrayList<Polygon>();
+        this.loadImage("fog", "fog");
+        this.loadImage("water", "water");
+        this.loadImage("rain0", "rain0");
+        this.loadImage("rain1", "rain1");
+        this.loadImage("rain2", "rain2");
+        this.loadImage("rain3", "rain3");
     }
     public World (int pWidth, int pHeight, String pBack) {
-        super("world",pBack);
         this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
@@ -83,35 +89,43 @@ public class World extends Sprite{
                     this.shore.add(mShore);
             }
     }
+    public void drawWeather ( Graphics g ){
+    	
+    	if ( this.fog == 1 )
+    	{
+	    	g.drawImage(this.frames.get("fog"), 0, 0, null);
+    	}
+    	if ( this.rain == 1)
+    	{
+    		this.frame++;
+    		
+    		if (this.frame == 10) {
+    			this.index++;
+    			this.temp = "rain" + (this.index % 4);
+        		this.frame = 0;
+        	}
+    		
+    		g.drawImage(this.frames.get(temp), 0, 0, null);
+            
+    	}
+    	
+    }
     public void draw ( Graphics g, Point playerPos )
     {
         int drawX;// = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
         int drawY;// = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
-        int origX;
-        int origY;
-        //System.println(drawX +", "+drawY);
-        for(int i = 0; i < 1024; i = i + this.sWidth)
-        {
-            for(int j = 0; j < 768; j = j + this.sHeight)
-            {
-                //g.drawImage(this.frames.get(this.currentState), 150, 150, 150+75, 150+75, 0, 0, 75, 75, null);
-                g.drawImage(this.frames.get(this.currentState), i, j, i+this.sHeight, j+this.sWidth, 
-                            0, 0, this.sHeight,this.sWidth, null);
-            }
-        }
+        
+		g.drawImage(this.frames.get("water"), 0, 0, null);
         
         for(int i = 0; i< this.shore.size(); i++)
         {
             Polygon copy = new Polygon(this.shore.get(i).xpoints, this.shore.get(i).ypoints, this.shore.get(i).npoints);
             Rectangle bounds = new Rectangle(copy.getBounds());
             
-            
             Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
             
             drawX = PLAYER_X_CENTER - (playerPos.x - polycenter.x)*PIXELS_PER_METER;
             drawY = PLAYER_Y_CENTER - (playerPos.y - polycenter.y)*PIXELS_PER_METER;
-            //(polycenter.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
-            //drawY = (polycenter.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
             
             copy.translate(drawX - polycenter.x, drawY - polycenter.y);
             
@@ -119,12 +133,9 @@ public class World extends Sprite{
             g2D.setStroke(new BasicStroke(10F));
             
             AffineTransform at = new AffineTransform();
-            at.scale(2, 2);
+            at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
             copy.getPathIterator(at);
             
-
-            
-            //System.out.println("SHORES");
             g2D.setColor(Color.GREEN);
             g2D.draw(at.createTransformedShape(copy));
             g2D.fill(at.createTransformedShape(copy));
@@ -162,6 +173,7 @@ public class World extends Sprite{
     }
     public void setRain ( int pRain ) 
     {
+    	System.out.println("Rain on them hoes");
         this.rain = pRain;
     }
     public void setFog ( int pFog ) 
