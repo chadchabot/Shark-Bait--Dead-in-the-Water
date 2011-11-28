@@ -1,4 +1,3 @@
-package SharkBait;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -142,14 +141,19 @@ public class Ship extends Sprite{
 			this.healthMAX		= MOW_HP;
         }
     }
-    public void updateShip ( int pX, int pY, double pSpeed, double pHeading, double pHealth ) {
+    public void updateShip ( double pX, double pY, double pSpeed, double pHeading, double pHealth ) {
         
-        System.out.println("UPDATESHIP:"+pX+":"+pY+":"+pSpeed+":"+new Double(pHeading).intValue()+":"+pHealth);
-        this.position = new Point( pX, pY );
+        this.position.setLocation( pX, pY );
         this.speed = pSpeed;
-        this.heading = new Double(pHeading).intValue();
+        if(pHeading >= 0)
+        {
+            this.heading = new Double(pHeading).intValue();
+        }
+        else if(pHeading < 0)
+        {
+            this.heading = 360 + new Double(pHeading).intValue();
+        }
         this.health = pHealth;
-        this.hit = true;
     }
     
     public void update ( int pWindDir ) 
@@ -241,9 +245,9 @@ public class Ship extends Sprite{
                       this.shipHeightM*PIXELS_PER_METER,
                       null);
         if(this.shipID == targetID){
-        	g.drawImage(this.frames.get("target"), drawX - this.shipHeightM*PIXELS_PER_METER, 
-        			drawY - this.shipHeightM*PIXELS_PER_METER, this.shipHeightM*PIXELS_PER_METER,
-                      this.shipHeightM*PIXELS_PER_METER, null);
+        	g.drawImage(this.frames.get("target"), drawX - (this.shipHeightM*PIXELS_PER_METER - this.shipWidthM*PIXELS_PER_METER )*2, 
+        			drawY, this.shipHeightM*PIXELS_PER_METER*2,
+                      this.shipHeightM*PIXELS_PER_METER*2, null);
         }
         g2D.rotate( -1*Math.toRadians(heading), 
                    drawX + this.shipWidthM*PIXELS_PER_METER/2, 
