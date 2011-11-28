@@ -360,11 +360,107 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			}
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
-			System.out.println("Space!");
-			this.pMessage = "fire:" + this.targetID + ";";
-			comm.sendMessage(pMessage);
+            System.out.println("Space!");
+            if(targetID != -1)
+            {
+                int shipHeading = shipList.get(new Integer(playerID).toString()).getHeading();
+                int enemyHeading = shipList.get(new Integer(targetID).toString()).getHeading();
+                Point shipPos = shipList.get(new Integer(playerID).toString()).getPosition();
+                Point enemyPos = shipList.get(new Integer(targetID).toString()).getPosition();
+                int angleDiff = 0;
+                boolean firable = false;
+                //straight up
+                if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y && shipHeading == 0)
+                {
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 80 && shipHeading < 100)
+                       ||shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                    }
+                }
+                //straight right
+                else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y && shipHeading == 90)
+                {
+                    if(  (shipHeading > 80 && shipHeading < 100) || (shipheading > 170 && shipHeading < 190)
+                       ||shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                    }
+                }
+                //straight down
+                else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y && shipHeading == 180)
+                {
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 170 && shipHeading < 190)
+                       || (shipHeading > 80 && shipHeading < 100) )
+                    {
+                        firable = true;
+                    }
+                }
+                //straight left
+                else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
+                {
+                    if(  (shipHeading > 260 && shipHeading < 280) || (shipheading > 170 && shipHeading < 190)
+                       ||shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                    }
+                }
+                //top right
+                else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
+                {   
+                    angleDiff = Math.abs(shipHeading - (int)Math.round(Math.abs(
+                    Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) ))
+                    ))); 
+                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
+                       angleDiff < 10 || angleDiff > 350 )
+                    {
+                        firable = true;
+                    }
+                }
+                //bottom right
+                else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
+                {
+                    angleDiff = Math.abs(shipHeading - (180 - (int)Math.round(Math.abs(
+                               Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)))
+                               )))); 
+                    
+                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
+                       angleDiff < 10 || angleDiff > 350 )
+                    {
+                        firable = true;
+                    }
+                }
+                //bottom left
+                else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
+                {
+                    angleDiff = Math.abs(shipHeading - (180 + (int)Math.round(  Math.abs(
+                            Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
+                    )))); 
+                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) ||
+                       angleDiff < 10 || angleDiff > 350 )
+                    {
+                        firable = true;
+                    }
+                }
+                //top left
+                else if(enemyPos.x < shipPos.x && enemyPos.y < shipPos.y)
+                {
+                    angleDiff = Math.abs(shipHeading - (360 - (int)Math.round(Math.abs(
+                       Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
+                       )))); 
+                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) ||
+                       angleDiff < 10 || angleDiff > 350 )
+                    {
+                        firable = true;
+                    }
+                }
+                if(firable == true)
+                {
+                    System.out.println("FIRE!!!!!!");
+                }
+            }
         }
-        }
+    }
     public void keyReleased(KeyEvent e)
     {
                 
