@@ -127,7 +127,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		Point playerPos = null;
 		
 		if ( this.shipList.size() != 0 ) {
-			playerPos = this.shipList.getShip(Integer.toString(this.playerID)).getPosition();
+			playerPos = this.getShip(Integer.toString(this.playerID)).getPosition();
         }
         if ( playerPos != null )
         {
@@ -137,7 +137,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             //      draw ships
         
         	for (String key : this.shipList.keySet()) {
-        		this.shipList.getShip(key).draw(g, playerPos, targetID);
+        		this.getShip(key).draw(g, playerPos, targetID);
         	}
 
 			//  draw chrome
@@ -145,7 +145,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             if(shipList.size() > 0)
             {
                 for (String key : this.shipList.keySet()) {
-                    this.shipList.getShip(key).draw(g, playerPos, targetID);
+                    this.getShip(key).draw(g, playerPos, targetID);
                 }//  draw chrome
             }
         }
@@ -155,7 +155,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {
         //update ships
         for (String key : shipList.keySet()) {
-            this.shipList.getShip(key).update(this.gameWorld.getWindDirection());
+            this.getShip(key).update(this.gameWorld.getWindDirection());
         }
         //update world
 		if (this.windUpdateFLAG == true) {
@@ -254,17 +254,17 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                      
                      int  turn = 0;
                      
-                     if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 0)
+                     if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
                      {
                      	turn = -1*SLOOP_TURN_MAX;
                      }
                      
-                     if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 1)
+                     if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
                      {
                      	turn = -1*FRIGATE_TURN_MAX;
                      }
                      
-                     if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 2)
+                     if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
                      {
                      	turn = -1*MAN_OF_WAR_TURN_MAX;
                      }
@@ -292,17 +292,17 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 {
                     int  turn = 0;
                     
-                    if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 0)
+                    if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
                     {
                      	turn = SLOOP_TURN_MAX;
                     }
                     
-                    if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 1)
+                    if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
                     {
                      	turn = FRIGATE_TURN_MAX;
                     }
                     
-                    if (this.shipList.getShip(Integer.toString(this.playerID)).getType() == 2)
+                    if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
                     {
                      	turn = MAN_OF_WAR_TURN_MAX;
                     }
@@ -362,10 +362,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             System.out.println("Space!");
             if(targetID != -1)
             {
-                int shipHeading = shipList.getShip(new Integer(playerID).toString()).getHeading();
-                int enemyHeading = shipList.getShip(new Integer(targetID).toString()).getHeading();
-                Point shipPos = shipList.getShip(new Integer(playerID).toString()).getPosition();
-                Point enemyPos = shipList.getShip(new Integer(targetID).toString()).getPosition();
+                int shipHeading = this.getShip(new Integer(playerID).toString()).getHeading();
+                int enemyHeading = this.getShip(new Integer(targetID).toString()).getHeading();
+                Point shipPos = this.getShip(new Integer(playerID).toString()).getPosition();
+                Point enemyPos = this.getShip(new Integer(targetID).toString()).getPosition();
                 int angleDiff = 0;
                 boolean firable = false;
                 //straight up
@@ -477,7 +477,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          */
         if( pMessage.getMessageName().equals( "shipState" ) )
         {
-                    this.shipList.getShip(pMessage.getArgument( 0 )).updateShip( 
+                    this.getShip(pMessage.getArgument( 0 )).updateShip( 
                                         Double.parseDouble( pMessage.getArgument( 1 ) ),          // int x
                                         Double.parseDouble( pMessage.getArgument( 2 ) ),          // int y
                                         Double.parseDouble( pMessage.getArgument( 3 ) ),        // double speed
@@ -521,8 +521,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         else if( pMessage.getMessageName().equals( "firing" ) )
         {
         	System.out.println(Integer.parseInt( pMessage.getArgument( 0 )));
-//			this.shipList.get( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
-			this.shipList.getShip( pMessage.getArgument( 0 ) ).setFiring( true );
+//			this.getShip( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
+			thiss.getShip( pMessage.getArgument( 0 ) ).setFiring( true );
 
         }
         /*
