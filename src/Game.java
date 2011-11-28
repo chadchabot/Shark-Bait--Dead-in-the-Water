@@ -456,6 +456,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 if(firable == true)
                 {
                     System.out.println("FIRE!!!!!!");
+                    this.comm.sendMessage("fire:"+targetID+";");
                 }
             }
         }
