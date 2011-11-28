@@ -128,7 +128,29 @@ class Communication implements Runnable
 				if(mIncoming != null)
 				{
 					fireMessage(mIncoming);
-				}
+				}else
+                {
+                    /*
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *PUT POPUP HERE!!!
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     *
+                     */
+                    System.exit(0);
+                }
 			}
 		}
 		catch ( IOException e )
