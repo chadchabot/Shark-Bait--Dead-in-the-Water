@@ -1,4 +1,6 @@
+package SharkBait;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -30,6 +32,7 @@ public class Lobby {
     public JRadioButton    			manOwarButton;
     private ButtonGroup            	lobbyButtonGroup;
 	private ActionListener			listener;
+	private Dimension 				Dim;
 	
 	public Lobby( ActionListener Game ){
 		this.listener = Game;
@@ -43,6 +46,15 @@ public class Lobby {
     		this.lobbyWindow.setJMenuBar(menu);
     		this.lobbyWindow.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
             this.lobbyWindow.setResizable( false );
+            
+            Dim = Toolkit.getDefaultToolkit().getScreenSize();
+            
+            int w = this.lobbyWindow.getSize().width;
+    		int h = this.lobbyWindow.getSize().height;
+    		int x = (this.Dim.width-w)/2;
+    		int y = (this.Dim.height-h)/2;
+    		 
+    		this.lobbyWindow.setLocation(x, y);
     		
     		file = new JMenu("File");
     		file.add("Close");
