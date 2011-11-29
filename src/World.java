@@ -1,4 +1,3 @@
-package SharkBait;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -22,7 +21,7 @@ import java.awt.geom.AffineTransform;
 public class World extends Sprite{
     
     public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_PER_METER = 1;
+	public static final int 	PIXELS_PER_METER = 3;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
 
@@ -54,10 +53,10 @@ public class World extends Sprite{
         this.loadImage("fog", "fog");
         this.loadImage("land", "land");
         this.loadImage("water", "water");
-        this.loadImage("rain0", "rain0");
-        this.loadImage("rain1", "rain1");
-        this.loadImage("rain2", "rain2");
-        this.loadImage("rain3", "rain3");
+        this.loadImage("rain0", "rain_0");
+        this.loadImage("rain1", "rain_1");
+        this.loadImage("rain2", "rain_2");
+        this.loadImage("rain3", "rain_3");
     }
     public World (int pWidth, int pHeight, String pBack) {
         this.windDirection  = 45;
@@ -193,7 +192,6 @@ public class World extends Sprite{
     }
     public void setRain ( int pRain ) 
     {
-    	System.out.println("Rain on them hoes");
         this.rain = pRain;
     }
     public void setFog ( int pFog ) 

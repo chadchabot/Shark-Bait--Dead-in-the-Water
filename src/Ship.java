@@ -7,7 +7,7 @@ import java.awt.image.AffineTransformOp;
 public class Ship extends Sprite{
 
     public static final int		REFRESH_RATE = 60;
-	public static final int 	PIXELS_PER_METER = 1;
+	public static final int 	PIXELS_PER_METER = 3;
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
     
@@ -281,7 +281,7 @@ public class Ship extends Sprite{
         }
         public void setFiring( boolean pBool )
     {
-		System.out.println( "setFiring() called" );
+		//	System.out.println( "setFiring() called" );
         		this.firing = pBool;
         }
         /*

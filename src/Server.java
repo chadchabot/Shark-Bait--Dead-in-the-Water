@@ -64,6 +64,7 @@ public class Server
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+            client_out.writeBytes("fog:1;\n");
 			client_out.writeBytes("shipState:1:400:450:1:45:0.5;\n");
 			client_out.writeBytes("firing:1:4;\n");
             try {
@@ -72,7 +73,7 @@ public class Server
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+            client_out.writeBytes("rain:1;\n");
 			client_out.writeBytes("shipState:4:440:450:1:45:0.0;\n");
 
             client_out.writeBytes("wind:0;\n");

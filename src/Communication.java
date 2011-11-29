@@ -1,4 +1,3 @@
-package Sharkbait;
 
 /**
  * @author      Bonne Justin jbonne@uoguelph.ca
@@ -79,7 +78,6 @@ class Communication implements Runnable
 			}
 			catch( IOException e ){
 				//HOW ARE WE HANDLING THIS???
-				System.out.println( "Derp1 - no server connection" );
 				JOptionPane.showMessageDialog(null, "\"Server not found at " + this.host + ":" + this.port + "\"", "FATAL ERROR: No server found",
 											  JOptionPane.ERROR_MESSAGE);
 				this.connection = null;
@@ -107,7 +105,6 @@ class Communication implements Runnable
 		}
 		catch( IOException e )
 		{
-			System.out.println( "Derp2" );
 			//HANDLE THISSSSS
 		}
 	}
@@ -130,7 +127,7 @@ class Communication implements Runnable
                 
 				mIncoming = this.server_input.readLine( );
                 //mIncoming = server_input.readLine();
-                System.out.println(mIncoming);
+//                System.out.println(mIncoming);
 				if(mIncoming != null)
 				{
 					fireMessage(mIncoming);
@@ -144,7 +141,7 @@ class Communication implements Runnable
 		}
 		catch ( IOException e )
 		{	
-			System.out.println( "Derp3" );
+//			System.out.println( "Derp3" );
             System.out.println( e.getMessage( ) );
 		}
 	}
@@ -155,7 +152,7 @@ class Communication implements Runnable
      */
 	public void run( )
 	{
-		System.out.println( "comm object running." );
+//		System.out.println( "comm object running." );
 		this.listen( );
 	}
     /**

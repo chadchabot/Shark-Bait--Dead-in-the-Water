@@ -98,7 +98,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 	
 		this.helpWindow = new JFrame("Help Menu");
         try {
-			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("c://help_menu.png")))));
+			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("../images/help_menu.png")))));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -115,8 +115,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		 
 		this.helpWindow.setLocation(x, y);
 		
-//		this.serverIP = pServerIP;
-		System.out.println( "chad is not retarded." );
 		this.lobbyWindow = new Lobby(this);
     	this.lobbyWindow.createLobby();
         this.lobbyWindow.lobbyWindow.setVisible(true );
@@ -195,16 +193,12 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         		this.getShip(key).draw(g, playerPos, targetID);
         	}
 
+			this.gameWorld.drawWeather( g );
 			//  draw chrome
 			this.gameGUI.draw( g, this.shipList, this.playerID, this.targetID );
-            if(shipList.size() > 0)
-            {
-                for (String key : this.shipList.keySet()) {
-                    this.getShip(key).draw(g, playerPos, targetID);
-                }//  draw chrome
-            }
-        }
 
+        }
+		
     }
     public void update()
     {
@@ -222,14 +216,14 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     }
     public void actionPerformed( ActionEvent e )
     {
-            System.out.println( "A button is clicked" );
+            //	System.out.println( "A button is clicked" );
 
 			if ( e.getActionCommand().equals( "connect_to_server" ) ) {
-				System.out.println( "connecting to server" );
+				//	System.out.println( "connecting to server" );
 				
 				this.serverIP = this.splashWindow.serverAddressField.getText();
 				this.serverPort = Integer.parseInt( this.splashWindow.serverPortField.getText() );
-				System.out.println( this.serverIP + ", " + this.serverPort );
+				//	System.out.println( this.serverIP + ", " + this.serverPort );
 
 				this.commThread = new Thread(this.comm = new Communication( this, this.serverIP, this.serverPort) );
 				this.commThread.start();
@@ -238,31 +232,31 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 
 				this.showLobby = true;
 
-				System.out.println( "showSplash is false" );
+				//	System.out.println( "showSplash is false" );
 			}
 
             if ( e.getActionCommand().equals( "sloop_selected" ) )
             {
-                    System.out.println( "SLOOP class ship selected" );
+                    //	System.out.println( "SLOOP class ship selected" );
                     //      set the variable for the user's ship preference
                     this.shipSelection = 0;
             }
             if ( e.getActionCommand().equals( "frigate_selected" ) )
             {
-                    System.out.println( "FRIGATE class ship selected" );
+                    //	System.out.println( "FRIGATE class ship selected" );
                     //      set the variable for the user's ship preference
                     this.shipSelection = 1;
             }
             if ( e.getActionCommand().equals( "man-o-war_selected" ) )
             {
-                    System.out.println( "MAN-O-WAR class ship selected" );
+                    //	System.out.println( "MAN-O-WAR class ship selected" );
                     //      set the variable for the user's ship preference
                     this.shipSelection = 2;
             }       
                     
             if ( e.getActionCommand().equals( "register" ) )
             {
-                    System.out.println( "REGISTER button clicked" ) ;
+                    //	System.out.println( "REGISTER button clicked" ) ;
                     this.lobbyWindow.sloopButton.setEnabled( false );
                     this.lobbyWindow.frigateButton.setEnabled( false );
                     this.lobbyWindow.manOwarButton.setEnabled( false );
@@ -274,7 +268,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             }
             if ( e.getActionCommand().equals( "ready" ) )
             {
-                    System.out.println( "READY button clicked" ) ;
+                    //	System.out.println( "READY button clicked" ) ;
                     this.lobbyWindow.readyButton.setEnabled( false );
                     this.lobbyWindow.readyButton.setText( "Waiting to start..." );
                     //      send READY message to server
@@ -438,7 +432,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			}
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
-            System.out.println("Space!");
+            //	System.out.println("Space!");
             if(targetID != -1)
             {
                 int shipHeading = this.getShip(new Integer(playerID).toString()).getHeading();
@@ -620,10 +614,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                         shotDir = 'f'; 
                     }
                 }
-                System.out.println("angle:"+angleDiff+" player: "+shipHeading);
+                //	System.out.println("angle:"+angleDiff+" player: "+shipHeading);
                 if(firable == true)
                 {
-                    System.out.println("FIRE!!!!!!");
+                    //	System.out.println("FIRE!!!!!!");
                     this.comm.sendMessage("fire:"+targetID+";");
                 }
             }

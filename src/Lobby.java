@@ -1,4 +1,3 @@
-package Sharkbait;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;

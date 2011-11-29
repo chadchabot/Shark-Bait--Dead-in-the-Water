@@ -1,4 +1,4 @@
-package Sharkbait;
+
 
 import java.awt.Container;
 import java.awt.Insets;
@@ -47,7 +47,7 @@ public class SplashWindow {
         Insets insets = frame.getContentPane().getInsets();		
 
 		try {
-			this.frame.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("startup_background.png")))));
+			this.frame.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("../images/startup_background.png")))));
 		}
 		catch ( IOException e ) {
 			

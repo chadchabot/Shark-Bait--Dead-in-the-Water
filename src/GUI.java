@@ -1,4 +1,3 @@
-package SharkBait;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -41,8 +40,7 @@ public class GUI extends Sprite
 	//	?	wind direction, wind speed
     public void update ( int pWindDir, int pWindSpeed  ) 
     {
-		System.out.println( "updating the wind in GUI" );
-//		pWindDir = pWindDir + 180;
+		//	System.out.println( "updating the wind in GUI" );
 		
         this.windDirection = pWindDir;
         this.windSpeed   = pWindSpeed;
