@@ -54,6 +54,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     private String                              pMessage;
     private int                                 targetID = -1;
     private long 								lastTurn = 0;
+    private long 								lastShot = 0;
     private Lobby								lobbyWindow;
 	private SplashWindow						splashWindow;
 	private boolean								showLobby = false;
@@ -341,17 +342,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                      {
                      	turn = -1*MAN_OF_WAR_TURN_MAX;
                      }
-         			//	add to the amount of the turn, to a maximum of -25
-         			//	turn amount is in degrees?
-         			/*if ( this.turnAmount >= -maxIncrement)
-         			{
-         				this.turnAmount -= TURN_AMOUNT_INCREMENT;
-         			}
-         			else
-         			{
-         				this.turnAmount = - maxIncrement;
-         			}
-         			*/
                     //System.out.println(System.currentTimeMillis() - this.lastTurn);
                     if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
                     {
@@ -618,7 +608,27 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 if(firable == true)
                 {
                     //	System.out.println("FIRE!!!!!!");
-                    this.comm.sendMessage("fire:"+targetID+";");
+                    int mShipType = this.getShip(new Integer(playerID).toString()).getType();
+                    int shotAllowance = 0;
+                    if(mShipType == 0)
+                    {
+                        shotAllowance = 100; 
+                    }
+                    else if(mShipType == 1)
+                    {
+                        shotAllowance = 200; 
+                    }
+                    else if(mShipType == 2)
+                    {
+                        shotAllowance = 300; 
+                    }
+                    if(System.currentTimeMillis() - this.lastShot > shotAllowance || this.lastShot == 0)
+                    {
+                        System.out.println(shotAllowance +":"+this.lastShot);
+                        this.comm.sendMessage("fire:"+targetID+";");
+                        this.lastShot = System.currentTimeMillis();
+                    }
+                    
                 }
             }
         }
