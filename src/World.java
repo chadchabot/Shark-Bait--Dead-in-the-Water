@@ -43,7 +43,7 @@ public class World extends Sprite{
     public World ( ) {
         this.windDirection  = 45;
         this.windSpeed      = 0;
-        this.time           = 0;
+        this.time           = 1;
         this.weatherState   = 0;
         this.rain           = 0;
         this.fog            = 0;
