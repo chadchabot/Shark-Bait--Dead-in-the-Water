@@ -109,9 +109,14 @@ public class GUI extends Sprite
 			}
 			else
 			{
-				g2D.drawString( "SHIP HP" , 700, 655 );
-				g2D.fillRect( 825, 635, (int)(hpBarFill*1.5), 30 );
-				g2D.drawRect( 825, 635, 150, 30 );
+				g2D.drawString( "SHIP HP" , 700, 635 );
+				g2D.fillRect( 825, 615, (int)(hpBarFill*1.5), 30 );
+				g2D.drawRect( 825, 615, 150, 30 );
+				
+				g2D.drawString( "SPEED", 700, 675 );
+				g2D.fillRect( 825, 650, (int)(pShipList.get(key).getSpeed()*10)/10, 30 );
+				g2D.drawRect( 825, 650, 150, 30 );
+				
 				g2D.drawString( "(X, Y): (" + pShipList.get(key).getPosition().x + ","+pShipList.get(key).getPosition().y +")", 700, 705 );
 			}
 
