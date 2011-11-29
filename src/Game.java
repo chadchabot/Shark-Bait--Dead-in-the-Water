@@ -756,6 +756,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             {
                 this.comm.disconnect( );
             }
+            System.exit(0);
         }
     }
     public synchronized Ship getShip(String key){
