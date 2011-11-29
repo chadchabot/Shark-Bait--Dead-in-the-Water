@@ -446,7 +446,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 Point shipPos = this.getShip(new Integer(playerID).toString()).getPosition();
                 Point enemyPos = this.getShip(new Integer(targetID).toString()).getPosition();
                 int angleDiff = 0;
-                char shotDir = '';
+                char shotDir = ' ';
                 boolean firable = false;
                 //straight up
                 if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
@@ -470,7 +470,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //straight right
                 else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 80 && shipHeading < 100)
+                    if(  shipHeading > 80 && shipHeading < 100)
                     {
                         firable = true;
                         shotDir = 'f';
@@ -489,7 +489,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //straight down
                 else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280)
+                    if(  shipHeading > 260 && shipHeading < 280)
                     {
                         firable = true;
                         shotDir = 'l';
@@ -499,7 +499,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                         firable = true;
                         shotDir = 'f';
                     }
-                    else if(shipHeading > 80 && shipHeading < 100) )
+                    else if(shipHeading > 80 && shipHeading < 100 )
                     {
                         firable = true;
                         shotDir = 'f';
@@ -508,7 +508,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //straight left
                 else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280)
+                    if(  shipHeading > 260 && shipHeading < 280)
                     {
                         firable = true;
                         shotDir = 'f';
