@@ -117,14 +117,14 @@ public class GUI extends Sprite
 
 		}
 		
-        g2D.rotate( (Math.toRadians(this.windDirection + 180)),
+        g2D.rotate( (Math.toRadians(this.windDirection)),
 				    this.windSockPosition.x + this.imgWidth/2,
 				    this.windSockPosition.y + this.imgWidth/2 );
         g2D.drawImage(this.frames.get(this.currentState), 
                       this.windSockPosition.x, this.windSockPosition.y,
 					  this.imgWidth, this.imgWidth,
                       null);
-        g2D.rotate( -1*(Math.toRadians(this.windDirection + 180)),
+        g2D.rotate( -1*(Math.toRadians(this.windDirection)),
 				   this.windSockPosition.x + this.imgWidth/2,
 				   this.windSockPosition.y + this.imgWidth/2 );		
     }

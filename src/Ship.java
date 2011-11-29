@@ -160,11 +160,7 @@ public class Ship extends Sprite{
     {
 
         int angleDiff = 0;
-       /* pWindDir = pWindDir - 180;
-        if(pWindDir < 0)
-        {
-            pWindDir = pWindDir + 360;
-        }*/
+        pWindDir = (pWindDir + 180)%360;
         if(Math.abs(pWindDir-this.heading) <= 180)
         {
             angleDiff = Math.abs(pWindDir-this.heading);
@@ -261,8 +257,15 @@ public class Ship extends Sprite{
      */
     public void setHeading ( int pHeading ) 
     {
-                this.heading = pHeading;
+        if(pHeading >= 0)
+        {
+            this.heading = new Double(pHeading).intValue();
         }
+        else if(pHeading < 0)
+        {
+            this.heading = 360 + new Double(pHeading).intValue();
+        }
+    }
     public void sethealth ( double pHealth ) 
     {
                 this.health = pHealth;
