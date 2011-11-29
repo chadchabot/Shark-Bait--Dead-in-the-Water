@@ -170,11 +170,11 @@ public class Ship extends Sprite{
             angleDiff = 360 - Math.abs(pWindDir-this.heading);
         }
         this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))
-                                     *(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER))
-        *SpeedTable.table[angleDiff];
+                                     *(this.speed/**this.speedFactor*//REFRESH_RATE*PIXELS_PER_METER))
+        /**SpeedTable.table[angleDiff]*/;
         this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))
-                                     *(this.speed*this.speedFactor/REFRESH_RATE*PIXELS_PER_METER))
-        *SpeedTable.table[angleDiff];
+                                     *(this.speed/**this.speedFactor*//REFRESH_RATE*PIXELS_PER_METER))
+        /**SpeedTable.table[angleDiff]*/;
 
         
         this.position.setLocation(
