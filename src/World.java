@@ -1,3 +1,4 @@
+package SharkBait;
 
 import java.util.ArrayList;
 import java.util.ListIterator;
@@ -8,6 +9,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.Rectangle;
+import java.awt.TexturePaint;
 
 import java.util.ArrayList;
 import java.awt.BasicStroke;
@@ -36,6 +38,7 @@ public class World extends Sprite{
     private int		frame;
     private String 	temp;
     private int		index = 0;
+    private TexturePaint tp;
     
     //      default constructor
     public World ( ) {
@@ -49,6 +52,7 @@ public class World extends Sprite{
         this.height         = 4000;
         shore = new ArrayList<Polygon>();
         this.loadImage("fog", "fog");
+        this.loadImage("land", "land");
         this.loadImage("water", "water");
         this.loadImage("rain0", "rain0");
         this.loadImage("rain1", "rain1");
@@ -111,10 +115,15 @@ public class World extends Sprite{
     }
     public void draw ( Graphics g, Point playerPos )
     {
+    	Graphics2D g2D = (Graphics2D) g;
+    	
         int drawX;// = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
         int drawY;// = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
         
-		g.drawImage(this.frames.get("water"), 0, 0, null);
+        tp = new TexturePaint(this.frames.get("water"), new Rectangle(1024, 768));
+        g2D.setPaint(tp);
+        
+		g2D.fillRect(0, 0, 1024, 768);
         
         for(int i = 0; i< this.shore.size(); i++)
         {
@@ -139,16 +148,19 @@ public class World extends Sprite{
              at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
              copy.getPathIterator(at);*/
             
-            copy.translate((drawX - polycenter.x),( drawY - polycenter.y));
+            copy.translate((drawX - polycenter.x),( drawY - polycenter.y)); 
             
-            Graphics2D g2D = (Graphics2D) g;     
-            g2D.setStroke(new BasicStroke(10F));
+            tp = new TexturePaint(this.frames.get("land"), new Rectangle(copy.getBounds()));
+             
+            // Add the texture paint to the graphics context. 
+            g2D.setPaint(tp);    
+            g2D.setStroke(new BasicStroke(5F));
             
-            g.setColor(Color.GREEN);
+            //g.setColor(new Color(0, 128, 64));
             g.drawPolygon(copy);
             g.fillPolygon(copy);
             
-            g.setColor(Color.YELLOW);
+            g.setColor(new Color(255, 226, 28));
             g.drawPolygon(copy);
             copy.reset();
         }

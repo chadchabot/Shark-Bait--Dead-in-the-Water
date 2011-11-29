@@ -1,3 +1,5 @@
+package SharkBait;
+
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -47,7 +49,7 @@ public class GUI extends Sprite
     }
 	
     public void draw ( Graphics g, HashMap<String, Ship> pShipList, int pPlayerID, int pTargetedShipID )
-    {
+    {    	
 		Graphics2D g2D = (Graphics2D) g;
 		g2D.setColor( Color.white );
 		g2D.setFont( enemyListTitleFont );
@@ -91,7 +93,7 @@ public class GUI extends Sprite
 //				System.out.println( shipHealth + " " + shipHealthMAX + " " + hpBarFill );			
 				counter++;
                 
-                target_rot = getShipArrow(pShipList.get(key), pShipList.get(pPlayerID));
+                target_rot = getShipArrow(pShipList.get(key), pShipList.get(Integer.toString(pPlayerID)));
                 
                 if(target_rot > 0)
                 {
@@ -144,10 +146,10 @@ public class GUI extends Sprite
     {
         int enemyHeading = enemy.getHeading();
         Point shipPos = player.getPosition();
-        /*Point enemyPos = enemy.getPosition();*/
+        Point enemyPos = enemy.getPosition();
         int angle = -1;
         //straight up
-        /*if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
+        if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
         {
             angle = 0;
         }
@@ -193,7 +195,7 @@ public class GUI extends Sprite
             angle = 360 - (int)Math.round(Math.abs(Math.toDegrees( 
                       Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
                       )));
-        }*/
+        }
         return angle;
     }
 	
