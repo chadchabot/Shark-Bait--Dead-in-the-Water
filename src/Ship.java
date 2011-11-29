@@ -246,10 +246,10 @@ public class Ship extends Sprite{
                       null);
         if(this.shipID == targetID){
         	g.drawImage(this.frames.get("target"), 
-                        drawX - (this.shipHeightM*PIXELS_PER_METER - this.shipWidthM*PIXELS_PER_METER/2 ), 
-                        drawY - (this.shipHeightM*PIXELS_PER_METER - this.shipHeightM*PIXELS_PER_METER/2 ), 
-                        this.shipHeightM*PIXELS_PER_METER*2,
-                        this.shipHeightM*PIXELS_PER_METER*2, 
+                        drawX - (20*PIXELS_PER_METER - 20*PIXELS_PER_METER/2 ), 
+                        drawY + ((this.shipHeightM*PIXELS_PER_METER - 20*PIXELS_PER_METER)/2 ) - 10, 
+                        20*PIXELS_PER_METER*2,
+                        20*PIXELS_PER_METER*2, 
                         null);
         }
         g2D.rotate( -1*Math.toRadians(heading), 
