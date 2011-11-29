@@ -43,7 +43,7 @@ public class World extends Sprite{
     public World ( ) {
         this.windDirection  = 45;
         this.windSpeed      = 0;
-        this.time           = 1;
+        this.time           = 0;
         this.weatherState   = 0;
         this.rain           = 0;
         this.fog            = 0;
@@ -57,6 +57,8 @@ public class World extends Sprite{
         this.loadImage("rain1", "rain_1");
         this.loadImage("rain2", "rain_2");
         this.loadImage("rain3", "rain_3");
+        this.loadImage("night", "night");
+        this.loadImage("dawn", "dawn");
     }
     public World (int pWidth, int pHeight, String pBack) {
         this.windDirection  = 45;
@@ -110,7 +112,14 @@ public class World extends Sprite{
     		g.drawImage(this.frames.get(temp), 0, 0, null);
             
     	}
-    	
+        if(this.time == 0)
+        {
+            g.drawImage(this.frames.get("dawn"), 0, 0, null);
+        }
+        else if(this.time == 2 )
+        {
+            g.drawImage(this.frames.get("night"), 0, 0, null);
+        }
     }
     public void draw ( Graphics g, Point playerPos )
     {
