@@ -624,7 +624,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                     if(System.currentTimeMillis() - this.lastShot > shotAllowance || this.lastShot == 0)
                     {
-                        System.out.println(shotAllowance +":"+this.lastShot);
                         this.comm.sendMessage("fire:"+targetID+";");
                         this.lastShot = System.currentTimeMillis();
                     }
@@ -693,7 +692,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         }
         else if( pMessage.getMessageName().equals( "firing" ) )
         {
-        	System.out.println(Integer.parseInt( pMessage.getArgument( 0 )));
 //			this.getShip( Integer.parseInt( pMessage.getArgument( 0 )) ).setFiring( true );
 			this.getShip( pMessage.getArgument( 0 ) ).setFiring( true );
 

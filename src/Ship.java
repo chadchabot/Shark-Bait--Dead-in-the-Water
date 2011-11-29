@@ -80,13 +80,13 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","sloop_enemy");
         		this.loadImage("firing", "sloop_enemy_f");
-        		//this.loadImage("hit", "sloop_enemy_h");
+        		this.loadImage("hit", "sloop_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","sloop");
         		this.loadImage("firing", "sloop_f");
-        		//this.loadImage("hit", "sloop_h"); 
+        		this.loadImage("hit", "sloop_h"); 
         	}
         	this.loadImage("dead", "dead");
         	this.loadImage("target", "targeted_circle");
@@ -102,13 +102,13 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","frigate_enemy");
         		this.loadImage("firing", "frigate_enemy_f");
-        		//this.loadImage("hit", "frigate_enemy_h");
+        		this.loadImage("hit", "frigate_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","frigate");
         		this.loadImage("firing", "frigate_f");
-        		//this.loadImage("hit", "frigate_h");
+        		this.loadImage("hit", "frigate_h");
     		}      
         	this.loadImage("dead", "dead");
         	this.loadImage("target", "targeted_circle");
@@ -124,13 +124,13 @@ public class Ship extends Sprite{
         	{
         		this.loadImage("default","mow_enemy");
         		this.loadImage("firing", "mow_enemy_f");
-        		//this.loadImage("hit", "mow_enemy_h");
+        		this.loadImage("hit", "mow_enemy_h");
         	} 
         	else 
         	{ 
         		this.loadImage("default","mow");
         		this.loadImage("firing", "mow_f");
-        		//this.loadImage("hit", "mow_h");
+        		this.loadImage("hit", "mow_h");
         	}
         	this.loadImage("dead", "dead");
         	this.loadImage("target", "targeted_circle");
@@ -152,6 +152,10 @@ public class Ship extends Sprite{
         else if(pHeading < 0)
         {
             this.heading = 360 + new Double(pHeading).intValue();
+        }
+        if(this.health != pHealth)
+        {
+            this.hit = true;
         }
         this.health = pHealth;
     }
@@ -199,7 +203,7 @@ public class Ship extends Sprite{
         	this.currentState = "default";
         }
         
-        if (hit)
+        if (this.hit)
         {
         	this.frame++;
         	this.currentState = "hit";
