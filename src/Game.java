@@ -1,5 +1,3 @@
-package Sharkbait;
-
 import java.awt.event.*;
 
 import javax.imageio.ImageIO;
@@ -302,7 +300,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		
         //      System.out.println("Key Pressed!!!");
                 if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
-            System.out.println("Up!");
+            //System.out.println("Up!");
                         //      change the current speed of the player's ship
                         this.speedAmount += SPEED_AMOUNT_INCREMENT;
 
@@ -317,7 +315,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 }
                 else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
-            System.out.println("Down!");
+            //System.out.println("Down!");
                         //      change the current speed of the player's ship
                         this.speedAmount -= SPEED_AMOUNT_INCREMENT;
 
@@ -331,7 +329,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 }
                 else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
                 { 
-                	 System.out.println("Left!");
+                	 //System.out.println("Left!");
                      
                      int  turn = 0;
                      
@@ -360,7 +358,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
          				this.turnAmount = - maxIncrement;
          			}
          			*/
-                    System.out.println(System.currentTimeMillis() - this.lastTurn);
+                    //System.out.println(System.currentTimeMillis() - this.lastTurn);
                     if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
                     {
                         this.pMessage = "setHeading:" + turn + ";";
@@ -398,7 +396,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                      this.turnAmount = - maxIncrement;
                      }
                      */
-                    System.out.println(System.currentTimeMillis() - this.lastTurn);
+                    //System.out.println(System.currentTimeMillis() - this.lastTurn);
                     if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
                     {
                         this.pMessage = "setHeading:" + turn + ";";
@@ -435,8 +433,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                         break;
 					}
 				}
-                System.out.println(this.targetID);
-				System.out.println("TAB!");
+                //System.out.println(this.targetID);
+				//System.out.println("TAB!");
 			}
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
@@ -448,92 +446,181 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 Point shipPos = this.getShip(new Integer(playerID).toString()).getPosition();
                 Point enemyPos = this.getShip(new Integer(targetID).toString()).getPosition();
                 int angleDiff = 0;
+                char shotDir = '';
                 boolean firable = false;
                 //straight up
                 if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 80 && shipHeading < 100)
-                       ||shipHeading > 350 || shipHeading < 10 )
+                    if( shipHeading > 260 && shipHeading < 280 ) 
                     {
                         firable = true;
+                        shotDir = 'r';                        
+                    }
+                    else if (shipHeading > 80 && shipHeading < 100)
+                    {
+                        firable = true;
+                        shotDir = 'l'; 
+                    }
+                    else if (shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'f'; 
                     }
                 }
                 //straight right
                 else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 80 && shipHeading < 100) || (shipHeading > 170 && shipHeading < 190)
-                       ||shipHeading > 350 || shipHeading < 10 )
+                    if(  (shipHeading > 80 && shipHeading < 100)
                     {
                         firable = true;
+                        shotDir = 'f';
+                    }
+                    else if(shipHeading > 170 && shipHeading < 190)
+                    {
+                        firable = true;
+                        shotDir = 'l';
+                    }
+                    else if(shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'r';
                     }
                 }
                 //straight down
                 else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 170 && shipHeading < 190)
-                       || (shipHeading > 80 && shipHeading < 100) )
+                    if(  (shipHeading > 260 && shipHeading < 280)
                     {
                         firable = true;
+                        shotDir = 'l';
+                    }
+                    else if(shipHeading > 170 && shipHeading < 190)
+                    {
+                        firable = true;
+                        shotDir = 'f';
+                    }
+                    else if(shipHeading > 80 && shipHeading < 100) )
+                    {
+                        firable = true;
+                        shotDir = 'f';
                     }
                 }
                 //straight left
                 else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
                 {
-                    if(  (shipHeading > 260 && shipHeading < 280) || (shipHeading > 170 && shipHeading < 190)
-                       ||shipHeading > 350 || shipHeading < 10 )
+                    if(  (shipHeading > 260 && shipHeading < 280)
                     {
                         firable = true;
+                        shotDir = 'f';
+                    }
+                    else if(shipHeading > 170 && shipHeading < 190)
+                    {
+                        firable = true;
+                        shotDir = 'r';
+                    }
+                    else if(shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'l';
                     }
                 }
                 //top right
                 else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
                 {   
-                    angleDiff = Math.abs(shipHeading - (int)Math.round(Math.abs(
+                    angleDiff = shipHeading - (int)Math.round(Math.abs(
                         Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) ))
-                        ))); 
-                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
-                       angleDiff < 10 || angleDiff > 350 )
+                        ));
+                    angleDiff = (angleDiff+360)%360;
+                    
+                    if( shipHeading > 260 && shipHeading < 280 ) 
                     {
                         firable = true;
+                        shotDir = 'r';                        
+                    }
+                    else if (shipHeading > 80 && shipHeading < 100)
+                    {
+                        firable = true;
+                        shotDir = 'l'; 
+                    }
+                    else if (shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'f'; 
                     }
                 }
                 //bottom right
                 else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
                 {
-                    angleDiff = Math.abs(shipHeading - (180 - (int)Math.round(Math.abs(
+                    angleDiff = shipHeading - (180 - (int)Math.round(Math.abs(
                        Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)))
-                       )))); 
+                       ))); 
+                    angleDiff = (angleDiff+360)%360;
                     
-                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) || 
-                       angleDiff < 10 || angleDiff > 350 )
+                    if( shipHeading > 260 && shipHeading < 280 ) 
                     {
                         firable = true;
+                        shotDir = 'r';                        
+                    }
+                    else if (shipHeading > 80 && shipHeading < 100)
+                    {
+                        firable = true;
+                        shotDir = 'l'; 
+                    }
+                    else if (shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'f'; 
                     }
                 }
                 //bottom left
                 else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
                 {
-                    angleDiff = Math.abs(shipHeading - (180 + (int)Math.round(  Math.abs(
+                    angleDiff = shipHeading - (180 + (int)Math.round(  Math.abs(
                          Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
-                         )))); 
-                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) ||
-                       angleDiff < 10 || angleDiff > 350 )
+                         ))); 
+                    angleDiff = (angleDiff+360)%360;
+                    
+                    if( shipHeading > 260 && shipHeading < 280 ) 
                     {
                         firable = true;
+                        shotDir = 'r';                        
+                    }
+                    else if (shipHeading > 80 && shipHeading < 100)
+                    {
+                        firable = true;
+                        shotDir = 'l'; 
+                    }
+                    else if (shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'f'; 
                     }
                 }
                 //top left
                 else if(enemyPos.x < shipPos.x && enemyPos.y < shipPos.y)
                 {
-                    angleDiff = Math.abs(shipHeading - (360 - (int)Math.round(Math.abs(
+                    angleDiff = shipHeading - (360 - (int)Math.round(Math.abs(
                        Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
-                       )))); 
-                    if( ( angleDiff > 260 && angleDiff < 280 ) || ( angleDiff > 80 && angleDiff < 100 ) ||
-                       angleDiff < 10 || angleDiff > 350 )
+                       ))); 
+                    angleDiff = (angleDiff+360)%360;
+                    
+                    if( shipHeading > 260 && shipHeading < 280 ) 
                     {
                         firable = true;
+                        shotDir = 'r';                        
+                    }
+                    else if (shipHeading > 80 && shipHeading < 100)
+                    {
+                        firable = true;
+                        shotDir = 'l'; 
+                    }
+                    else if (shipHeading > 350 || shipHeading < 10 )
+                    {
+                        firable = true;
+                        shotDir = 'f'; 
                     }
                 }
+                System.out.println("angle:"+angleDiff+" player: "+shipHeading);
                 if(firable == true)
                 {
                     System.out.println("FIRE!!!!!!");
