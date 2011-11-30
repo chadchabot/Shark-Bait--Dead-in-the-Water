@@ -1,0 +1,19 @@
+<project name="SharkBait" default="jar" basedir=".">
+    <description>Describe my project lightly here.</description>
+    
+    <property name="src" location="src"/>
+    <property name="build" location="build"/>
+    <property name="imagesDir" location="images"/>
+    
+    <target name="compile">
+        <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+    </target>
+    
+    <target name="jar" depends="compile" description="generate the distribution" >
+        <jar jarfile="sharkbait.jar" basedir="./" excludesfile="build.xml" excludes="*.jar">
+            <manifest>
+                <attribute name="Main-Class" value="build/Game"/>
+            </manifest>
+        </jar>
+    </target> 
+</project>
