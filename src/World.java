@@ -1,8 +1,14 @@
+/**
+ * @author      Bonne Justin jbonne@uoguelph.ca
+ * @author      Cardinal, Blake bcardina@uoguelph.ca
+ * @author      Chabot, Chad chabot@uoguelph.ca
+ * @version     0.9                 
+ * @since       2011-11-29
+ */
 
-import java.util.ArrayList;
-import java.util.ListIterator;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.geom.AffineTransform;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -11,12 +17,7 @@ import java.awt.Rectangle;
 import java.awt.TexturePaint;
 
 import java.util.ArrayList;
-import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Polygon;
-import java.awt.geom.AffineTransform;
+import java.util.ListIterator;
 
 public class World extends Sprite{
     
@@ -25,31 +26,39 @@ public class World extends Sprite{
     public static final int     PLAYER_X_CENTER = 500;
     public static final int     PLAYER_Y_CENTER = 300;
 
-    private int  windDirection;
-    private int  windSpeed;
-    private int     time;
-    private int     weatherState;
-    private int     rain;
-    private int     fog;
-    private ArrayList<Polygon> shore;
-    private int     width;
-    private int     height;
-    private int		frame;
-    private String 	temp;
-    private int		index = 0;
-    private TexturePaint tp;
+    // world height and width
+    private int                 width;
+    private int                 height;
     
-    //      default constructor
+    // environment details
+    private int                 windDirection;
+    private int                 windSpeed;
+    private int                 time;
+    private int                 rain;
+    private int                 fog;
+    
+    // used for animations and frame tracking
+    private int                 frame;
+    private String              temp;
+    private int                 index = 0;
+    
+    // list of island polygons and texture paint for island graphic
+    private ArrayList<Polygon>  shore;
+    private TexturePaint        tp;
+    
+    /**
+     * Class constructor sets intialized game environment with default values
+     * Loads images and frames for weather effects
+     */
     public World ( ) {
         this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
-        this.weatherState   = 0;
         this.rain           = 0;
         this.fog            = 0;
         this.width          = 5000;
         this.height         = 4000;
-        shore = new ArrayList<Polygon>();
+        this.shore = new ArrayList<Polygon>();
         this.loadImage("fog", "fog");
         this.loadImage("land", "land");
         this.loadImage("water", "water");
@@ -60,18 +69,18 @@ public class World extends Sprite{
         this.loadImage("night", "night");
         this.loadImage("dawn", "dawn");
     }
-    public World (int pWidth, int pHeight, String pBack) {
-        this.windDirection  = 45;
-        this.windSpeed      = 0;
-        this.time           = 1;
-        this.weatherState   = 0;
-        this.rain           = 0;
-        this.fog            = 0;
-        this.width          = pWidth;
-        this.height         = pHeight;
-        shore = new ArrayList<Polygon>();
-    }
     
+    /**
+     * Constructs a polygon out of an array of x cooridinates and
+     * y coordinates
+     *
+     * to properly create the polygon the points must be sent in
+     * in the clockwise direction
+     *
+     * @param pX array of x coordinates
+     * @param pY array of y coordinates
+     * @param pNumPoints number of vertices in the polygon
+     */
     public void addShore ( int [] pX, int [] pY, int pNumPoints  ) 
     {
             Polygon mShore = null;
@@ -79,26 +88,36 @@ public class World extends Sprite{
             try {
                     mShore = new Polygon (pX, pY, pNumPoints);
             }
-            catch (NegativeArraySizeException e){
-                    System.out.println( "Array size must be positive integer" );
+            catch ( NegativeArraySizeException e ){
+                System.out.println( "ERROR: Couldn't create polygon" );
+                System.out.println( "Array size must be positiveinteger" );
             }
-            catch (IndexOutOfBoundsException e){
+            catch ( IndexOutOfBoundsException e ){
+                    System.out.println( "ERROR: Couldn't create polygon" );
                     System.out.println( "Array Index is out of bounds" );
             }
-            catch (NullPointerException e){
+            catch ( NullPointerException e ){
+                    System.out.println( "ERROR: Couldn't create polygon" );
                     System.out.println( "Array Null pointer exception" );
             }
-            
             if (mShore != null){
                     this.shore.add(mShore);
             }
     }
+    /**
+     * Draw the weather effects of the game to the passed graphics object
+     *
+     * @param g Graphics object that the weather will be drawn on
+     */
     public void drawWeather ( Graphics g ){
     	
+        // draw fog
     	if ( this.fog == 1 )
     	{
 	    	g.drawImage(this.frames.get("fog"), 0, 0, null);
     	}
+        
+        // draw and animate rain
     	if ( this.rain == 1)
     	{
     		this.frame++;
@@ -112,6 +131,8 @@ public class World extends Sprite{
     		g.drawImage(this.frames.get(temp), 0, 0, null);
             
     	}
+        
+        //draw the time conditions
         if(this.time == 0)
         {
             g.drawImage(this.frames.get("dawn"), 0, 0, null);
@@ -121,56 +142,74 @@ public class World extends Sprite{
             g.drawImage(this.frames.get("night"), 0, 0, null);
         }
     }
+    
+    /**
+     * Draw the water background and the polygons to a graphics object
+     *
+     * @param g Graphics object that the weather will be drawn on
+     * @param playerPos player position used to calculate relative positions
+     */
     public void draw ( Graphics g, Point playerPos )
     {
-    	Graphics2D g2D = (Graphics2D) g;
+    	Graphics2D g2D = ( Graphics2D ) g;
     	
-        int drawX;// = (this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
-        int drawY;// = (this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER)*PIXELS_PER_METER;
+        int drawX;
+        int drawY;
         
-        tp = new TexturePaint(this.frames.get("water"), new Rectangle(1024, 768));
+        //draw water back ground
+        tp = new TexturePaint(this.frames.get("water"), 
+                              new Rectangle(1024, 768));
         g2D.setPaint(tp);
-        
 		g2D.fillRect(0, 0, 1024, 768);
         
-        for(int i = 0; i< this.shore.size(); i++)
+        //draw and move islands to their position relavtive to the player
+        for( int i = 0; i< this.shore.size(); i++ )
         {
-            int scaledx[] = new int[this.shore.get(i).npoints];
-            int scaledy[] = new int[this.shore.get(i).npoints];
+            int scaledx[ ] = new int[this.shore.get( i ).npoints ];
+            int scaledy[ ] = new int[this.shore.get( i ).npoints ];
             
-            for(int j = 0; j < this.shore.get(i).npoints; j++)
+            // scale the islands to the porper size for PIXEL_PER_METER ratio
+            for( int j = 0; j < this.shore.get( i ).npoints; j++ )
             {
-                scaledx[j] = this.shore.get(i).xpoints[j]*PIXELS_PER_METER;
-                scaledy[j] = this.shore.get(i).ypoints[j]*PIXELS_PER_METER;
+                scaledx[ j ] = this.shore.get( i ).xpoints[ j ]*PIXELS_PER_METER;
+                scaledy[ j ] = this.shore.get( i ).ypoints[ j ]*PIXELS_PER_METER;
             }
             
-            Polygon copy = new Polygon(scaledx, scaledy, this.shore.get(i).npoints);
-            Rectangle bounds = new Rectangle(copy.getBounds());
+            //use the scaled points to create a new polygon
+            Polygon copy = new Polygon( scaledx, scaledy, 
+                                       this.shore.get( i ).npoints );
             
-            Point polycenter = new Point( bounds.x + ((int)bounds.getWidth( ) )/2,  bounds.y + ((int)bounds.getHeight( ) )/2 );
+            //find the center of the new scaled island
+            Rectangle bounds = new Rectangle( copy.getBounds( ) );
+            Point polycenter = new Point( bounds.x + ( (int)bounds.getWidth( ) )/2,  
+                                         bounds.y + ( (int)bounds.getHeight( ) )/2 );
             
-            drawX = PLAYER_X_CENTER - (playerPos.x*PIXELS_PER_METER - polycenter.x);
-            drawY = PLAYER_Y_CENTER - (playerPos.y*PIXELS_PER_METER - polycenter.y);
+            //find where the island should be drawn on screen
+            drawX = PLAYER_X_CENTER 
+                    - ( playerPos.x*PIXELS_PER_METER - polycenter.x );
+            drawY = PLAYER_Y_CENTER 
+                    - ( playerPos.y*PIXELS_PER_METER - polycenter.y );
             
-            /* AffineTransform at = new AffineTransform();
-             at.scale(PIXELS_PER_METER, PIXELS_PER_METER);
-             copy.getPathIterator(at);*/
+            //move the island to where it should be drawn
+            copy.translate( (drawX - polycenter.x),( drawY - polycenter.y) ); 
             
-            copy.translate((drawX - polycenter.x),( drawY - polycenter.y)); 
             
-            tp = new TexturePaint(this.frames.get("land"), new Rectangle(copy.getBounds()));
-             
-            // Add the texture paint to the graphics context. 
-            g2D.setPaint(tp);    
-            g2D.setStroke(new BasicStroke(5F));
+            //start drawing the island
             
-            //g.setColor(new Color(0, 128, 64));
-            g.drawPolygon(copy);
-            g.fillPolygon(copy);
+            // load the texture paint and add it to the graphics context.
+            tp = new TexturePaint( this.frames.get( "land" ), 
+                                  new Rectangle( copy.getBounds( ) ) );
+            g2D.setPaint( tp );    
+            g2D.setStroke( new BasicStroke( 5F ) );
             
-            g.setColor(new Color(255, 226, 28));
-            g.drawPolygon(copy);
-            copy.reset();
+            //draw and fille the polygon with the texture
+            g.drawPolygon( copy );
+            g.fillPolygon( copy );
+            
+            //draw the sand
+            g.setColor( new Color( 255, 226, 28 ) );
+            g.drawPolygon( copy );
+            copy.reset( );
         }
     }
     /*
@@ -178,31 +217,81 @@ public class World extends Sprite{
      * Mutators
      *
      */
+    /**
+     * Mutator for the wind direction
+     *
+     * should be between 0 and 359
+     *
+     * @param pWindDirection the new direction for the wind
+     */
     public void setWindDirection ( int pWindDirection ) 
     {
         this.windDirection = pWindDirection;
     }
+    /**
+     * Mutator for the wind speed
+     * Wind speed is not currently used in the game
+     *
+     * @param pWindSpeed the new speed for the wind
+     */
     public void setWindSpeed ( int pWindSpeed ) 
     {
         this.windSpeed = pWindSpeed;
     }
+    /**
+     * Mutator for the environment time
+     *
+     * 0 = "dawn"
+     * 1 = "midday"
+     * 2 = "night"
+     *
+     * @param pTime the new time for the environment
+     */
     public void setTime ( int pTime ) 
     {
         this.time = pTime;
     }
-    public void setWeatherState ( int pWeatherState ) 
-    {
-        this.weatherState = pWeatherState;
-    }
-    public void setWorldDimensions ( int pWidth , int pHeight) 
+    /**
+     * Mutator for the world dimensions
+     *
+     * @param pWidth the width of the world in "game units" or meters
+     * as we like to call them
+     * @param pHeight the height of the world in "game units" or meters
+     * as we like to call them
+     */
+    public void setWorldDimensions ( int pWidth , int pHeight ) 
     {
         this.width = pWidth;
         this.height = pHeight;
     }
+    /**
+     * Mutator for the rain
+     *
+     * turns the rain in the environment on or off
+     *
+     * 0 = off
+     * 1 = on
+     *
+     * may be made boolean in the future
+     *
+     * @param pRain integer flag to turn the rain on or off
+     */
     public void setRain ( int pRain ) 
     {
         this.rain = pRain;
     }
+    /**
+      * Mutator for the fog
+      *
+      * turns the fog in the environment on or off
+      *
+      * 0 = off
+      * 1 = on
+      *
+      * may be made boolean in the future
+      *
+      * @param pFog integer flag to turn the fog on or off
+      */
     public void setFog ( int pFog ) 
     {
         this.fog = pFog;
@@ -212,26 +301,47 @@ public class World extends Sprite{
      * Accessors
      *
      */
+    /**
+     * Accessor for the wind direction
+     *
+     * @return the game environments current wind direction
+     */
     public int getWindDirection ( ) 
     {
         return this.windDirection;
     }
+    /**
+     * Accessor for the wind speed
+     *
+     * @return the game environments current wind speed
+     */
     public int getWindSpeed ( ) 
     {
         return this.windSpeed;
     }
+    /**
+     * Accessor for the game environment time
+     *
+     * @return the game environments current time
+     */
     public int getTime ( ) 
     {
         return this.time;
     }
-    public int getWeatherState ( ) 
-    {
-        return this.weatherState;
-    }
+    /**
+     * Accessor for the width of the game environment
+     *
+     * @return the game environments current width
+     */
     public int getWorldWidth ( ) 
     {
         return this.width;
     }
+    /**
+     * Accessor for the height of the game environment
+     *
+     * @return the game environments current height
+     */
     public int getWorldHeight ( ) 
     {
         return this.height;
