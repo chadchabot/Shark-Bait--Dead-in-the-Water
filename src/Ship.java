@@ -6,6 +6,7 @@
  * @since       2011-11-29
  */
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.image.AffineTransformOp;
@@ -40,7 +41,7 @@ public class Ship extends Sprite{
     private double  speed;
     private int     speedFactor;
     private int     type;
-    private Point   position;
+    private Point2D.Double   position;
     private int     heading;
     private double  health;
 	private double	healthMAX;
@@ -53,8 +54,8 @@ public class Ship extends Sprite{
     private int		frame = 0;
     
     // ship movement deltas
-    private double deltaX; 
-    private double deltaY;
+   //private double deltaX; 
+    //private double deltaY;
     
         
     /**
@@ -66,7 +67,7 @@ public class Ship extends Sprite{
         this.shipID     = 69;
         this.speed      = 0.9;
         this.type       = 0;
-        this.position   = new Point( 10,10 );
+        this.position   = new Point2D.Double( 10,10 );
         this.heading    = 270;
     }
     /**
@@ -86,7 +87,7 @@ public class Ship extends Sprite{
         this.shipID     = pID;
         this.speed      = 1 ;
         this.type       = pType;
-        this.position   = new Point( 50, 50 );
+        this.position   = new Point2D.Double( 50, 50 );
         this.heading    = 270;
 		this.setupShipStats( playerID );
         this.loadImage( "dead",      "dead" );
@@ -216,10 +217,10 @@ public class Ship extends Sprite{
 
         // calcualte change in position
         // !!! needs to be updated not match servers calculations
-        this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))
-                                     *(this.speed/REFRESH_RATE*PIXELS_PER_METER));
-        this.deltaY = this.deltaY + (Math.sin(Math.toRadians(this.heading-90))
-                                     *(this.speed/REFRESH_RATE*PIXELS_PER_METER));
+        double deltaX = (Math.sin(Math.toRadians(this.heading))
+                                     *(this.speed/REFRESH_RATE));
+        double deltaY = (Math.cos(Math.toRadians(this.heading))
+                                     *(this.speed/REFRESH_RATE));
         
         // old speed calculation with wind and ship speed factor
         /*this.deltaX = this.deltaX + (Math.cos(Math.toRadians(this.heading-90))
@@ -231,22 +232,22 @@ public class Ship extends Sprite{
         
         //update the location
         this.position.setLocation(
-            this.position.x + this.deltaX,
-            this.position.y + this.deltaY
+            this.position.getX() + deltaX,
+            this.position.getY() - deltaY
         );
         
         // delta x and y were made global for small values that would get rounded
         // and cause no change in position on an update
         // that way when the sum of the deltas are over 1 (or -1) a change would finally
         // happen then we can reset the deltas back to 0
-        if(Math.round( deltaX ) >= 1 || Math.round(deltaX) <= -1)
+       /* if( deltaX >= 1 || deltaX <= -1)
         {   
             this.deltaX = 0;
         }
-        if(Math.round( deltaY ) >= 1 || Math.round(deltaY) <= -1)
+        if( deltaY >= 1 || deltaY <= -1)
         {   
            this.deltaY = 0;
-        }
+        }*/
        
         // dead animation
         if ( this.health == 0 )
@@ -291,15 +292,15 @@ public class Ship extends Sprite{
      * @param playerPos used as a reference point for relative movement
      * @param targetID used for drawing target ring
      */
-    public void draw ( Graphics g , Point playerPos, int targetID )
+    public void draw ( Graphics g , Point2D.Double playerPos, int targetID )
     {
         // ( ship position - player position - ( center of screen converted to meter ) ) 
         // * conversion to pixels - the width of ship / 2 ( to make the center of the 
         // image on the position )
-        int drawX = ( this.position.x - playerPos.x + PLAYER_X_CENTER/PIXELS_PER_METER )
-                    *PIXELS_PER_METER - this.shipWidthM*PIXELS_PER_METER / 2;
-        int drawY = ( this.position.y - playerPos.y + PLAYER_Y_CENTER/PIXELS_PER_METER )
-                    *PIXELS_PER_METER - this.shipHeightM*PIXELS_PER_METER / 2;
+        int drawX = new Double( (this.position.getX() - playerPos.getX() + PLAYER_X_CENTER/PIXELS_PER_METER )
+                    *PIXELS_PER_METER - this.shipWidthM*PIXELS_PER_METER / 2).intValue();
+        int drawY = new Double( ( this.position.getY() - playerPos.getY() + PLAYER_Y_CENTER/PIXELS_PER_METER )
+                    *PIXELS_PER_METER - this.shipHeightM*PIXELS_PER_METER / 2).intValue();
         
         Graphics2D g2D = (Graphics2D) g;
         //rotate graphics
@@ -371,7 +372,7 @@ public class Ship extends Sprite{
      *
      * @param pPosition the ships new position
      */
-    public void setPosition ( Point pPosition ) 
+    public void setPosition ( Point2D.Double pPosition ) 
     {
         this.position = pPosition;
     }
@@ -429,7 +430,7 @@ public class Ship extends Sprite{
      *
      * @return the ships current position
      */
-    public Point getPosition ( ) 
+    public Point2D.Double getPosition ( ) 
     {
         return this.position;
     }

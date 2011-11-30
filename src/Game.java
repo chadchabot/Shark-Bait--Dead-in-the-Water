@@ -17,6 +17,7 @@ import java.util.HashMap;
 import javax.swing.JComponent;
 
 import java.awt.BorderLayout;
+import java.awt.geom.Point2D;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -206,7 +207,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
      */
 	public void paint ( Graphics g )
     {        
-		Point playerPos = null;
+		Point2D.Double playerPos = null;
 		
 		if ( this.shipList.size() != 0 ) {
 			playerPos = this.getShip(Integer.toString(this.playerID)).getPosition();
@@ -493,13 +494,13 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             {
                 int		shipHeading		= this.getShip(new Integer(playerID).toString()).getHeading();
                 int		enemyHeading	= this.getShip(new Integer(targetID).toString()).getHeading();
-                Point	shipPos			= this.getShip(new Integer(playerID).toString()).getPosition();
-                Point	enemyPos		= this.getShip(new Integer(targetID).toString()).getPosition();
+                Point2D.Double	shipPos			= this.getShip(new Integer(playerID).toString()).getPosition();
+                Point2D.Double	enemyPos		= this.getShip(new Integer(targetID).toString()).getPosition();
                 int		angleDiff		= 0;
                 char	shotDir			= ' ';
                 boolean firable			= false;
                 //straight up
-                if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
+                if(enemyPos.getX() == shipPos.getX() && enemyPos.getY() < shipPos.getY())
                 {
                     if( shipHeading > 260 && shipHeading < 280 ) 
                     {
@@ -518,7 +519,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //straight right
-                else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
+                else if(enemyPos.getX() > shipPos.getX() && enemyPos.getY() == shipPos.getY())
                 {
                     if(  shipHeading > 80 && shipHeading < 100)
                     {
@@ -537,7 +538,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //straight down
-                else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
+                else if(enemyPos.getX() == shipPos.getX() && enemyPos.getY() > shipPos.getY())
                 {
                     if(  shipHeading > 260 && shipHeading < 280)
                     {
@@ -556,7 +557,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //straight left
-                else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
+                else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() == shipPos.getY())
                 {
                     if(  shipHeading > 260 && shipHeading < 280)
                     {
@@ -575,10 +576,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //top right
-                else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
+                else if(enemyPos.getX() > shipPos.getX() && enemyPos.getY() < shipPos.getY())
                 {   
                     angleDiff = shipHeading - (int)Math.round(Math.abs(
-                        Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) ))
+                        Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) ))
                         ));
                     angleDiff = (angleDiff+360)%360;
                     
@@ -599,10 +600,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //bottom right
-                else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
+                else if(enemyPos.getX() > shipPos.getX() && enemyPos.getY() > shipPos.getY())
                 {
                     angleDiff = shipHeading - (180 - (int)Math.round(Math.abs(
-                       Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)))
+                       Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getX()-shipPos.getY())))
                        ))); 
                     angleDiff = (angleDiff+360)%360;
                     
@@ -623,11 +624,11 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //bottom left
-                else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
+                else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() > shipPos.getY())
                 {
                     angleDiff = shipHeading - (180 + (int)Math.round(  Math.abs(
-                         Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
-                         ))); 
+                         Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX()/(enemyPos.getY()-shipPos.getY())) )
+                         )))); 
                     angleDiff = (angleDiff+360)%360;
                     
                     if( shipHeading > 260 && shipHeading < 280 ) 
@@ -647,10 +648,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     }
                 }
                 //top left
-                else if(enemyPos.x < shipPos.x && enemyPos.y < shipPos.y)
+                else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() < shipPos.getY())
                 {
                     angleDiff = shipHeading - (360 - (int)Math.round(Math.abs(
-                       Math.toDegrees( Math.atan((enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y)) )
+                       Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY())) )
                        ))); 
                     angleDiff = (angleDiff+360)%360;
                     

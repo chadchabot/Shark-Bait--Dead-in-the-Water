@@ -7,6 +7,7 @@
  */
 
 
+import java.awt.geom.Point2D;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Graphics;
@@ -142,7 +143,7 @@ public class GUI extends Sprite
 				g2D.fillRect( 825, 650, (int)(pShipList.get(key).getSpeed()*10)/10, 30 );
 				g2D.drawRect( 825, 650, 150, 30 );
 				
-				g2D.drawString( "(X, Y): (" + pShipList.get(key).getPosition().x + ","+pShipList.get(key).getPosition().y +")", 700, 705 );
+				g2D.drawString( "(X, Y): (" + new Double(pShipList.get(key).getPosition().getX()).intValue() + ","+ new Double( pShipList.get(key).getPosition().getY()).intValue() +")", 700, 705 );
 			}
 
 		}
@@ -205,55 +206,55 @@ public class GUI extends Sprite
     private int getShipArrow(Ship enemy, Ship player)
     {
         int enemyHeading = enemy.getHeading();
-        Point shipPos = player.getPosition();
-        Point enemyPos = enemy.getPosition();
+        Point2D.Double shipPos = player.getPosition();
+        Point2D.Double enemyPos = enemy.getPosition();
         int angle = -1;
         //straight up
-        if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
+        if(enemyPos.getX() == shipPos.getX() && enemyPos.getX() < shipPos.getX())
         {
             angle = 0;
         }
         //straight right
-        else if(enemyPos.x > shipPos.x && enemyPos.y == shipPos.y)
+        else if(enemyPos.getX() > shipPos.getX() && enemyPos.getY() == shipPos.getY())
         {
             angle = 90;
         }
         //straight down
-        else if(enemyPos.x == shipPos.x && enemyPos.y > shipPos.y)
+        else if(enemyPos.getX() == shipPos.getX() && enemyPos.getY() > shipPos.getY())
         {
             angle = 180;    
         }
         //straight left
-        else if(enemyPos.x < shipPos.x && enemyPos.y == shipPos.y)
+        else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() == shipPos.getY())
         {
             angle = 270;
         }
         //top right
-        else if(enemyPos.x > shipPos.x && enemyPos.y < shipPos.y)
+        else if(enemyPos.getX() > shipPos.getX() && enemyPos.getY() < shipPos.getY())
         {   
             angle = (int)Math.round(Math.abs(Math.toDegrees( 
-                    Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                    Math.atan( (enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) )
                     ))); 
         }
         //bottom right
-        else if(enemyPos.x > shipPos.x && enemyPos.y > shipPos.y)
+        else if(enemyPos.getY() > shipPos.getX() && enemyPos.getY() > shipPos.getY())
         {
             angle = 180 - (int)Math.round(Math.abs(Math.toDegrees( 
-                    Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                    Math.atan( (enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) )
                     ))); 
         }
         //bottom left
-        else if(enemyPos.x < shipPos.x && enemyPos.y > shipPos.y)
+        else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() > shipPos.getY())
         {
             angle = 180 + (int)Math.round(Math.abs(Math.toDegrees( 
-                      Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                      Math.atan( (enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) )
                       )));
         }
         //top left
-        else if(enemyPos.x < shipPos.x && enemyPos.y < shipPos.y)
+        else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() < shipPos.getY())
         {
             angle = 360 - (int)Math.round(Math.abs(Math.toDegrees( 
-                      Math.atan( (enemyPos.x-shipPos.x)/(enemyPos.y-shipPos.y) )
+                      Math.atan( (enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) )
                       )));
         }
         return angle;

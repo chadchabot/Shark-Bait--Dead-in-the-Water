@@ -9,6 +9,7 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -152,7 +153,7 @@ public class World extends Sprite
      * @param g Graphics object that the weather will be drawn on
      * @param playerPos player position used to calculate relative positions
      */
-    public void draw ( Graphics g, Point playerPos )
+    public void draw ( Graphics g, Point2D.Double playerPos )
     {
     	Graphics2D g2D = ( Graphics2D ) g;
     	
@@ -184,17 +185,17 @@ public class World extends Sprite
             
             //find the center of the new scaled island
             Rectangle bounds = new Rectangle( copy.getBounds( ) );
-            Point polycenter = new Point( bounds.x + ( (int)bounds.getWidth( ) )/2,  
+            Point2D.Double polycenter = new Point2D.Double( bounds.x + ( (int)bounds.getWidth( ) )/2,  
                                          bounds.y + ( (int)bounds.getHeight( ) )/2 );
             
             //find where the island should be drawn on screen
-            drawX = PLAYER_X_CENTER 
-                    - ( playerPos.x*PIXELS_PER_METER - polycenter.x );
-            drawY = PLAYER_Y_CENTER 
-                    - ( playerPos.y*PIXELS_PER_METER - polycenter.y );
+            drawX = new Double(PLAYER_X_CENTER 
+                    - ( playerPos.getX()*PIXELS_PER_METER - polycenter.getX() )).intValue();
+            drawY = new Double(PLAYER_Y_CENTER 
+                    - ( playerPos.getY()*PIXELS_PER_METER - polycenter.getY() )).intValue();
             
             //move the island to where it should be drawn
-            copy.translate( (drawX - polycenter.x),( drawY - polycenter.y) ); 
+            copy.translate( (drawX - new Double(polycenter.getX()).intValue()),( drawY - new Double(polycenter.getY()).intValue()) ); 
             
             
             //start drawing the island
