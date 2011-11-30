@@ -1,3 +1,10 @@
+/**
+ * @author      Bonne Justin jbonne@uoguelph.ca
+ * @author      Cardinal, Blake bcardina@uoguelph.ca
+ * @author      Chabot, Chad chabot@uoguelph.ca
+ * @version     0.9                 
+ * @since       2011-11-29
+ */
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -18,27 +25,39 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
 public class Lobby {
-	
-	public JFrame lobbyWindow;
-	private JMenuBar 				menu;
-	private JMenu 					file;
-	private JMenu					help;
-    
-    public JButton                 registerButton;
-    public JButton                 readyButton;
 
-    public JRadioButton    			sloopButton;
-    public JRadioButton    			frigateButton;
-    public JRadioButton    			manOwarButton;
-    private ButtonGroup            	lobbyButtonGroup;
-	private ActionListener			listener;
-	private Dimension 				Dim;
+	//	components of the Lobby window
+	public	JFrame			lobbyWindow;
+	private JMenuBar 		menu;
+	private JMenu 			file;
+	private JMenu			help;
+    public	JButton         registerButton;
+    public	JButton         readyButton;
+    public	JRadioButton    sloopButton;
+    public	JRadioButton    frigateButton;
+    public	JRadioButton    manOwarButton;
+    private ButtonGroup     lobbyButtonGroup;
+	private ActionListener	listener;
+	private Dimension 		Dim;
 	
-	public Lobby( ActionListener Game ){
+	
+	/**
+     * Class constructor spawns the Lobby window
+	 *
+	 * @param Game is the Actionlistener implemented in Game.java
+     */
+	public Lobby( ActionListener Game )
+	{
 		this.listener = Game;
 		createLobby();	
 	}
 	
+	/**
+     * Creates and displays the Lobby window
+     *
+     * Interactions with the Lobby window are registered in the
+	 * actionPerformed() method in Game.java.
+	 */
 	public void createLobby( )
     {
     		this.lobbyWindow = new JFrame( "Shark Bait: Lobby" );
@@ -67,7 +86,7 @@ public class Lobby {
     		JPanel topPanel = new JPanel();
     		topPanel.add(new JLabel("SHARK BAIT: UNCHARTERED WATERS!"));
     		
-    		//	radio button selections
+    		//	radio button group
     		this.lobbyButtonGroup   = new ButtonGroup();
     		
     		JPanel SloopPanel = new JPanel();
