@@ -86,7 +86,7 @@ public class Sprite
             frames.put( pFrameName, 
                         ImageIO.read( 
                         this.getClass( ).getResourceAsStream( "./images/"+ pFileName + ".png" ) 
-                        );
+                        ) );
             
             // if a new default frame is being loaded reset the dimensions to match
             // the new image
