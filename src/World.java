@@ -21,7 +21,7 @@ import java.util.ListIterator;
 
 public class World extends Sprite
 {
-    
+    //game constants
     public static final int		REFRESH_RATE = 60;
 	public static final int 	PIXELS_PER_METER = 3;
     public static final int     PLAYER_X_CENTER = 500;
