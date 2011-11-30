@@ -1,3 +1,12 @@
+/**
+ * @author      Bonne Justin jbonne@uoguelph.ca
+ * @author      Cardinal, Blake bcardina@uoguelph.ca
+ * @author      Chabot, Chad chabot@uoguelph.ca
+ * @version     0.9                 
+ * @since       2011-11-29
+ */
+
+
 import java.awt.event.*;
 
 import javax.imageio.ImageIO;
@@ -26,66 +35,79 @@ import java.awt.Dimension;
 public class Game extends JComponent implements MessageListener, KeyListener, ActionListener
 {
 
-    public static final int						REFRESH_RATE = 60;
-    public static final int						PIXELS_PER_METER = 3;
-    public static final int						PLAYER_X_CENTER = 500;
-    public static final int						PLAYER_Y_CENTER = 300;
-    public static final int						SLOOP_TURN_MAX = 3;
-    public static final int						FRIGATE_TURN_MAX = 2;
-    public static final int						MAN_OF_WAR_TURN_MAX = 1;
-    public static final double					TURN_AMOUNT_INCREMENT = 0.5;
-    public static final double					SPEED_AMOUNT_INCREMENT = 0.10;
+	//	game "constants"
+    public static final int				REFRESH_RATE			= 60;
+    public static final int				PIXELS_PER_METER		= 3;
+    public static final int				PLAYER_X_CENTER			= 500;
+    public static final int				PLAYER_Y_CENTER			= 300;
+    public static final int				SLOOP_TURN_MAX			= 3;
+    public static final int				FRIGATE_TURN_MAX		= 2;
+    public static final int				MAN_OF_WAR_TURN_MAX		= 1;
+    public static final double			TURN_AMOUNT_INCREMENT	= 0.5;
+    public static final double			SPEED_AMOUNT_INCREMENT	= 0.10;
     
-	private static final int					windowWidth  = 1024;
-	private static final int					windowHeight = 768;
+	private static final int			windowWidth				= 1024;
+	private static final int			windowHeight			= 768;
 	
 	
-    private GUI                                 gameGUI;
-	private	boolean								windUpdateFLAG = false;
-	private boolean								shiftPressed = false;
+	//	
+    private GUI                         gameGUI;
+	private	boolean						windUpdateFLAG	= false;
+	private boolean						shiftPressed	= false;
 	
-    protected HashMap<String, Ship>				shipList;
-    private ArrayList<Integer>					shipID;
-    public	HashMap<String, String>				speedTable;
-    private World                               gameWorld = null;
-    private int                                 playerID;
-    private boolean                             gameRunning = false;
-    private int                                 shipSelection = 0;
-    private String                              pMessage;
-    private int                                 targetID = -1;
-    private long 								lastTurn = 0;
-    private long 								lastShot = 0;
-    private Lobby								lobbyWindow;
-	private SplashWindow						splashWindow;
-	private boolean								showLobby = false;
-	private	boolean								showSplash = true;
-    private	JFrame								frame;
-    private Dimension 							Dim;
+    protected HashMap<String, Ship>		shipList;
+    private ArrayList<Integer>			shipID;
+    public	HashMap<String, String>		speedTable;
+    private World                       gameWorld		= null;
+    private int                         playerID;
+    private boolean                     gameRunning		= false;
+    private int                         shipSelection	= 0;
+    private String                      pMessage;
+    private int                         targetID		= -1;
+    private long 						lastTurn		= 0;
+    private long 						lastShot		= 0;
+	
+	//	"secondary" windows - even though they precede the actual window that shows stuff in the game
+    private Lobby						lobbyWindow;
+	private SplashWindow				splashWindow;
+	private boolean						showLobby		= false;
+	private	boolean						showSplash		= true;
     
-    private JFrame								helpWindow;
-    
-    private JMenuBar 							Menu;
-	private JMenu 								fileMenu;
-	private JMenu								helpMenu;
-	private JMenuItem							close;
-	private JMenuItem							help;
+	//	"main" window components
+	private	JFrame						frame;
+    private Dimension 					Dim;
+    private JFrame						helpWindow;
+    private JMenuBar 					Menu;
+	private JMenu 						fileMenu;
+	private JMenu						helpMenu;
+	private JMenuItem					close;
+	private JMenuItem					help;
         
-    public  Communication						comm;
-    public  Thread								commThread;
-	public	boolean								commConnection = false;
-	public	String								serverIP;
-	public	int									serverPort;
+    public  Communication				comm;
+    public  Thread						commThread;
+	public	boolean						commConnection	= false;
+	public	String						serverIP;
+	public	int							serverPort;
         
     //      communication / message variables
-    public  double                          turnAmount = 0.00;
-    public  double                          speedAmount = 0.00;
+    public  double                      turnAmount	= 0.00;
+    public  double                      speedAmount = 0.00;
         
-        
-        
+
+    /**
+     * Class constructor.
+	 * The entry point in to the client application.
+	 *
+	 * Creates the welcome screen [SplashWindow], sets up
+	 * communication services, loads lobby window, and then drops the
+	 * player in to the game, and gives them control of a ship in the game world.
+     */
     public Game( )
 	{
+	
 		splashWindow = new SplashWindow( this );
 		
+		//	wait until communication has been set up and then show the lobby
 		while ( !this.showLobby ) {
 //			System.out.println( this.showLobby );
 			try {
@@ -97,9 +119,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 
 		}
 	
+		//	sets up, and hides, Help Window
 		this.helpWindow = new JFrame("Help Menu");
         try {
-			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("../images/help_menu.png")))));
+			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./images/help_menu.png")))));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -126,9 +149,6 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         this.shipID = new ArrayList<Integer>();
         this.gameWorld = new World( );
 
-		//	pause the system HERE
-
-		//	until communication is established?
         this.frame = new JFrame ("Shark Bait");
         this.gameGUI = new GUI( );
 
@@ -149,7 +169,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		Menu.add(helpMenu);
         
         this.frame.setResizable(true);
-        this.frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+        this.frame.setDefaultCloseOperation ( JFrame.EXIT_ON_CLOSE );
         this.frame.setResizable( false );
         this.frame.pack();
         this.frame.setSize(Game.windowWidth, Game.windowHeight);
@@ -175,7 +195,15 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		}
         
 	}
-       
+	
+	/**
+     * Draw the various components in the game.
+	 *
+     * The order of drawing is significant, in order to make sure that no GUI HUD elements
+	 * or ships are obscured by weather or interface/map elements
+	 *
+     * @param g Graphics object that is used to draw all/most 'things' in the game world
+     */
 	public void paint ( Graphics g )
     {        
 		Point playerPos = null;
@@ -189,18 +217,23 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
         	this.gameWorld.draw(g, playerPos);
 
             //      draw ships
-        
-        	for (String key : this.shipList.keySet()) {
+           	for (String key : this.shipList.keySet()) {
         		this.getShip(key).draw(g, playerPos, targetID);
         	}
 
 			this.gameWorld.drawWeather( g );
-			//  draw chrome
+			//  draw HUD
 			this.gameGUI.draw( g, this.shipList, this.playerID, this.targetID );
 
         }
 		
     }
+	
+	/**
+     * Updates the various components in the game
+     *
+	 * Unlike paint(), order is not significant for this method.
+     */
     public void update()
     {
         //update ships
@@ -212,226 +245,259 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			this.gameGUI.update( this.gameWorld.getWindDirection(), this.gameWorld.getWindSpeed() );
 			this.windUpdateFLAG = false;
 		}
-        //update chrome
+        //update HUD
         this.repaint();
     }
+	
+	/**
+     * Determines which action is being performed, and how to respond to it
+     *
+     * @param e ActionEvent object that is generated by interaction with an interface element.
+	 * Typically button clicks.
+     */
     public void actionPerformed( ActionEvent e )
     {
             //	System.out.println( "A button is clicked" );
 
-			if ( e.getActionCommand().equals( "connect_to_server" ) ) {
-				//	System.out.println( "connecting to server" );
+		if ( e.getActionCommand().equals( "connect_to_server" ) ) {
+			//	System.out.println( "connecting to server" );
+			
+			this.serverIP = this.splashWindow.serverAddressField.getText();
+			this.serverPort = Integer.parseInt( this.splashWindow.serverPortField.getText() );
+			//	System.out.println( this.serverIP + ", " + this.serverPort );
+
+			//	set up communication
+			this.commThread = new Thread(this.comm = new Communication( this, this.serverIP, this.serverPort) );
+			this.commThread.start();
+
+			//	hide welcome screen
+			this.splashWindow.frame.setVisible( false );
+			//	display the ship selection lobby window
+			this.showLobby = true;
+
+			//	System.out.println( "showSplash is false" );
+		}
+
+		if ( e.getActionCommand().equals( "sloop_selected" ) )
+		{
+			//	System.out.println( "SLOOP class ship selected" );
+			//      set the variable for the user's ship preference
+			this.shipSelection = 0;
+		}
+		
+		if ( e.getActionCommand().equals( "frigate_selected" ) )
+		{
+			//	System.out.println( "FRIGATE class ship selected" );
+			//      set the variable for the user's ship preference
+			this.shipSelection = 1;
+		}
+		
+		if ( e.getActionCommand().equals( "man-o-war_selected" ) )
+		{
+			//	System.out.println( "MAN-O-WAR class ship selected" );
+			//      set the variable for the user's ship preference
+			this.shipSelection = 2;
+		}       
 				
-				this.serverIP = this.splashWindow.serverAddressField.getText();
-				this.serverPort = Integer.parseInt( this.splashWindow.serverPortField.getText() );
-				//	System.out.println( this.serverIP + ", " + this.serverPort );
-
-				this.commThread = new Thread(this.comm = new Communication( this, this.serverIP, this.serverPort) );
-				this.commThread.start();
-
-				this.splashWindow.frame.setVisible( false );
-
-				this.showLobby = true;
-
-				//	System.out.println( "showSplash is false" );
-			}
-
-            if ( e.getActionCommand().equals( "sloop_selected" ) )
-            {
-                    //	System.out.println( "SLOOP class ship selected" );
-                    //      set the variable for the user's ship preference
-                    this.shipSelection = 0;
-            }
-            if ( e.getActionCommand().equals( "frigate_selected" ) )
-            {
-                    //	System.out.println( "FRIGATE class ship selected" );
-                    //      set the variable for the user's ship preference
-                    this.shipSelection = 1;
-            }
-            if ( e.getActionCommand().equals( "man-o-war_selected" ) )
-            {
-                    //	System.out.println( "MAN-O-WAR class ship selected" );
-                    //      set the variable for the user's ship preference
-                    this.shipSelection = 2;
-            }       
-                    
-            if ( e.getActionCommand().equals( "register" ) )
-            {
-                    //	System.out.println( "REGISTER button clicked" ) ;
-                    this.lobbyWindow.sloopButton.setEnabled( false );
-                    this.lobbyWindow.frigateButton.setEnabled( false );
-                    this.lobbyWindow.manOwarButton.setEnabled( false );
-                    this.lobbyWindow.registerButton.setEnabled( false );
-                    this.lobbyWindow.registerButton.setText( "Waiting for registration..." );
-                    //      send REGISTER message to server
-                    this.comm.sendMessage( "register:"+shipSelection+";" );
-                    
-            }
-            if ( e.getActionCommand().equals( "ready" ) )
-            {
-                    //	System.out.println( "READY button clicked" ) ;
-                    this.lobbyWindow.readyButton.setEnabled( false );
-                    this.lobbyWindow.readyButton.setText( "Waiting to start..." );
-                    //      send READY message to server
-                    this.comm.sendMessage( "ready;" );
-                    
-            }
-            if (e.getActionCommand().equals("Help"))
-            {
-            	helpWindow.setVisible(true);
-            }
-            if (e.getActionCommand().equals( "Close") )
-            {
-            	this.comm.sendMessage ( "disconnect;");
-            	System.exit(0);
-            }
+		if ( e.getActionCommand().equals( "register" ) )
+		{
+			//	System.out.println( "REGISTER button clicked" ) ;
+			this.lobbyWindow.sloopButton.setEnabled( false );
+			this.lobbyWindow.frigateButton.setEnabled( false );
+			this.lobbyWindow.manOwarButton.setEnabled( false );
+			this.lobbyWindow.registerButton.setEnabled( false );
+			this.lobbyWindow.registerButton.setText( "Waiting for registration..." );
+			//      send REGISTER message to server
+			this.comm.sendMessage( "register:"+shipSelection+";" );				
+		}
+		
+		if ( e.getActionCommand().equals( "ready" ) )
+		{
+				//	System.out.println( "READY button clicked" ) ;
+				this.lobbyWindow.readyButton.setEnabled( false );
+				this.lobbyWindow.readyButton.setText( "Waiting to start..." );
+				//      send READY message to server
+				this.comm.sendMessage( "ready;" );
+				
+		}
+		
+		//	displays help window
+		if (e.getActionCommand().equals("Help"))
+		{
+			helpWindow.setVisible(true);
+		}
+		
+		if (e.getActionCommand().equals( "Close") )
+		{
+			this.comm.sendMessage ( "disconnect;");
+			System.exit(0);
+		}
     }
+	
+	/**
+     * Responds to a KeyEvent.
+	 * Not used or implemented
+     *
+     * @param pEvent KeyEvent to respond to.
+     */
     public void keyTyped( KeyEvent pEvent )
     {
                 
     }
-    public void keyPressed( KeyEvent pEvent )
+
+	/**
+     * Responds to a KeyEvent by creating a [request] message to be sent to the server.
+	 *
+	 * The KeyEvents generated/watched for here are keyboard commands to change speed,
+	 * fire, steer, and cycle between targets.
+     *
+     * @param pEvent User generated KeyEvent to respond to.
+     */
+	public void keyPressed( KeyEvent pEvent )
     {
 		
-        //      System.out.println("Key Pressed!!!");
-                if( pEvent.getKeyCode( ) == KeyEvent.VK_UP ){
-            //System.out.println("Up!");
-                        //      change the current speed of the player's ship
-                        this.speedAmount += SPEED_AMOUNT_INCREMENT;
+		//      System.out.println("Key Pressed!!!");
+		if( pEvent.getKeyCode( ) == KeyEvent.VK_UP )
+		{
+		//System.out.println("Up!");
+		//      change the current speed of the player's ship
+			this.speedAmount += SPEED_AMOUNT_INCREMENT;
 
-                        if ( this.speedAmount > 1.00 )
-                        {
-                                this.speedAmount = 1.00;
-                        }
-                        
-                        this.pMessage = "speed:" +  this.speedAmount + ";";                     
-                        comm.sendMessage(this.pMessage);
-                        
-                }
-                else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
+			if ( this.speedAmount > 1.00 )
+			{
+				this.speedAmount = 1.00;
+			}
+				
+			this.pMessage = "speed:" +  this.speedAmount + ";";                     
+			comm.sendMessage(this.pMessage);
+				
+		}
+		else if( pEvent.getKeyCode( ) == KeyEvent.VK_DOWN )
         {
             //System.out.println("Down!");
-                        //      change the current speed of the player's ship
-                        this.speedAmount -= SPEED_AMOUNT_INCREMENT;
+			//      change the current speed of the player's ship
+			this.speedAmount -= SPEED_AMOUNT_INCREMENT;
 
-                        if ( this.speedAmount < 0.00 )
-                        {
-                                this.speedAmount = 0.00;
-                        }
-                        
-                        this.pMessage = "speed:" +  this.speedAmount + ";";                     
-                        comm.sendMessage(this.pMessage);
-                }
-                else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
-                { 
-                	 //System.out.println("Left!");
-                     
-                     int  turn = 0;
-                     
-                     if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
-                     {
-                     	turn = -1*SLOOP_TURN_MAX;
-                     }
-                     
-                     if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
-                     {
-                     	turn = -1*FRIGATE_TURN_MAX;
-                     }
-                     
-                     if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
-                     {
-                     	turn = -1*MAN_OF_WAR_TURN_MAX;
-                     }
-                    //System.out.println(System.currentTimeMillis() - this.lastTurn);
-                    if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
-                    {
-                        this.pMessage = "setHeading:" + turn + ";";
-                        comm.sendMessage(pMessage);
-                        this.lastTurn = System.currentTimeMillis();
-                    }
+			if ( this.speedAmount < 0.00 )
+			{
+				this.speedAmount = 0.00;
+			}
+			
+			this.pMessage = "speed:" +  this.speedAmount + ";";                     
+			comm.sendMessage(this.pMessage);
+		}
+        else if( pEvent.getKeyCode() == KeyEvent.VK_LEFT )
+        { 
+			 //System.out.println("Left!");
+			 
+			 int  turn = 0;
+			 
+			 if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
+			 {
+				turn = -1*SLOOP_TURN_MAX;
+			 }
+			 
+			 if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
+			 {
+				turn = -1*FRIGATE_TURN_MAX;
+			 }
+			 
+			 if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
+			 {
+				turn = -1*MAN_OF_WAR_TURN_MAX;
+			 }
+			//System.out.println(System.currentTimeMillis() - this.lastTurn);
+			if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
+			{
+				this.pMessage = "setHeading:" + turn + ";";
+				comm.sendMessage(pMessage);
+				this.lastTurn = System.currentTimeMillis();
+			}
 
-         		}
-                else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
-                {
-                    int  turn = 0;
-                    
-                    if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
-                    {
-                     	turn = SLOOP_TURN_MAX;
-                    }
-                    
-                    if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
-                    {
-                     	turn = FRIGATE_TURN_MAX;
-                    }
-                    
-                    if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
-                    {
-                     	turn = MAN_OF_WAR_TURN_MAX;
-                    }
-         			//	add to the amount of the turn, to a maximum of -25
-         			//	turn amount is in degrees?
-         			/*if ( this.turnAmount >= -maxIncrement)
-                     {
-                     this.turnAmount -= TURN_AMOUNT_INCREMENT;
-                     }
-                     else
-                     {
-                     this.turnAmount = - maxIncrement;
-                     }
-                     */
-                    //System.out.println(System.currentTimeMillis() - this.lastTurn);
-                    if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
-                    {
-                        this.pMessage = "setHeading:" + turn + ";";
-                        comm.sendMessage(pMessage);
-                        this.lastTurn = System.currentTimeMillis();
-                    }
-        		}
-                else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
-				{
-					if (this.targetID == -1 && this.shipID.size() != 0 ){
-                    this.targetID = shipID.get(0);
-                }
-                
-                for(int i = 0; i < shipID.size(); i++){
-					if (shipID.get(i).intValue() == targetID){
-						
+		}
+		else if( pEvent.getKeyCode() == KeyEvent.VK_RIGHT ) 
+		{
+			int  turn = 0;
+			
+			if (this.getShip(Integer.toString(this.playerID)).getType() == 0)
+			{
+				turn = SLOOP_TURN_MAX;
+			}
+			
+			if (this.getShip(Integer.toString(this.playerID)).getType() == 1)
+			{
+				turn = FRIGATE_TURN_MAX;
+			}
+			
+			if (this.getShip(Integer.toString(this.playerID)).getType() == 2)
+			{
+				turn = MAN_OF_WAR_TURN_MAX;
+			}
+			//	add to the amount of the turn, to a maximum of -25
+			//	turn amount is in degrees?
+			/*if ( this.turnAmount >= -maxIncrement)
+			 {
+			 this.turnAmount -= TURN_AMOUNT_INCREMENT;
+			 }
+			 else
+			 {
+			 this.turnAmount = - maxIncrement;
+			 }
+			 */
+			//System.out.println(System.currentTimeMillis() - this.lastTurn);
+			if(System.currentTimeMillis() - this.lastTurn > 100 || this.lastTurn == 0)
+			{
+				this.pMessage = "setHeading:" + turn + ";";
+				comm.sendMessage(pMessage);
+				this.lastTurn = System.currentTimeMillis();
+			}
+		}
+		else if( pEvent.getKeyCode() == KeyEvent.VK_TAB ) 
+		{
+			if (this.targetID == -1 && this.shipID.size() != 0 )
+			{
+				this.targetID = shipID.get(0);
+			}
+			
+			for(int i = 0; i < shipID.size(); i++)
+			{
+				//	check if the ship from the list is the ship targeted by the user
+				if (shipID.get(i).intValue() == targetID){
 /*						if ( pEvent.isShiftDown() )
+					{
+						if ( i > 0 )
 						{
-							if ( i > 0 )
-							{
-								this.targetID = shipID.get((i-1) % shipID.size()).intValue();
-							}
-							else
-							{
-								this.targetID = shipID.get((shipID.size()-1) % shipID.size()).intValue();
-							}
-
-							System.out.println( "\tShift is pressed." );
+							this.targetID = shipID.get((i-1) % shipID.size()).intValue();
 						}
-						else {
+						else
+						{
+							this.targetID = shipID.get((shipID.size()-1) % shipID.size()).intValue();
+						}
+
+						System.out.println( "\tShift is pressed." );
+					}
+					else {
 */							this.targetID = shipID.get((i+1) % shipID.size()).intValue();
 //						}
 
-                        break;
-					}
+					break;
 				}
-                //System.out.println(this.targetID);
-				//System.out.println("TAB!");
 			}
+			//System.out.println(this.targetID);
+			//System.out.println("TAB!");
+		}
         else if( pEvent.getKeyCode() == KeyEvent.VK_SPACE)
         {
             //	System.out.println("Space!");
             if(targetID != -1)
             {
-                int shipHeading = this.getShip(new Integer(playerID).toString()).getHeading();
-                int enemyHeading = this.getShip(new Integer(targetID).toString()).getHeading();
-                Point shipPos = this.getShip(new Integer(playerID).toString()).getPosition();
-                Point enemyPos = this.getShip(new Integer(targetID).toString()).getPosition();
-                int angleDiff = 0;
-                char shotDir = ' ';
-                boolean firable = false;
+                int		shipHeading		= this.getShip(new Integer(playerID).toString()).getHeading();
+                int		enemyHeading	= this.getShip(new Integer(targetID).toString()).getHeading();
+                Point	shipPos			= this.getShip(new Integer(playerID).toString()).getPosition();
+                Point	enemyPos		= this.getShip(new Integer(targetID).toString()).getPosition();
+                int		angleDiff		= 0;
+                char	shotDir			= ' ';
+                boolean firable			= false;
                 //straight up
                 if(enemyPos.x == shipPos.x && enemyPos.y < shipPos.y)
                 {
@@ -632,7 +698,15 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             }
         }
     }
-    public void keyReleased(KeyEvent e)
+	
+	/**
+     * Responds to a KeyEvent.
+	 * 
+	 * Commented out by default. This method is used to echo to System.out the request message being sent to the server.
+     *
+     * @param pEvent KeyEvent to respond to.
+     */
+    public void keyReleased(KeyEvent pEvent)
     {
                 
                 //      send message
@@ -642,20 +716,28 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //      clear turnAmount, speedChange, and other message specific variables
                 this.turnAmount = 0;*/
     }
+	
+	/**
+     * Responds to an incoming message.
+	 * 
+	 * The possible incoming messages, and their effects, are defined in the NECS specification.
+     *
+     * @param pMessage The message that Communication received, and may result in a change to the game world
+     */
     public void handleMessage(Message pMessage)
         {
         /*
-         * Gameplay Messages
+         * Possible Gameplay Messages, as defined by the NECS
          */
         if( pMessage.getMessageName().equals( "shipState" ) )
         {
-                    this.getShip(pMessage.getArgument( 0 )).updateShip( 
-                                        Double.parseDouble( pMessage.getArgument( 1 ) ),          // int x
-                                        Double.parseDouble( pMessage.getArgument( 2 ) ),          // int y
-                                        Double.parseDouble( pMessage.getArgument( 3 ) ),        // double speed
-                                        Double.parseDouble( pMessage.getArgument( 4 ) ),          // int direction
-                                        Double.parseDouble( pMessage.getArgument( 5 ) )         // double damage
-                                          );
+			this.getShip(pMessage.getArgument( 0 )).updateShip( 
+                                        Double.parseDouble( pMessage.getArgument( 1 ) ),	// int x
+                                        Double.parseDouble( pMessage.getArgument( 2 ) ),    // int y
+                                        Double.parseDouble( pMessage.getArgument( 3 ) ),    // double speed
+                                        Double.parseDouble( pMessage.getArgument( 4 ) ),    // int direction
+                                        Double.parseDouble( pMessage.getArgument( 5 ) )     // double damage
+										);
             
         }
         else if( pMessage.getMessageName().equals( "ship" ) )
@@ -671,9 +753,8 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			this.windUpdateFLAG = true;
             this.gameWorld.setWindDirection( Integer.parseInt( pMessage.getArgument( 0 ) ) );
 			this.gameGUI.setWindDirection( Integer.parseInt( pMessage.getArgument( 0 ) ) );
-			
 /*
-			//	is windSpeed part of the message?
+			//	We ignore wind speed, as it has no impact on the client side.
             this.gameWorld.setWindSpeed( Integer.parseInt( pMessage.getArgument( 1 ) ) );
             this.gameGUI.setWindSpeed( Integer.parseInt( pMessage.getArgument( 1 ) ) );
 */
@@ -705,27 +786,22 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             // close lobby window
             this.lobbyWindow.lobbyWindow.setVisible( false );
             this.frame.setVisible(true);
-            // show game GUI
-            // this.gameGUI.addKeyListener( this );
-            // this.gameGUI.addToLayer(this, 1);
-            // this.gameGUI.setVisible( true );
-            
         }
         else if( pMessage.getMessageName().equals( "registered" ) )
         {
             this.playerID = Integer.parseInt( pMessage.getArgument( 0 ) );
-                        //      set register button to "registered"
-                        this.lobbyWindow.registerButton.setText( "Registered!" );
-                        this.lobbyWindow.readyButton.setText( "Waiting for map" );
+			//      set register button to "registered"
+			this.lobbyWindow.registerButton.setText( "Registered!" );
+			this.lobbyWindow.readyButton.setText( "Waiting for map" );
         }
         else if( pMessage.getMessageName().equals( "shore" ) )
         {
-            // if shore x set ready button active
+            //	If "shore:x;" is received, it is the final shore
+			//	Set the "ready" button in Lobby to active
             if( pMessage.getArgumentsNum() == 1 && pMessage.getArgument(0).equals("x") )
             {
-//                              this.lobbyWindow.setVisible( true );
-                                this.lobbyWindow.readyButton.setEnabled( true );
-                                this.lobbyWindow.readyButton.setText( "Ready to start?" );
+				this.lobbyWindow.readyButton.setEnabled( true );
+				this.lobbyWindow.readyButton.setText( "Ready to start?" );
             }
             // handle shore 
             else
@@ -759,13 +835,30 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
             System.exit(0);
         }
     }
+	
+	
+	/**
+     * Accessor
+	 * 
+	 * Returns 
+     *
+     * @param key The identifier of the ship being sought.
+	 * @return Ship object specifed by the input parameter key.
+     */	
     public synchronized Ship getShip(String key){
     	return this.shipList.get(key);
     }
+	
+	
+	/**
+     * Main.
+	 * 
+	 * Nuff said?
+	 *
+     * @param args String array
+     */
     public static void main(String[] args)
         {
-//                Game game = new Game( args[0] );
                 Game game = new Game( );
 		}
-
 }
