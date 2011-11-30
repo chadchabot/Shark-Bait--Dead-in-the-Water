@@ -4,15 +4,19 @@
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="imagesDir" location="images"/>
+     <property name="baseDir" location="./"/>
     
     <target name="compile">
         <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
+        <copydir src="${baseDir}/images/"
+        dest="${build}/images"
+        />
     </target>
     
     <target name="jar" depends="compile" description="generate the distribution" >
-        <jar jarfile="sharkbait.jar" basedir="./" excludesfile="build.xml" excludes="*.jar">
+        <jar jarfile="sharkbait.jar" basedir="${build}" >
             <manifest>
-                <attribute name="Main-Class" value="build/Game"/>
+                <attribute name="Main-Class" value="Game"/>
             </manifest>
         </jar>
     </target> 
