@@ -66,7 +66,9 @@ public class SplashWindow {
 		try 
         {
 			this.frame.setContentPane( new JLabel( new ImageIcon(
-                    ImageIO.read( new File( "../images/startup_background.png") )
+                 ImageIO.read( 
+                  this.getClass( ).getResourceAsStream( "./images/startup_background.png" ) 
+                  )
                 ) ) );
 		}
 		catch ( IOException e ) 
