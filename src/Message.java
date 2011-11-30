@@ -1,8 +1,11 @@
 /**
  * @author      Bonne Justin jbonne@uoguelph.ca
- * @version     0.1                 
- * @since       2011-11-13
+ * @author      Cardinal, Blake bcardina@uoguelph.ca
+ * @author      Chabot, Chad chabot@uoguelph.ca
+ * @version     0.9                 
+ * @since       2011-11-29
  */
+
 import java.util.EventObject;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -11,14 +14,14 @@ public class Message extends EventObject
 {
 	
 	private String              message;
-    private String              message_name = null;
-	private ArrayList<String>   arguments = null;
+    private String              message_name	= null;
+	private ArrayList<String>   arguments		= null;
 
     /**
-     * Class constructor automattically parses message 
+     * Class constructor automatically parses message 
      * into message name and arguments upon creation.
      *
-     * @param source reference to the source object
+     * @param pSource reference to the source object
      * @param message a message
      */
     public Message( Object pSource, String pMessage )
@@ -27,6 +30,7 @@ public class Message extends EventObject
         this.message = pMessage;
 		this.parseMessage();
     }
+	
     /**
      * Accessor for the orignal message
      *
@@ -43,6 +47,7 @@ public class Message extends EventObject
 			return null;
 		}
 	}
+	
     /**
      * Accessor for the message name
      *
@@ -73,12 +78,13 @@ public class Message extends EventObject
 			return 0;
 		}
 	}
+	
     /**
      * Accessor for individual arguments
      *
-     * @param i the index of the argument element
+     * @param pI the index of the argument element
      *
-     * @return the element corresponding with the passed index
+     * @return the element at the corresponding index in the message
      */
 	public String getArgument( int pI )
 	{
@@ -90,6 +96,12 @@ public class Message extends EventObject
 			return null;
 		}
 	}
+	
+    /**
+     * Accessor for all arguments in a message
+     *
+     * @return An ArrayList with all arguments in the message
+     */	
 	/*public ArrayList getAllArguments()
 	{
 		if(this.arguments != null)
@@ -100,6 +112,7 @@ public class Message extends EventObject
 			return null;
 		}
 	}*/
+	
     /**
      * Tokenizes string into message_name and arguments
      *
@@ -136,13 +149,14 @@ public class Message extends EventObject
 		}
 	}
     /**
-     * Prints a description of the message to System.out
+     * Echoes a description of the message to System.out so the client knows
+	 * when messages have been received.
      *
      */
 	public void printMessage( )
 	{
 		System.out.println( "Name: " + this.message_name );
-		System.out.println("Arguments:");
+		System.out.println( "Arguments:" );
         
 		for(int i = 0; i < arguments.size(); i++)
 		{
