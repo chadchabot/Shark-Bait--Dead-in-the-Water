@@ -8,13 +8,16 @@
     
     <target name="compile">
         <javac srcdir="${src}" destdir="${build}" includeantruntime="false"/>
-        <copydir src="${baseDir}/images/"
-        dest="${build}/images"
-        />
+        <copy todir="${build}/images">  
+            <resources>  
+                <dirset dir="${baseDir}/images">  
+                </dirset>  
+            </resources>  
+        </copy>  
     </target>
     
     <target name="jar" depends="compile" description="generate the distribution" >
-        <jar jarfile="sharkbait.jar" basedir="${build}" >
+        <jar jarfile="sharkbait.jar" basedir="${build}" excludes="${build}/Server*.class" excludesfile = "${build}/Server.class">
             <manifest>
                 <attribute name="Main-Class" value="Game"/>
             </manifest>
