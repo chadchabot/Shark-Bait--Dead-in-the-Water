@@ -122,7 +122,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 		//	sets up, and hides, Help Window
 		this.helpWindow = new JFrame("Help Menu");
         try {
-			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("./images/help_menu.png")))));
+			this.helpWindow.setContentPane(new JLabel(new ImageIcon(ImageIO.read(this.getClass().getResourceAsStream("images/help_menu.png")))));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
