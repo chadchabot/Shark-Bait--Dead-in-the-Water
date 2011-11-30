@@ -19,7 +19,8 @@ import java.awt.TexturePaint;
 import java.util.ArrayList;
 import java.util.ListIterator;
 
-public class World extends Sprite{
+public class World extends Sprite
+{
     
     public static final int		REFRESH_RATE = 60;
 	public static final int 	PIXELS_PER_METER = 3;
@@ -48,9 +49,10 @@ public class World extends Sprite{
     
     /**
      * Class constructor sets intialized game environment with default values
-     * Loads images and frames for weather effects
+     * Loads images and frames for weather effects and islands
      */
-    public World ( ) {
+    public World ( ) 
+    {
         this.windDirection  = 45;
         this.windSpeed      = 0;
         this.time           = 1;
@@ -59,9 +61,9 @@ public class World extends Sprite{
         this.width          = 5000;
         this.height         = 4000;
         this.shore = new ArrayList<Polygon>();
-        this.loadImage("fog", "fog");
         this.loadImage("land", "land");
         this.loadImage("water", "water");
+        this.loadImage("fog", "fog");
         this.loadImage("rain0", "rain_0");
         this.loadImage("rain1", "rain_1");
         this.loadImage("rain2", "rain_2");
@@ -109,7 +111,8 @@ public class World extends Sprite{
      *
      * @param g Graphics object that the weather will be drawn on
      */
-    public void drawWeather ( Graphics g ){
+    public void drawWeather ( Graphics g )
+    {
     	
         // draw fog
     	if ( this.fog == 1 )
