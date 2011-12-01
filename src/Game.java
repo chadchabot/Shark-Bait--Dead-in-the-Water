@@ -62,7 +62,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     private World                       gameWorld		= null;
     private int                         playerID;
     private boolean                     gameRunning		= false;
-    private int                         shipSelection	= 0;
+    private int                         shipSelection	= 1;
     private String                      pMessage;
     private int                         targetID		= -1;
     private long 						lastTurn		= 0;
@@ -209,7 +209,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
     {        
 		Point2D.Double playerPos = null;
 		
-		if ( this.shipList.size() != 0 ) {
+		if ( this.shipList.containsKey(Integer.toString(this.playerID))) {
 			playerPos = this.getShip(Integer.toString(this.playerID)).getPosition();
         }
         if ( playerPos != null )
@@ -221,10 +221,10 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
            	for (String key : this.shipList.keySet()) {
         		this.getShip(key).draw(g, playerPos, targetID);
         	}
-
+            
 			this.gameWorld.drawWeather( g );
 			//  draw HUD
-			this.gameGUI.draw( g, this.shipList, this.playerID, this.targetID );
+			this.gameGUI.draw( g, (HashMap<String, Ship>)this.shipList.clone(), this.playerID, this.targetID );
 
         }
 		
@@ -309,7 +309,7 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
 			this.lobbyWindow.registerButton.setEnabled( false );
 			this.lobbyWindow.registerButton.setText( "Waiting for registration..." );
 			//      send REGISTER message to server
-			this.comm.sendMessage( "register:"+shipSelection+";" );				
+			this.comm.sendMessage( "register:"+this.shipSelection+";" );				
 		}
 		
 		if ( e.getActionCommand().equals( "ready" ) )
@@ -581,19 +581,19 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     angleDiff = shipHeading - (int)Math.round(Math.abs(
                         Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) ))
                         ));
-                    angleDiff = (angleDiff+360)%360;
+                    angleDiff = Math.abs(angleDiff);
                     
-                    if( shipHeading > 260 && shipHeading < 280 ) 
+                    if( angleDiff > 260 && angleDiff < 280 ) 
                     {
                         firable = true;
                         shotDir = 'r';                        
                     }
-                    else if (shipHeading > 80 && shipHeading < 100)
+                    else if (angleDiff > 80 && angleDiff < 100)
                     {
                         firable = true;
                         shotDir = 'l'; 
                     }
-                    else if (shipHeading > 350 || shipHeading < 10 )
+                    else if (angleDiff > 350 || angleDiff < 10 )
                     {
                         firable = true;
                         shotDir = 'f'; 
@@ -605,19 +605,19 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     angleDiff = shipHeading - (180 - (int)Math.round(Math.abs(
                        Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getX()-shipPos.getY())))
                        ))); 
-                    angleDiff = (angleDiff+360)%360;
+                    angleDiff = Math.abs(angleDiff);
                     
-                    if( shipHeading > 260 && shipHeading < 280 ) 
+                    if( angleDiff > 260 && angleDiff < 280 ) 
                     {
                         firable = true;
                         shotDir = 'r';                        
                     }
-                    else if (shipHeading > 80 && shipHeading < 100)
+                    else if (angleDiff > 80 && angleDiff < 100)
                     {
                         firable = true;
                         shotDir = 'l'; 
                     }
-                    else if (shipHeading > 350 || shipHeading < 10 )
+                    else if (angleDiff > 350 || angleDiff < 10 )
                     {
                         firable = true;
                         shotDir = 'f'; 
@@ -626,22 +626,22 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                 //bottom left
                 else if(enemyPos.getX() < shipPos.getX() && enemyPos.getY() > shipPos.getY())
                 {
-                    angleDiff = shipHeading - (180 + (int)Math.round(  Math.abs(
-                         Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX()/(enemyPos.getY()-shipPos.getY())) )
+                    angleDiff = shipHeading - (180 + (int)Math.round(Math.abs(Math.toDegrees( 
+                         Math.atan( (enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY()) )
                          )))); 
-                    angleDiff = (angleDiff+360)%360;
+                    angleDiff = Math.abs(angleDiff);
                     
-                    if( shipHeading > 260 && shipHeading < 280 ) 
+                    if( angleDiff > 260 && angleDiff < 280 ) 
                     {
                         firable = true;
                         shotDir = 'r';                        
                     }
-                    else if (shipHeading > 80 && shipHeading < 100)
+                    else if (angleDiff > 80 && angleDiff < 100)
                     {
                         firable = true;
                         shotDir = 'l'; 
                     }
-                    else if (shipHeading > 350 || shipHeading < 10 )
+                    else if (angleDiff > 350 || angleDiff < 10 )
                     {
                         firable = true;
                         shotDir = 'f'; 
@@ -653,25 +653,25 @@ public class Game extends JComponent implements MessageListener, KeyListener, Ac
                     angleDiff = shipHeading - (360 - (int)Math.round(Math.abs(
                        Math.toDegrees( Math.atan((enemyPos.getX()-shipPos.getX())/(enemyPos.getY()-shipPos.getY())) )
                        ))); 
-                    angleDiff = (angleDiff+360)%360;
+                    angleDiff = Math.abs(angleDiff);
                     
-                    if( shipHeading > 260 && shipHeading < 280 ) 
+                    if( angleDiff > 260 && angleDiff < 280 ) 
                     {
                         firable = true;
                         shotDir = 'r';                        
                     }
-                    else if (shipHeading > 80 && shipHeading < 100)
+                    else if (angleDiff > 80 && angleDiff < 100)
                     {
                         firable = true;
                         shotDir = 'l'; 
                     }
-                    else if (shipHeading > 350 || shipHeading < 10 )
+                    else if (angleDiff > 350 || angleDiff < 10 )
                     {
                         firable = true;
                         shotDir = 'f'; 
                     }
                 }
-                //	System.out.println("angle:"+angleDiff+" player: "+shipHeading);
+                	//System.out.println("angle:"+angleDiff+" player: "+shipHeading);
                 if(firable == true)
                 {
                     //	System.out.println("FIRE!!!!!!");

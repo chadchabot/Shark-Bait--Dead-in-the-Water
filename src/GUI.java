@@ -44,7 +44,8 @@ public class GUI extends Sprite
         this.windDirection		= 45;
 		this.windSpeed			= 0;
 		this.loadImage("default","compass_arrow");
-        this.loadImage("target_arrow","target_arrow");        
+        this.loadImage("target_arrow","target_arrow");
+        this.loadImage("target_arrow_locked","target_arrow_locked");
     }
 
 	
@@ -80,6 +81,8 @@ public class GUI extends Sprite
 		int counter			= 0;
 		int hpBarFill		= 0;
         int target_rot      = 0;
+        boolean firable = false;
+        int angleDiff = 0;
 		g2D.drawString( "Enemy ships:", 40, 45 );
 
 		g2D.setFont( healthDisplayFont );
@@ -117,16 +120,35 @@ public class GUI extends Sprite
                 
 				//	handles the targeting arrow rotation and display
                 target_rot = getShipArrow(pShipList.get(key), pShipList.get(Integer.toString(pPlayerID)));
+                angleDiff = (pShipList.get(Integer.toString(pPlayerID)).getHeading() - target_rot +360)%360;
+                if(  (angleDiff > 260 && angleDiff < 280)||
+                   (angleDiff > 80 && angleDiff < 100)||
+                   (angleDiff > 350 || angleDiff < 10))
+                {
+                    firable = true;
+                }
                 
-                if(target_rot > 0)
+            
+                
+                if(pShipList.get(key).getShipID() == pTargetedShipID)
                 {
                     g2D.rotate( (Math.toRadians( target_rot )),
                                PLAYER_X_CENTER ,
                                PLAYER_Y_CENTER );
-                    g2D.drawImage(this.frames.get("target_arrow"), 
+                    if(firable == true)
+                    {
+                    g2D.drawImage(this.frames.get("target_arrow_locked"), 
                                   PLAYER_X_CENTER-(100*PIXELS_PER_METER/2), PLAYER_Y_CENTER-(100*PIXELS_PER_METER/2),
                                   100*PIXELS_PER_METER, 100*PIXELS_PER_METER,
                                   null);
+                    }
+                    else
+                    {
+                        g2D.drawImage(this.frames.get("target_arrow"), 
+                                      PLAYER_X_CENTER-(100*PIXELS_PER_METER/2), PLAYER_Y_CENTER-(100*PIXELS_PER_METER/2),
+                                      100*PIXELS_PER_METER, 100*PIXELS_PER_METER,
+                                      null);
+                    }
                     g2D.rotate( -1*(Math.toRadians(target_rot)),
                                PLAYER_X_CENTER ,
                                PLAYER_Y_CENTER );

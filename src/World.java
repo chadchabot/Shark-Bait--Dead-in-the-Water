@@ -45,6 +45,7 @@ public class World extends Sprite
     private int                 index = 0;
     
     // list of island polygons and texture paint for island graphic
+    private Polygon             water;
     private ArrayList<Polygon>  shore;
     private TexturePaint        tp;
     
@@ -64,6 +65,7 @@ public class World extends Sprite
         this.shore = new ArrayList<Polygon>();
         this.loadImage("land", "land");
         this.loadImage("water", "water");
+        this.loadImage("water_tile", "water_tile");
         this.loadImage("fog", "fog");
         this.loadImage("rain0", "rain_0");
         this.loadImage("rain1", "rain_1");
@@ -71,6 +73,14 @@ public class World extends Sprite
         this.loadImage("rain3", "rain_3");
         this.loadImage("night", "night");
         this.loadImage("dawn", "dawn");
+        this.loadImage("space", "space");
+        int x[] = {0, this.width*PIXELS_PER_METER, this.width*PIXELS_PER_METER, 0};
+        int y[] = {0, 0, this.height*PIXELS_PER_METER, this.height*PIXELS_PER_METER};
+        this.water = new Polygon(x,y,4);
+        /*this.water.addPoint(0, 0);
+        this.water.addPoint(this.width*PIXELS_PER_METER, 0);
+        this.water.addPoint(this.width*PIXELS_PER_METER, this.height*PIXELS_PER_METER);
+        this.water.addPoint(0, this.height*PIXELS_PER_METER);*/
     }
     
     /**
@@ -159,12 +169,32 @@ public class World extends Sprite
     	
         int drawX;
         int drawY;
+        Point2D.Double polycenter;
+        Rectangle bounds;
+        Polygon copy;
         
+        g.drawImage( this.frames.get("space"), 0, 0, 1024,768, null );
+        
+        bounds = new Rectangle( this.water.getBounds( ) );
+        polycenter = new Point2D.Double( bounds.x + ( (int)bounds.getWidth( ) )/2,  
+                                        bounds.y + ( (int)bounds.getHeight( ) )/2 );
+        
+        //find where the island should be drawn on screen
+        drawX = new Double(PLAYER_X_CENTER 
+                           - ( playerPos.getX()*PIXELS_PER_METER - polycenter.getX() )).intValue();
+        drawY = new Double(PLAYER_Y_CENTER 
+                           - ( playerPos.getY()*PIXELS_PER_METER - polycenter.getY() )).intValue();
+        
+        //move the island to where it should be drawn
+        copy = new Polygon(this.water.xpoints, this.water.ypoints, this.water.npoints);
+        copy.translate( (drawX - new Double(polycenter.getX()).intValue()),( drawY - new Double(polycenter.getY()).intValue()) ); 
+        bounds = new Rectangle( copy.getBounds( ) );
         //draw water back ground
-        tp = new TexturePaint(this.frames.get("water"), 
-                              new Rectangle(1024, 768));
+        tp = new TexturePaint(this.frames.get("water_tile"), 
+                              new Rectangle(bounds.x, bounds.y, 100, 100));
         g2D.setPaint(tp);
-		g2D.fillRect(0, 0, 1024, 768);
+		g.drawPolygon( copy );
+        g.fillPolygon( copy );
         
         //draw and move islands to their position relavtive to the player
         for( int i = 0; i< this.shore.size(); i++ )
@@ -180,12 +210,12 @@ public class World extends Sprite
             }
             
             //use the scaled points to create a new polygon
-            Polygon copy = new Polygon( scaledx, scaledy, 
+            copy = new Polygon( scaledx, scaledy, 
                                        this.shore.get( i ).npoints );
             
             //find the center of the new scaled island
-            Rectangle bounds = new Rectangle( copy.getBounds( ) );
-            Point2D.Double polycenter = new Point2D.Double( bounds.x + ( (int)bounds.getWidth( ) )/2,  
+            bounds = new Rectangle( copy.getBounds( ) );
+            polycenter = new Point2D.Double( bounds.x + ( (int)bounds.getWidth( ) )/2,  
                                          bounds.y + ( (int)bounds.getHeight( ) )/2 );
             
             //find where the island should be drawn on screen

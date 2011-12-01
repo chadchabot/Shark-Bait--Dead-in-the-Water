@@ -103,8 +103,6 @@ public class Lobby {
             this.lobbyButtonGroup.add( frigateButton );
             this.frigateButton.setSelected( true );
             FrigatePanel.add( this.frigateButton);
-            Toolkit img = null;;
-            FrigatePanel.add(new JLabel( new ImageIcon( img.getDefaultToolkit().createImage("c://sloop"))));
             
     		JPanel ManOfWarPanel = new JPanel();
     		this.manOwarButton = new JRadioButton( "Man-o-war" );

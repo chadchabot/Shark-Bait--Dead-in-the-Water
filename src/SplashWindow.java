@@ -5,12 +5,14 @@
  * @version     0.9                 
  * @since       2011-11-29
  */
-
+import java.awt.Color;
 import java.awt.Container;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Font;
 import java.awt.image.BufferedImage;
 import java.awt.Insets;
+
 import java.awt.Dimension;
 import java.awt.TextField;
 import java.awt.Toolkit;
@@ -54,7 +56,7 @@ public class SplashWindow {
 		Dim = Toolkit.getDefaultToolkit( ).getScreenSize();
 
         //Create and set up the window.
-        this.frame = new JFrame("AbsoluteLayoutDemo");
+        this.frame = new JFrame("Shark Bait: Dead in the Water");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setResizable( false );
         
@@ -90,6 +92,7 @@ public class SplashWindow {
 		
         //address label
         this.serverAddressLabel = new JLabel( "Server IP:" );
+        this.serverAddressLabel.setFont(new Font("Courier New", Font.BOLD, 12));
 		this.frame.getContentPane().add( this.serverAddressLabel );
 
         //port field
@@ -98,6 +101,7 @@ public class SplashWindow {
 		
         //port label
         this.serverPortLabel = new JLabel( "Server Port:" );
+        this.serverPortLabel.setFont(new Font("Courier New", Font.BOLD, 12));
 		this.frame.getContentPane().add( this.serverPortLabel );
 
         //set bounds for stuff
